@@ -8,14 +8,14 @@ DEMO() {
     /bin/cp ${current_dir}/config/index.html ${wwwroot_dir}/default/
   fi
 
-  if [ -e "${php_install_dir}/bin/php" ]; then
-    src_url=${mirror_link}/src/xprober.php && Download_src
+  if [ "${publish_diagnostics:-false}" = true ] && [ -e "${php_install_dir}/bin/php" ]; then
+    Download_Artifact "xprober.php" || exit 1
     /bin/cp xprober.php ${wwwroot_dir}/default
 
-    echo "<?php phpinfo() ?>" > ${wwwroot_dir}/default/phpinfo.php
+    # Detailed runtime diagnostics are never published by normal installation.
     case "${phpcache_option}" in
       1)
-        src_url=${mirror_link}/src/ocp.php && Download_src
+        Download_Artifact "ocp.php" || exit 1
         /bin/cp ocp.php ${wwwroot_dir}/default
         ;;
       4)

@@ -1,15 +1,16 @@
-## Recommend
+# Oneinstack-next
 
-This project no longer adds new features and is only for daily maintenance. It is recommended to use the docker-compose version. Project link: https://github.com/linuxeye/bypanel
+Bash-based LNMP installation and administration, preserving the numbered CLI.
+The source/HTTPS modernization is under integration validation; read
+[modernization status and migration](docs/modernization.md) and the exact
+[source coverage](docs/source-coverage.md) before installing. Historical menu
+entries are retained, but missing or unverified artifacts now stop preflight.
 
-[Aliyun ECS recommend](https://www.aliyun.com/daily-act/ecs/activity_selection?userCode=ird24dsz)
-
-## lnmp
-This script is written using the shell, in order to quickly deploy `LEMP`/`LAMP`/`LNMP`/`LNMPA`/`LTMP`(Linux, Nginx/Tengine/OpenResty, MySQL in a production environment/MariaDB/Percona, PHP, JAVA), applicable to RHEL 7, 8, 9(including CentOS,RedHat,AlmaLinux,Rocky), Debian 9, 10, 11, 12, Ubuntu 16, 18, 20, 22, 24 and Fedora 27+ of 64.
+The historical shell entrypoints deploy LEMP/LAMP/LNMP/LNMPA/LTMP stacks. Historical distro and version menus are retained; the current modernization validation targets Ubuntu 24.04 and Rocky Linux 9, with explicitly scoped aarch64 coverage. Artifact registration is not a claim of runtime qualification; consult the support matrix linked above.
 
 Script properties:
-- Continually updated, Provide Shell Interaction and Autoinstall
-- Source compiler installation, most stable source is the latest version, and download from the official site
+- Numbered shell interaction and noninteractive installation arguments
+- Version-controlled baseline, reviewed artifact identities and strong checksum pins
 - Some security optimization
 - Providing a plurality of database versions (MySQL-8.4, MySQL-8.0, MySQL-5.7, MySQL-5.5, MariaDB-11.8, MariaDB-11.4, MariaDB-10.11, MariaDB-5.5, Percona-8.4, Percona-8.0, Percona-5.7, Percona-5.5, PostgreSQL, MongoDB)
 - Providing multiple PHP versions (PHP-8.5, PHP-8.4, PHP-8.3, PHP-8.2, PHP-8.1, PHP-8.0, PHP-7.4, PHP-7.3, PHP-7.2, PHP-7.1, PHP-7.0, PHP-5.6, PHP-5.5, PHP-5.4, PHP-5.3)
@@ -31,22 +32,26 @@ Install the dependencies for your distro, download the source and run the instal
 #### CentOS/Redhat
 
 ```bash
-yum -y install wget screen
+dnf -y install git screen jq curl ca-certificates util-linux coreutils
 ```
 
 #### Debian/Ubuntu
 
 ```bash
-apt-get -y install wget screen
+apt-get update
+apt-get -y install git screen jq curl ca-certificates util-linux coreutils
 ```
 
 #### Download Source and Install
 
 ```bash
-wget http://mirrors.linuxeye.com/lnmp-full.tar.gz
-# wget https://downloads.sourceforge.net/project/linuxeye/lnmp-full.tar.gz
-tar xzf lnmp-full.tar.gz
-cd lnmp
+git clone https://github.com/oneinstack-next/oneinstack-next.git
+cd oneinstack-next
+# Select a full commit that you have reviewed, before executing its scripts.
+read -r -p 'Reviewed full commit SHA: ' REVIEWED_COMMIT
+[[ $REVIEWED_COMMIT =~ ^[0-9a-f]{40}$ ]] || exit 1
+git checkout --detach "$REVIEWED_COMMIT"
+git show --stat HEAD
 ```
 
 If you disconnect during installation, you can execute the command `screen -r lnmp` to reconnect to the install window
@@ -59,45 +64,65 @@ If you need to modify the directory (installation, data storage, Nginx logs), mo
 ./install.sh
 ```
 
+## Source selection and checks
+
+```bash
+bash tools/sourcectl.sh --summary
+bash tools/sourcectl.sh --check-versions
+bash tools/sourcectl.sh --preflight nginx-1.30.6.tar.gz
+./install.sh --nginx_option 1 --download_provider mirrorone --mirror_force_redirect true
+```
+
+Configure a clean HTTPS `mirror_link` in `options.conf` or pass it as an option.
+`false` follows server mode and may still redirect to upstream; it does not force
+cache delivery. Explicit official mode uses the same reviewed hashes and cache
+checks. `download_fallback=none` is the default. Version suggestions never run as
+Shell or silently change the baseline. Preflight plans are saved privately in
+`.metadata/last-plan.json`; this records intended selection, not install success.
+
+Use `bash tools/migrate-vhost.sh --audit /usr/local/nginx` for a read-only legacy
+host inventory. Existing sites are not automatically rewritten. Automatic script
+self-update is disabled until this repository has a verified release channel.
+
 ## How to install another PHP version
 
 ```bash
-~/lnmp/install.sh --mphp_ver 54
+~/oneinstack-next/install.sh --mphp_ver 54
 
 ```
 
 ## How to add Extensions
 
 ```bash
-~/lnmp/addons.sh
+~/oneinstack-next/addons.sh
 
 ```
 
 ## How to add a virtual host
 
 ```bash
-~/lnmp/vhost.sh
+~/oneinstack-next/vhost.sh
 ```
 
 ## How to delete a virtual host
 
 ```bash
-~/lnmp/vhost.sh --del
+~/oneinstack-next/vhost.sh --del
 ```
 
 ## How to add FTP virtual user
 
 ```bash
-~/lnmp/pureftpd_vhost.sh
+~/oneinstack-next/pureftpd_vhost.sh
 ```
 
 ## How to backup
 
 ```bash
-~/lnmp/backup_setup.sh    // Backup parameters
-~/lnmp/backup.sh    // Perform the backup immediately
+~/oneinstack-next/backup_setup.sh    // Backup parameters
+~/oneinstack-next/backup.sh    // Perform the backup immediately
 crontab -l    // Can be added to scheduled tasks, such as automatic backups every day 1:00
-  0 1 * * * cd ~/lnmp/backup.sh  > /dev/null 2>&1 &
+  0 1 * * * cd ~/oneinstack-next/backup.sh  > /dev/null 2>&1 &
 ```
 
 ## How to manage service
@@ -146,11 +171,11 @@ systemctl {start|stop|status|restart|reload} memcached
 ## How to upgrade
 
 ```bash
-~/lnmp/upgrade.sh
+~/oneinstack-next/upgrade.sh
 ```
 
 ## How to uninstall
 
 ```bash
-~/lnmp/uninstall.sh
+~/oneinstack-next/uninstall.sh
 ```

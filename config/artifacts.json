@@ -1,0 +1,1857 @@
+{
+  "schema_version": 1,
+  "note": "Exact candidate identities. null sha256 blocks use. Verification records distinguish publisher checksums from project pins observed directly over publisher HTTPS; neither is a claim of independent signature verification.",
+  "artifacts": [
+    {
+      "filename": "apcu-5.1.28.tgz",
+      "component": "apcu",
+      "version": "5.1.28",
+      "kind": "extension",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://pecl.php.net/get/apcu-5.1.28.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "ca9c1820810a168786f8048a4c3f8c9e3fd941407ad1553259fb2e30b5f057bf",
+      "size": 94004,
+      "format": "tgz",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://pecl.php.net/get/apcu-5.1.28.tgz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "apr-util-1.6.3.tar.gz",
+      "component": "apr",
+      "version": "1.6.3",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://archive.apache.org/dist/apr/apr-util-1.6.3.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "2b74d8932703826862ca305b094eef2983c27b39d5c9414442e9976a9acf1983",
+      "size": 556623,
+      "format": "tar.gz",
+      "top_dir": "apr-util-1.6.3",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://archive.apache.org/dist/apr/apr-util-1.6.3.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "apr-1.7.5.tar.gz",
+      "component": "apr",
+      "version": "1.7.5",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://archive.apache.org/dist/apr/apr-1.7.5.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "3375fa365d67bcf945e52b52cba07abea57ef530f40b281ffbe977a9251361db",
+      "size": 1131871,
+      "format": "tar.gz",
+      "top_dir": "apr-1.7.5",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://archive.apache.org/dist/apr/apr-1.7.5.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "argon2-20171227.tar.gz",
+      "component": "argon2",
+      "version": "20171227",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://github.com/P-H-C/phc-winner-argon2/archive/refs/tags/20171227.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "eaea0172c1f4ee4550d1b6c9ce01aab8d1ab66b4207776aa67991eb5872fdcd8",
+      "size": 1503745,
+      "format": "tar.gz",
+      "top_dir": "phc-winner-argon2-20171227",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://github.com/P-H-C/phc-winner-argon2/archive/refs/tags/20171227.tar.gz",
+        "reviewed_at": "2026-10-31"
+      },
+      "required_paths": [
+        "Makefile"
+      ]
+    },
+    {
+      "filename": "curl-8.17.0.tar.gz",
+      "component": "curl",
+      "version": "8.17.0",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://curl.se/download/curl-8.17.0.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "e8e74cdeefe5fb78b3ae6e90cd542babf788fa9480029cfcee6fd9ced42b7910",
+      "size": 4182287,
+      "format": "tar.gz",
+      "top_dir": "curl-8.17.0",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://curl.se/download/curl-8.17.0.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "eaccelerator-0.9.6.1.tar.bz2",
+      "component": "eaccelerator",
+      "version": "0.9.6.1",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://src.fedoraproject.org/repo/pkgs/php-eaccelerator/eaccelerator-0.9.6.1.tar.bz2/32ccd838e06ef5613c2610c1c65ed228/eaccelerator-0.9.6.1.tar.bz2",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": null,
+      "size": null,
+      "format": "tar.bz2"
+    },
+    {
+      "filename": "freetype-2.10.1.tar.gz",
+      "component": "freetype",
+      "version": "2.10.1",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://download.savannah.gnu.org/releases/freetype/freetype-2.10.1.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "3a60d391fd579440561bf0e7f31af2222bc610ad6ce4d9d7bd2165bca8669110",
+      "size": 3478158,
+      "format": "tar.gz",
+      "top_dir": "freetype-2.10.1",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://download.savannah.gnu.org/releases/freetype/freetype-2.10.1.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "gmagick-2.0.6RC1.tgz",
+      "component": "gmagick",
+      "version": "2.0.6RC1",
+      "kind": "extension",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://pecl.php.net/get/gmagick-2.0.6RC1.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "350cb71a4fbd58e037c7182cafa14e6f6df952126869205918fcc9ec5798e2fa",
+      "size": 133127,
+      "format": "tgz",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://pecl.php.net/get/gmagick-2.0.6RC1.tgz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "httpd-2.4.69.tar.gz",
+      "component": "httpd",
+      "version": "2.4.69",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://archive.apache.org/dist/httpd/httpd-2.4.69.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "c551b9861e26f146f57e1b1765e69c89a60b3db0ec252ccab0d36283487016bb",
+      "size": 10822928,
+      "format": "tar.gz",
+      "top_dir": "httpd-2.4.69",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://archive.apache.org/dist/httpd/httpd-2.4.69.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "imagick-3.8.1.tgz",
+      "component": "imagick",
+      "version": "3.8.1",
+      "kind": "extension",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://pecl.php.net/get/imagick-3.8.1.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "3a3587c0a524c17d0dad9673a160b90cd776e836838474e173b549ed864352ee",
+      "size": 364008,
+      "format": "tgz",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://pecl.php.net/get/imagick-3.8.1.tgz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "jemalloc-5.3.0.tar.bz2",
+      "component": "jemalloc",
+      "version": "5.3.0",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://github.com/jemalloc/jemalloc/releases/download/5.3.0/jemalloc-5.3.0.tar.bz2",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "2db82d1e7119df3e71b7640219b6dfe84789bc0537983c3b7ac4f7189aecfeaa",
+      "size": 736023,
+      "format": "tar.bz2",
+      "top_dir": "jemalloc-5.3.0",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://github.com/jemalloc/jemalloc/releases/download/5.3.0/jemalloc-5.3.0.tar.bz2",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "libiconv-1.16.tar.gz",
+      "component": "libiconv",
+      "version": "1.16",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://ftp.gnu.org/gnu/libiconv/libiconv-1.16.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "e6a1b1b589654277ee790cce3734f07876ac4ccfaecbee8afa0b649cf529cc04",
+      "size": 5166734,
+      "format": "tar.gz",
+      "top_dir": "libiconv-1.16",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://ftp.gnu.org/gnu/libiconv/libiconv-1.16.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "libmcrypt-2.5.8.tar.gz",
+      "component": "libmcrypt",
+      "version": "2.5.8",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz",
+      "provider": "official",
+      "reason": "Canonical reviewed publisher URL replaces mirror redirect",
+      "sha256": "e4eb6c074bbab168ac47b947c195ff8cef9d51a211cdd18ca9c9ef34d27a373e",
+      "size": 1335178,
+      "format": "tar.gz",
+      "top_dir": "libmcrypt-2.5.8",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "libmemcached-1.0.18.tar.gz",
+      "component": "libmemcached",
+      "version": "1.0.18",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "e22c0bb032fde08f53de9ffbc5a128233041d9f33b5de022c0978a2149885f82",
+      "size": 1039649,
+      "format": "tar.gz",
+      "top_dir": "libmemcached-1.0.18",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "mcrypt-2.6.8.tar.gz",
+      "component": "mcrypt",
+      "version": "2.6.8",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://downloads.sourceforge.net/project/mcrypt/MCrypt/2.6.8/mcrypt-2.6.8.tar.gz",
+      "provider": "official",
+      "reason": "Canonical reviewed publisher URL replaces mirror redirect",
+      "sha256": "5145aa844e54cca89ddab6fb7dd9e5952811d8d787c4f4bf27eb261e6c182098",
+      "size": 471915,
+      "format": "tar.gz",
+      "top_dir": "mcrypt-2.6.8",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://downloads.sourceforge.net/project/mcrypt/MCrypt/2.6.8/mcrypt-2.6.8.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "memcache-8.2.tgz",
+      "component": "memcache",
+      "version": "8.2",
+      "kind": "extension",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://pecl.php.net/get/memcache-8.2.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "b3f0640eacdeb9046c6c86a1546d7fb8a4e9f219e5d9a36a287e59b2dd8208e5",
+      "size": 78413,
+      "format": "tgz",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://pecl.php.net/get/memcache-8.2.tgz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "memcached-3.4.0.tgz",
+      "component": "memcached",
+      "version": "3.4.0",
+      "kind": "extension",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://pecl.php.net/get/memcached-3.4.0.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "c163434eb0da97c8f45c7ad41d979d381f8b81c49402b1b90b063987fb37972e",
+      "size": 93288,
+      "format": "tgz",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://pecl.php.net/get/memcached-3.4.0.tgz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "mongodb-2.1.4.tgz",
+      "component": "mongodb",
+      "version": "2.1.4",
+      "kind": "extension",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://pecl.php.net/get/mongodb-2.1.4.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "a5d09090fec30f1a8c26d0ea2f2b36583e1a2ca2b74754a3aad9753193a2a5e1",
+      "size": 2128346,
+      "format": "tgz",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://pecl.php.net/get/mongodb-2.1.4.tgz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "mysql-5.5.62-linux-glibc2.12-x86_64.tar.gz",
+      "component": "mysql",
+      "version": "5.5.62",
+      "kind": "binary",
+      "channel": "unknown",
+      "platform": {
+        "arch": "x86_64",
+        "libc": "glibc2.12",
+        "os": "linux"
+      },
+      "source_url": "https://downloads.mysql.com/archives/get/p/23/file/mysql-5.5.62-linux-glibc2.12-x86_64.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": null,
+      "size": 198993245,
+      "format": "tar.gz"
+    },
+    {
+      "filename": "mysql-5.7.44-linux-glibc2.12-x86_64.tar.gz",
+      "component": "mysql",
+      "version": "5.7.44",
+      "kind": "binary",
+      "channel": "unknown",
+      "platform": {
+        "arch": "x86_64",
+        "libc": "glibc2.12",
+        "os": "linux"
+      },
+      "source_url": "https://downloads.mysql.com/archives/get/p/23/file/mysql-5.7.44-linux-glibc2.12-x86_64.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": null,
+      "size": 694785800,
+      "format": "tar.gz"
+    },
+    {
+      "filename": "mysql-8.4.11-linux-glibc2.28-x86_64.tar.xz",
+      "component": "mysql",
+      "version": "8.4.11",
+      "kind": "binary",
+      "channel": "unknown",
+      "platform": {
+        "arch": "x86_64",
+        "libc": "glibc2.28",
+        "os": "linux"
+      },
+      "source_url": "https://cdn.mysql.com/Downloads/MySQL-8.4/mysql-8.4.11-linux-glibc2.28-x86_64.tar.xz",
+      "provider": "official",
+      "reason": "Oracle CDN binary directly verified; MirrorOne manifest lists an archives URL",
+      "sha256": "94e204cc94dede3746d2773fa5818f28f555cd8368c75ca0612eac124e6f3e58",
+      "size": 832331100,
+      "format": "tar.xz",
+      "top_dir": "mysql-8.4.11-linux-glibc2.28-x86_64",
+      "glibc_min": "2.28",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://cdn.mysql.com/Downloads/MySQL-8.4/mysql-8.4.11-linux-glibc2.28-x86_64.tar.xz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "nginx-1.30.6.tar.gz",
+      "component": "nginx",
+      "version": "1.30.6",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://nginx.org/download/nginx-1.30.6.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "3cf46f5ed7504d460125866b7bea99fb357f31d887e2e63b35503310e9b8b6c8",
+      "size": 1331698,
+      "format": "tar.gz",
+      "top_dir": "nginx-1.30.6",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://nginx.org/download/nginx-1.30.6.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "openssl-3.5.6.tar.gz",
+      "component": "openssl",
+      "version": "3.5.6",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://github.com/openssl/openssl/releases/download/openssl-3.5.6/openssl-3.5.6.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "deae7c80cba99c4b4f940ecadb3c3338b13cb77418409238e57d7f31f2a3b736",
+      "size": null,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.openssl.org/source/openssl-3.5.6.tar.gz.sha256",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "openssl-3.5.6",
+      "required_paths": [
+        "config",
+        "Configure"
+      ]
+    },
+    {
+      "filename": "pcre-8.45.tar.gz",
+      "component": "pcre",
+      "version": "8.45",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://downloads.sourceforge.net/project/pcre/pcre/8.45/pcre-8.45.tar.gz",
+      "provider": "official",
+      "reason": "Reviewed canonical publisher origin replaces stale mirror redirect target",
+      "sha256": "4e6ce03e0336e8b4a3d6c2b70b1c5e18590a5673a98186da90d4f33c23defc09",
+      "size": 2096552,
+      "format": "tar.gz",
+      "top_dir": "pcre-8.45",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://downloads.sourceforge.net/project/pcre/pcre/8.45/pcre-8.45.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "php-5.3.29.tar.gz",
+      "component": "php",
+      "version": "5.3.29",
+      "kind": "source",
+      "channel": "archive",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://www.php.net/distributions/php-5.3.29.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "57cf097de3d6c3152dda342f62b1b2e9c988f4cfe300ccfe3c11f3c207a0e317",
+      "size": 14972714,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=5.3.29",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-5.3.29",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "php-5.4.45.tar.gz",
+      "component": "php",
+      "version": "5.4.45",
+      "kind": "source",
+      "channel": "archive",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://www.php.net/distributions/php-5.4.45.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "25bc4723955f4e352935258002af14a14a9810b491a19400d76fcdfa9d04b28f",
+      "size": 15879453,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=5.4.45",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-5.4.45",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "php-5.5.38.tar.gz",
+      "component": "php",
+      "version": "5.5.38",
+      "kind": "source",
+      "channel": "archive",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://www.php.net/distributions/php-5.5.38.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "4f458c9b504269615715a62f182b7c2f89bb8284f484befc221b56a1571b506e",
+      "size": 17785731,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=5.5.38",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-5.5.38",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "php-5.6.40.tar.gz",
+      "component": "php",
+      "version": "5.6.40",
+      "kind": "source",
+      "channel": "archive",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://www.php.net/distributions/php-5.6.40.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "56fb9878d12fdd921f6a0897e919f4e980d930160e154cbde2cc6d9206a27cac",
+      "size": 19305795,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=5.6.40",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-5.6.40",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "php-7.0.33.tar.gz",
+      "component": "php",
+      "version": "7.0.33",
+      "kind": "source",
+      "channel": "archive",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://www.php.net/distributions/php-7.0.33.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "d71a6ecb6b13dc53fed7532a7f8f949c4044806f067502f8fb6f9facbb40452a",
+      "size": 18821062,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=7.0.33",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-7.0.33",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "php-7.1.33.tar.gz",
+      "component": "php",
+      "version": "7.1.33",
+      "kind": "source",
+      "channel": "archive",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://www.php.net/distributions/php-7.1.33.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "0055f368ffefe51d5a4483755bd17475e88e74302c08b727952831c5b2682ea2",
+      "size": 19716547,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=7.1.33",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-7.1.33",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "php-7.2.34.tar.gz",
+      "component": "php",
+      "version": "7.2.34",
+      "kind": "source",
+      "channel": "archive",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://www.php.net/distributions/php-7.2.34.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "8b2777c741e83f188d3ca6d8e98ece7264acafee86787298fae57e05d0dddc78",
+      "size": 19936114,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=7.2.34",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-7.2.34",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "php-7.3.33.tar.gz",
+      "component": "php",
+      "version": "7.3.33",
+      "kind": "source",
+      "channel": "archive",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://www.php.net/distributions/php-7.3.33.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "9a369c32c6f52036b0a890f290327f148a1904ee66aa56e2c9a7546da6525ec8",
+      "size": 19682486,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=7.3.33",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-7.3.33",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "php-7.4.33.tar.gz",
+      "component": "php",
+      "version": "7.4.33",
+      "kind": "source",
+      "channel": "archive",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://www.php.net/distributions/php-7.4.33.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "5a2337996f07c8a097e03d46263b5c98d2c8e355227756351421003bea8f463e",
+      "size": 16869345,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=7.4.33",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-7.4.33",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "php-8.0.30.tar.gz",
+      "component": "php",
+      "version": "8.0.30",
+      "kind": "source",
+      "channel": "archive",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://www.php.net/distributions/php-8.0.30.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "449d2048fcb20a314d8c218097c6d1047a9f1c5bb72aa54d5d3eba0a27a4c80c",
+      "size": 16465408,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=8.0.30",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-8.0.30",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "php-8.1.34.tar.gz",
+      "component": "php",
+      "version": "8.1.34",
+      "kind": "source",
+      "channel": "archive",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://www.php.net/distributions/php-8.1.34.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "3c5b060ec8e0d5dd1d8237823f3161cc8bc5342aab3c46893eba9857759c4bfa",
+      "size": 19939792,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=8.1.34",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-8.1.34",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "pure-ftpd-1.0.52.tar.gz",
+      "component": "pure-ftpd",
+      "version": "1.0.52",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://download.pureftpd.org/public/pure-ftpd/releases/pure-ftpd-1.0.52.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "1126f3a95856d08889ff89703cb1aa9ec9924d939d154e96904c920f05dc3c74",
+      "size": 651362,
+      "format": "tar.gz",
+      "top_dir": "pure-ftpd-1.0.52",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://download.pureftpd.org/public/pure-ftpd/releases/pure-ftpd-1.0.52.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "redis-6.3.0.tgz",
+      "component": "redis",
+      "version": "6.3.0",
+      "kind": "extension",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://pecl.php.net/get/redis-6.3.0.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "0d5141f634bd1db6c1ddcda053d25ecf2c4fc1c395430d534fd3f8d51dd7f0b5",
+      "size": 399284,
+      "format": "tgz",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://pecl.php.net/get/redis-6.3.0.tgz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "swoole-6.2.0.tgz",
+      "component": "swoole",
+      "version": "6.2.0",
+      "kind": "extension",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://pecl.php.net/get/swoole-6.2.0.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "b66bf449440c1ba2727314e1e9c4c078978e7def21a02b729bbfec35601ae2ee",
+      "size": 2598797,
+      "format": "tgz",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://pecl.php.net/get/swoole-6.2.0.tgz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "tengine-3.1.0.tar.gz",
+      "component": "tengine",
+      "version": "3.1.0",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://github.com/alibaba/tengine/archive/refs/tags/3.1.0.tar.gz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "64ed7155c0c904ce0fe7199c21b8eb6c2abfc267278fa8af832c0cb781e864dc",
+      "size": 3261347,
+      "format": "tar.gz",
+      "top_dir": "tengine-3.1.0",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://github.com/alibaba/tengine/archive/refs/tags/3.1.0.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "xdebug-3.1.2.tgz",
+      "component": "xdebug",
+      "version": "3.1.2",
+      "kind": "extension",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://pecl.php.net/get/xdebug-3.1.2.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "083f6be1100df79ccbdf049dafc3930bab35f0eb80f9b19ac1ad84fa6779ccf3",
+      "size": 230023,
+      "format": "tgz",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://pecl.php.net/get/xdebug-3.1.2.tgz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "yaf-3.3.7.tgz",
+      "component": "yaf",
+      "version": "3.3.7",
+      "kind": "extension",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://pecl.php.net/get/yaf-3.3.7.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "7fcea41c7b4254e6db71132a2591b5ce4c88d4af70231b0ffb560fdd22b43e95",
+      "size": 134483,
+      "format": "tgz",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://pecl.php.net/get/yaf-3.3.7.tgz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "yar-2.3.4.tgz",
+      "component": "yar",
+      "version": "2.3.4",
+      "kind": "extension",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://pecl.php.net/get/yar-2.3.4.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "858a8264c7e8fdd3ae2598bda0bd57e404cbed0d69941edf8bf74f632032dd48",
+      "size": 51365,
+      "format": "tgz",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://pecl.php.net/get/yar-2.3.4.tgz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "zendopcache-7.0.5.tgz",
+      "component": "zendopcache",
+      "version": "7.0.5",
+      "kind": "extension",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://pecl.php.net/get/zendopcache-7.0.5.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "c8e4a23bcc78e6280f41b5020eac4825a810d77684d0ce10608bfa5bece9e9c0",
+      "size": 97101,
+      "format": "tgz",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://pecl.php.net/get/zendopcache-7.0.5.tgz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "php-8.2.35.tar.gz",
+      "component": "php",
+      "version": "8.2.35",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://www.php.net/distributions/php-8.2.35.tar.gz",
+      "provider": "official",
+      "reason": "No exact unambiguous MirrorOne artifact in observed snapshot",
+      "sha256": "9db4204f0a2d1911277ae832185e07bb4c3b3559772753a70d2968ca346d6910",
+      "size": null,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=8.2.35",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-8.2.35",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "php-8.3.36.tar.gz",
+      "component": "php",
+      "version": "8.3.36",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://www.php.net/distributions/php-8.3.36.tar.gz",
+      "provider": "official",
+      "reason": "No exact unambiguous MirrorOne artifact in observed snapshot",
+      "sha256": "c93f3441f87f6ab156bef4432db215d7e61ca2c0183bb3a2aa28d9886ab59f53",
+      "size": null,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=8.3.36",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-8.3.36",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "php-8.4.27.tar.gz",
+      "component": "php",
+      "version": "8.4.27",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://www.php.net/distributions/php-8.4.27.tar.gz",
+      "provider": "official",
+      "reason": "No exact unambiguous MirrorOne artifact in observed snapshot",
+      "sha256": "5bafed9994c1a49796b25b5f61c22c9183bfe046b6acc7b363842d03c77f972f",
+      "size": null,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=8.4.27",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-8.4.27",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "php-8.5.12.tar.gz",
+      "component": "php",
+      "version": "8.5.12",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://www.php.net/distributions/php-8.5.12.tar.gz",
+      "provider": "official",
+      "reason": "No exact unambiguous MirrorOne artifact in observed snapshot",
+      "sha256": "81a0f450349e84b08eb43faa85f8a4c835684f3cc1c50471775d1317a046c525",
+      "size": null,
+      "format": "tar.gz",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://www.php.net/releases/index.php?json&version=8.5.12",
+        "reviewed_at": "2026-10-31"
+      },
+      "top_dir": "php-8.5.12",
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "icu4c-63_1-src.tgz",
+      "component": "icu",
+      "version": "release-63-1",
+      "kind": "source",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://github.com/unicode-org/icu/releases/download/release-63-1/icu4c-63_1-src.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "05c490b69454fce5860b7e8e2821231674af0a11d7ef2febea9a32512998cb9d",
+      "size": 23746939,
+      "format": "tgz",
+      "top_dir": "icu",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://github.com/unicode-org/icu/releases/download/release-63-1/icu4c-63_1-src.tgz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "openresty-1.31.1.1.tar.gz",
+      "component": "openresty",
+      "version": "1.31.1.1",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://openresty.org/download/openresty-1.31.1.1.tar.gz",
+      "provider": "official",
+      "reason": "No exact unambiguous MirrorOne artifact in observed snapshot",
+      "sha256": "65b78baadd3f0984055de89bf13f4a1932e5bfe9c31932037a134ea2b1a0ce42",
+      "size": 6539776,
+      "format": "tar.gz",
+      "top_dir": "openresty-1.31.1.1",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://openresty.org/download/openresty-1.31.1.1.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "acme.sh-3.1.3.tar.gz",
+      "component": "acme.sh",
+      "version": "3.1.3",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://github.com/acmesh-official/acme.sh/archive/refs/tags/3.1.3.tar.gz",
+      "provider": "official",
+      "reason": "No exact unambiguous MirrorOne artifact in observed snapshot",
+      "sha256": "efd12b265252f8875269960b6b31830731ccce2b3e6ff8e7ecfbee21fde35ab4",
+      "size": 381679,
+      "format": "tar.gz",
+      "top_dir": "acme.sh-3.1.3",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://github.com/acmesh-official/acme.sh/archive/refs/tags/3.1.3.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "mhash-0.9.9.9.tar.gz",
+      "component": "mhash",
+      "version": "0.9.9.9",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://downloads.sourceforge.net/project/mhash/mhash/0.9.9.9/mhash-0.9.9.9.tar.gz",
+      "provider": "official",
+      "reason": "No exact usable MirrorOne artifact in observed snapshot",
+      "sha256": "3dcad09a63b6f1f634e64168dd398e9feb9925560f9b671ce52283a79604d13e",
+      "size": 931437,
+      "format": "tar.gz",
+      "top_dir": "mhash-0.9.9.9",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://downloads.sourceforge.net/project/mhash/mhash/0.9.9.9/mhash-0.9.9.9.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "libsodium-1.0.20.tar.gz",
+      "component": "libsodium",
+      "version": "1.0.20",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://download.libsodium.org/libsodium/releases/libsodium-1.0.20.tar.gz",
+      "provider": "official",
+      "reason": "No exact usable MirrorOne artifact in observed snapshot",
+      "sha256": "ebb65ef6ca439333c2bb41a0c1990587288da07f6c7fd07cb3a18cc18d30ce19",
+      "size": 1925167,
+      "format": "tar.gz",
+      "top_dir": "libsodium-1.0.20",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://download.libsodium.org/libsodium/releases/libsodium-1.0.20.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "libzip-1.2.0.tar.gz",
+      "component": "libzip",
+      "version": "1.2.0",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://libzip.org/download/libzip-1.2.0.tar.gz",
+      "provider": "official",
+      "reason": "No exact usable MirrorOne artifact in observed snapshot",
+      "sha256": "6cf9840e427db96ebf3936665430bab204c9ebbd0120c326459077ed9c907d9f",
+      "size": 1514966,
+      "format": "tar.gz",
+      "top_dir": "libzip-1.2.0",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://libzip.org/download/libzip-1.2.0.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "binutils-2.42.tar.gz",
+      "component": "binutils",
+      "version": "2.42",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://ftp.gnu.org/gnu/binutils/binutils-2.42.tar.gz",
+      "provider": "official",
+      "reason": "No exact usable MirrorOne artifact in observed snapshot",
+      "sha256": "5d2a6c1d49686a557869caae08b6c2e83699775efd27505e01b2f4db1a024ffc",
+      "size": 51892456,
+      "format": "tar.gz",
+      "top_dir": "binutils-2.42",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://ftp.gnu.org/gnu/binutils/binutils-2.42.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "memcached-1.6.45.tar.gz",
+      "component": "memcached",
+      "version": "1.6.45",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://memcached.org/files/memcached-1.6.45.tar.gz",
+      "provider": "official",
+      "reason": "No exact usable MirrorOne artifact in observed snapshot",
+      "sha256": "d362c64e6d8d5287153501eabf7c85b4a761432fbf53f5d7b085d0bb1653c1dd",
+      "size": 1272659,
+      "format": "tar.gz",
+      "top_dir": "memcached-1.6.45",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://memcached.org/files/memcached-1.6.45.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "redis-7.4.9.tar.gz",
+      "component": "redis",
+      "version": "7.4.9",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://download.redis.io/releases/redis-7.4.9.tar.gz",
+      "provider": "official",
+      "reason": "No exact usable MirrorOne artifact in observed snapshot",
+      "sha256": "a71a67b47b2705d3448f0400573e3ad5c4c9f8c18236f426dc6acc7284bf42ad",
+      "size": 3542936,
+      "format": "tar.gz",
+      "top_dir": "redis-7.4.9",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://download.redis.io/releases/redis-7.4.9.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "phpMyAdmin-5.2.3-all-languages.tar.gz",
+      "component": "phpmyadmin",
+      "version": "5.2.3",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://files.phpmyadmin.net/phpMyAdmin/5.2.3/phpMyAdmin-5.2.3-all-languages.tar.gz",
+      "provider": "official",
+      "reason": "No exact usable MirrorOne artifact in observed snapshot",
+      "sha256": "12ba1c425fa4071abbd4e7668c9ebdeac0b0755a467a6d6d5026122bb47c102b",
+      "size": 14446385,
+      "format": "tar.gz",
+      "top_dir": "phpMyAdmin-5.2.3-all-languages",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://files.phpmyadmin.net/phpMyAdmin/5.2.3/phpMyAdmin-5.2.3-all-languages.tar.gz",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "composer.phar",
+      "component": "composer",
+      "version": "2.8.12",
+      "kind": "script",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://getcomposer.org/download/2.8.12/composer.phar",
+      "provider": "official",
+      "reason": "No exact MirrorOne artifact in observed snapshot; reviewed publisher origin",
+      "sha256": "f446ea719708bb85fcbf4ef18def5d0515f1f9b4d703f6d820c9c1656e10a2f2",
+      "size": 3125332,
+      "format": "phar",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://getcomposer.org/download/2.8.12/composer.phar",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "ImageMagick-7.1.2-32.tar.gz",
+      "component": "imagemagick",
+      "version": "7.1.2-32",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.2-32.tar.gz",
+      "provider": "official",
+      "reason": "Published release archive URL unavailable; fixed publisher GitHub tag with verified layout",
+      "sha256": "940e349f0ef394e658fd57400b83d1d7a81b954f6e7bdbfbfad31b2718c10add",
+      "size": 14668005,
+      "format": "tar.gz",
+      "top_dir": "ImageMagick-7.1.2-32",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.2-32.tar.gz",
+        "reviewed_at": "2026-10-31"
+      },
+      "required_paths": [
+        "configure"
+      ]
+    },
+    {
+      "filename": "5.3-CVE-2026-109618-109619.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/5.3-CVE-2026-109618-109619.patch",
+      "provider": "bundled",
+      "local_path": "src/5.3-CVE-2026-109618-109619.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "8401bd729b7ad14552fcd0d96c36e706861d3d7fb45381c1714311eb17badc67",
+      "size": 13416,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "5.4-CVE-2026-109618-109619.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/5.4-CVE-2026-109618-109619.patch",
+      "provider": "bundled",
+      "local_path": "src/5.4-CVE-2026-109618-109619.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "55b38f1d35501aff55a3ac2a2620c218ef50b472f4c0e2165c47eef10ab3b1ef",
+      "size": 10936,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "5.5-CVE-2026-109618-109619.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/5.5-CVE-2026-109618-109619.patch",
+      "provider": "bundled",
+      "local_path": "src/5.5-CVE-2026-109618-109619.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "966e0c44ef81919b03d6a3c43dd4670bccf510e4f3314db2c66305a27fddbc72",
+      "size": 11761,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "5.6-CVE-2026-109618-109619.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/5.6-CVE-2026-109618-109619.patch",
+      "provider": "bundled",
+      "local_path": "src/5.6-CVE-2026-109618-109619.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "4a589e24926f90c61677eba22bf9f24815ce24f6407abe418dd4340afbc430bc",
+      "size": 11761,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "7.0-CVE-2026-109618-109619.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/7.0-CVE-2026-109618-109619.patch",
+      "provider": "bundled",
+      "local_path": "src/7.0-CVE-2026-109618-109619.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "3511c78ae91d7218962fea9cc3e15718ce9d45059687bc099f6cb81df4b3acdf",
+      "size": 33684,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "7.1-CVE-2026-109618-109619.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/7.1-CVE-2026-109618-109619.patch",
+      "provider": "bundled",
+      "local_path": "src/7.1-CVE-2026-109618-109619.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "ba182bff16ab4bcdfd3a0a3a148fb57e2f5eb904feffaeeb8de98702e72bdc05",
+      "size": 34677,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "7.2-CVE-2026-109618-109619.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/7.2-CVE-2026-109618-109619.patch",
+      "provider": "bundled",
+      "local_path": "src/7.2-CVE-2026-109618-109619.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "575bfc46321a758ef6ae40b7c86658a368bf19c36e618866fe76a8b41f239aef",
+      "size": 39471,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "7.3-CVE-2026-109618-109619.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/7.3-CVE-2026-109618-109619.patch",
+      "provider": "bundled",
+      "local_path": "src/7.3-CVE-2026-109618-109619.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "bf1048a59221b3a5d3fa682ed90eda136d3fc468abf81b933a9b2c4d466486cd",
+      "size": 39214,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "7.4-CVE-2026-109618-109619.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/7.4-CVE-2026-109618-109619.patch",
+      "provider": "bundled",
+      "local_path": "src/7.4-CVE-2026-109618-109619.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "658bc861d874b50a72f79b8e4c97b8198af0aeb36b14ba8ab79901803f516ade",
+      "size": 41971,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "8.0-CVE-2026-109618-109619.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/8.0-CVE-2026-109618-109619.patch",
+      "provider": "bundled",
+      "local_path": "src/8.0-CVE-2026-109618-109619.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "695511854751d9fef1cd42dae5216417e61abba26d819d8175fe83ba5934d0fb",
+      "size": 40517,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "8.1-CVE-2026-109618-109619.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/8.1-CVE-2026-109618-109619.patch",
+      "provider": "bundled",
+      "local_path": "src/8.1-CVE-2026-109618-109619.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "797955ab45234a510c17dfd27101d8ad6c2f65abc298168d84214e1a06b77591",
+      "size": 49592,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "libiconv-glibc-2.16.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/libiconv-glibc-2.16.patch",
+      "provider": "bundled",
+      "local_path": "src/libiconv-glibc-2.16.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "ea2b6c3b11bf63314f0910448cfb115e89d740b36a1d4b46bcdf06ea13b12c67",
+      "size": 573,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "libmemcached-build.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/libmemcached-build.patch",
+      "provider": "bundled",
+      "local_path": "src/libmemcached-build.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "bd62d0080d4ce39981a2e150af54fe80ebe720ba4cfaf5a856c3b9d8a73ecf7d",
+      "size": 583,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "php5.3-fileinfo.patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/php5.3-fileinfo.patch",
+      "provider": "bundled",
+      "local_path": "src/php5.3-fileinfo.patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "21748fde39e2cdccd532d183e7a34043be69aa6781c26b88a348117635621ffe",
+      "size": 959,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "php5.3patch",
+      "component": "bundled-patches",
+      "version": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+      "kind": "patch",
+      "channel": "project",
+      "platform": {
+        "os": "any",
+        "arch": "any",
+        "libc": null
+      },
+      "source_url": "https://raw.githubusercontent.com/oneinstack-next/oneinstack-next/0a663e78bd3ece6d2a4f05812f129b4d46246d63/src/php5.3patch",
+      "provider": "bundled",
+      "local_path": "src/php5.3patch",
+      "reason": "Distributed in the reviewed project checkout; no remote fetch",
+      "sha256": "788892c14edb11d707180432a7fae46e4fee1aff7870697834fd46b32801fcd9",
+      "size": 2149,
+      "format": "raw",
+      "verification": {
+        "type": "project-bundled-pin",
+        "reviewed_at": "2026-10-31",
+        "note": "Content integrity only; historical patch behavior is not security-certified"
+      }
+    },
+    {
+      "filename": "node-v20.17.0-linux-x64.tar.gz",
+      "component": "nodejs",
+      "version": "20.17.0",
+      "kind": "binary",
+      "channel": "release",
+      "platform": {
+        "os": "linux",
+        "arch": "x86_64",
+        "libc": "glibc2.28"
+      },
+      "glibc_min": "2.28",
+      "source_url": "https://nodejs.org/dist/v20.17.0/node-v20.17.0-linux-x64.tar.gz",
+      "provider": "official",
+      "reason": "MirrorOne has no Node.js scraper; fixed publisher release and checksum",
+      "sha256": "21e656f6f4e34080ddc5d75fbfe58ce8482fe6e70a76aeae14afdcdc1e23079d",
+      "size": null,
+      "format": "tar.gz",
+      "top_dir": "node-v20.17.0-linux-x64",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://nodejs.org/dist/v20.17.0/SHASUMS256.txt",
+        "reviewed_at": "2026-10-31"
+      }
+    },
+    {
+      "filename": "node-v20.17.0-linux-arm64.tar.gz",
+      "component": "nodejs",
+      "version": "20.17.0",
+      "kind": "binary",
+      "channel": "release",
+      "platform": {
+        "os": "linux",
+        "arch": "aarch64",
+        "libc": "glibc2.28"
+      },
+      "glibc_min": "2.28",
+      "source_url": "https://nodejs.org/dist/v20.17.0/node-v20.17.0-linux-arm64.tar.gz",
+      "provider": "official",
+      "reason": "MirrorOne has no Node.js scraper; fixed publisher release and checksum",
+      "sha256": "18afbf2781edfcc9918343f4bf74a8c35d74d778b85d40a0c09b232adc0ea82c",
+      "size": null,
+      "format": "tar.gz",
+      "top_dir": "node-v20.17.0-linux-arm64",
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://nodejs.org/dist/v20.17.0/SHASUMS256.txt",
+        "reviewed_at": "2026-10-31"
+      }
+    }
+  ]
+}

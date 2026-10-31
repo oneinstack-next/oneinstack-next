@@ -6,14 +6,13 @@ Upgrade_Redis() {
   pushd ${current_dir}/src > /dev/null
   [ ! -d "$redis_install_dir" ] && echo "${CWARNING}Redis is not installed on your system! ${CEND}" && exit 1
   OLD_redis_ver=`$redis_install_dir/bin/redis-cli --version | awk '{print $2}'`
-  Latest_redis_ver=`curl --connect-timeout 2 -m 3 -s http://download.redis.io/redis-stable/00-RELEASENOTES | awk '/Released/{print $2}' | head -1`
-  Latest_redis_ver=${Latest_redis_ver:-6.0.4}
+  Latest_redis_ver=${redis_ver}
   echo "Current Redis Version: ${CMSG}$OLD_redis_ver${CEND}"
   while :; do echo
     [ "${redis_flag}" != 'y' ] && read -e -p "Please input upgrade Redis Version(default: ${Latest_redis_ver}): " NEW_redis_ver
     NEW_redis_ver=${NEW_redis_ver:-${Latest_redis_ver}}
     if [ "$NEW_redis_ver" != "$OLD_redis_ver" ]; then
-      [ ! -e "redis-$NEW_redis_ver.tar.gz" ] && wget --no-check-certificate -c http://download.redis.io/releases/redis-$NEW_redis_ver.tar.gz > /dev/null 2>&1
+      Download_Artifact "redis-$NEW_redis_ver.tar.gz" || exit 1
       if [ -e "redis-$NEW_redis_ver.tar.gz" ]; then
         echo "Download [${CMSG}redis-$NEW_redis_ver.tar.gz${CEND}] successfully! "
         break

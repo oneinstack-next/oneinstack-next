@@ -36,15 +36,15 @@ Install_pecl_imagick() {
     PHP_main_ver=${PHP_detail_ver%.*}
     phpExtensionDir=`${php_install_dir}/bin/php-config --extension-dir`
     if [[ "${PHP_main_ver}" =~ ^5.3$ ]]; then
-      src_url=https://pecl.php.net/get/imagick-3.4.4.tgz && Download_src
+      Download_Artifact "imagick-3.4.4.tgz" || exit 1
       tar xzf imagick-3.4.4.tgz
       pushd imagick-3.4.4 > /dev/null
     elif [[ "${PHP_main_ver}" =~ ^5.[4-5]$ ]]; then
-      src_url=https://pecl.php.net/get/imagick-3.7.0.tgz && Download_src
+      Download_Artifact "imagick-3.7.0.tgz" || exit 1
       tar xzf imagick-3.7.0.tgz
       pushd imagick-3.7.0 > /dev/null
     else
-      src_url=https://pecl.php.net/get/imagick-${imagick_ver}.tgz && Download_src
+      Download_Artifact "imagick-${imagick_ver}.tgz" || exit 1
       tar xzf imagick-${imagick_ver}.tgz
       pushd imagick-${imagick_ver} > /dev/null
     fi

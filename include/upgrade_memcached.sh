@@ -6,15 +6,13 @@ Upgrade_Memcached() {
   pushd ${current_dir}/src > /dev/null
   [ ! -e "${memcached_install_dir}/bin/memcached" ] && echo "${CWARNING}Memcached is not installed on your system! ${CEND}" && exit 1
   OLD_memcached_ver=`${memcached_install_dir}/bin/memcached -V | awk '{print $2}'`
-  Latest_memcached_ver=`curl --connect-timeout 2 -m 3 -s https://github.com/memcached/memcached/wiki/ReleaseNotes | grep 'internal present.*ReleaseNotes' |  grep -oE "[0-9]\.[0-9]\.[0-9]+" | head -1`
-  Latest_memcached_ver=${Latest_memcached_ver:-1.5.12}
+  Latest_memcached_ver=${memcached_ver}
   echo "Current Memcached Version: ${CMSG}${OLD_memcached_ver}${CEND}"
   while :; do echo
     [ "${memcached_flag}" != 'y' ] && read -e -p "Please input upgrade Memcached Version(default: ${Latest_memcached_ver}): " NEW_memcached_ver
     NEW_memcached_ver=${NEW_memcached_ver:-${Latest_memcached_ver}}
     if [ "${NEW_memcached_ver}" != "${OLD_memcached_ver}" ]; then
-      [ "${OUTIP_STATE}"x == "China"x ] && DOWN_ADDR=${mirror_link}/src || DOWN_ADDR=http://www.memcached.org/files
-      [ ! -e "memcached-${NEW_memcached_ver}.tar.gz" ] && wget --no-check-certificate -c ${DOWN_ADDR}/memcached-${NEW_memcached_ver}.tar.gz > /dev/null 2>&1
+      Download_Artifact "memcached-${NEW_memcached_ver}.tar.gz" || exit 1
       if [ -e "memcached-${NEW_memcached_ver}.tar.gz" ]; then
         echo "Download [${CMSG}memcached-${NEW_memcached_ver}.tar.gz${CEND}] successfully! "
         break

@@ -4,24 +4,6 @@
 #
 #
 
-export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-clear
-printf "
-#######################################################################
-#              Setting up virtual hosts on HTTP Server                #
-#######################################################################
-"
-# Check if user is root
-[ $(id -u) != '0' ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
-
-current_dir=$(dirname "`readlink -f $0`")
-pushd ${current_dir} > /dev/null
-. ./options.conf
-. ./include/color.sh
-. ./include/check_dir.sh
-. ./include/check_os.sh
-. ./include/get_char.sh
-
 Show_Help() {
   echo
   echo "Usage: $0  command ...[parameters]....
@@ -36,16 +18,57 @@ Show_Help() {
   --selfsigned                Use your own SSL Certificate and Key
   --letsencrypt               Use Let's Encrypt to Create SSL Certificate and Key
   --dnsapi                    Use dns API to automatically issue Let's Encrypt Cert
+  --download_provider [mirrorone|official]
+  --mirror_link [https://host] MirrorOne base URL
+  --mirror_force_redirect [true|false]
+  --download_fallback [none|official]
+  --check-versions            Check remote candidates without installing
   "
 }
 
+for early_arg in "$@"; do
+  case $early_arg in
+    -h|--help) Show_Help; exit 0 ;;
+  esac
+done
+if [ "${1:-}" = --check-versions ]; then
+  exec bash "$(dirname -- "${BASH_SOURCE[0]}")/tools/sourcectl.sh" --check-versions "${@:2}"
+fi
+
+export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+clear
+printf "
+#######################################################################
+#              Setting up virtual hosts on HTTP Server                #
+#######################################################################
+"
+# Check if user is root
+[ $(id -u) != '0' ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
+
+current_dir=$(dirname "`readlink -f $0`")
+pushd ${current_dir} > /dev/null
+. ./options.conf
+# The checkout path is runtime state, not a migrated user setting.
+current_dir=$PWD
+. ./include/version_data.sh
+Read_Versions "${current_dir}/versions.txt" || exit 1
+. ./include/color.sh
+. ./include/get_char.sh
+. ./include/download.sh
+. ./include/nginx_config.sh
+. ./include/acme.sh
+
+
 ARG_NUM=$#
-TEMP=`getopt -o hql --long help,quiet,list,proxy,mphp_ver:,add,delete,del,httponly,selfsigned,letsencrypt,dnsapi -- "$@" 2>/dev/null`
+TEMP=`getopt -o hql --long download_provider:,mirror_link:,mirror_force_redirect:,download_fallback:,help,quiet,list,proxy,mphp_ver:,add,delete,del,httponly,selfsigned,letsencrypt,dnsapi -- "$@" 2>/dev/null`
 [ $? != 0 ] && echo "${CWARNING}ERROR: unknown argument! ${CEND}" && Show_Help && exit 1
 eval set -- "${TEMP}"
 while :; do
   [ -z "$1" ] && break;
   case "$1" in
+    --download_provider|--mirror_link|--mirror_force_redirect|--download_fallback)
+      printf -v "${1#--}" '%s' "$2"; shift 2
+      ;;
     -h|--help)
       Show_Help; exit 0
       ;;
@@ -101,6 +124,12 @@ while :; do
   esac
 done
 
+Source_Validate || exit 2
+. ./include/check_os.sh
+. ./include/check_dir.sh
+[ "$ARG_NUM" -ne 0 ] || Source_Menu || exit 2
+Source_Summary
+
 Choose_ENV() {
   if [ -e "${apache_install_dir}/bin/apachectl" ];then
     [ "$(${apache_install_dir}/bin/apachectl -v | awk -F'.' /version/'{print $2}')" == '4' ] && { Apache_main_ver=24; Apache_grant='Require all granted'; }
@@ -141,6 +170,14 @@ Choose_ENV() {
 }
 
 Create_SSL() {
+  local -a cert_domains=()
+  read -r -a cert_domains <<< "$moredomainame"
+  Nginx_Domain_Valid "$domain" "${cert_domains[@]}" || exit 1
+  if [ "${nginx_ssl_flag}" = y ] && [ "${Domian_Mode}" = 3 ]; then
+    Issue_Nginx_Certificate || { Nginx_Temporary_Cleanup; exit 1; }
+    return 0
+  fi
+  umask 077
   if [ "${Domian_Mode}" == '2' ]; then
     printf "
 You are about to be asked to enter information that will be incorporated
@@ -154,7 +191,7 @@ If you enter '.', the field will be left blank.
     read -e -p "Country Name (2 letter code) [CN]: " SELFSIGNEDSSL_C
     SELFSIGNEDSSL_C=${SELFSIGNEDSSL_C:-CN}
     # shellcheck disable=SC2104
-    [ ${#SELFSIGNEDSSL_C} != 2 ] && { echo "${CWARNING}input error, You must input 2 letter code country name${CEND}"; continue; }
+    [[ $SELFSIGNEDSSL_C =~ ^[A-Za-z]{2}$ ]] || { echo "${CWARNING}input error, You must input 2 letter code country name${CEND}"; exit 1; }
     echo
     read -e -p "State or Province Name (full name) [Shanghai]: " SELFSIGNEDSSL_ST
     SELFSIGNEDSSL_ST=${SELFSIGNEDSSL_ST:-Shanghai}
@@ -168,6 +205,10 @@ If you enter '.', the field will be left blank.
     read -e -p "Organizational Unit Name (eg, section) [IT Dept.]: " SELFSIGNEDSSL_OU
     SELFSIGNEDSSL_OU=${SELFSIGNEDSSL_OU:-"IT Dept."}
 
+    if [ "${nginx_ssl_flag}" = y ]; then
+      Nginx_Selfsigned_Certificate || { Nginx_Temporary_Cleanup; exit 1; }
+      return 0
+    fi
     openssl req -utf8 -new -newkey rsa:2048 -sha256 -nodes -out ${PATH_SSL}/${domain}.csr -keyout ${PATH_SSL}/${domain}.key -subj "/C=${SELFSIGNEDSSL_C}/ST=${SELFSIGNEDSSL_ST}/L=${SELFSIGNEDSSL_L}/O=${SELFSIGNEDSSL_O}/OU=${SELFSIGNEDSSL_OU}/CN=${domain}" > /dev/null 2>&1
     openssl x509 -req -days 36500 -sha256 -in ${PATH_SSL}/${domain}.csr -signkey ${PATH_SSL}/${domain}.key -out ${PATH_SSL}/${domain}.crt > /dev/null 2>&1
   elif [ "${Domian_Mode}" == '3' -o "${dnsapi_flag}" == 'y' ]; then
@@ -302,7 +343,7 @@ Print_SSL() {
 Input_Add_proxy() {
   while :; do echo
     read -e -p "Please input the correct proxy_pass: " Proxy_Pass
-    if [ -z "$(echo $Proxy_Pass | grep -E '^http://|https://')" ]; then
+    if [[ ! $Proxy_Pass =~ ^https?://[A-Za-z0-9.-]+(:[0-9]+)?(/[A-Za-z0-9._~/-]*)?$ ]]; then
       echo "${CFAILURE}input error! Please only input example http://192.168.1.1:8080${CEND}"
     else
       echo "proxy_pass=${Proxy_Pass}"
@@ -385,20 +426,13 @@ What Are You Doing?
       NGX_CONF=$(echo -e "location ~ [^/]\.php(/|$) {\n    #fastcgi_pass remote_php_ip:9000;\n    fastcgi_pass unix:/dev/shm/php${mphp_ver}-cgi.sock;\n    fastcgi_index index.php;\n    include fastcgi.conf;\n  }")
       ;;
     "java")
-      NGX_CONF=$(echo -e "location ~ {\n    proxy_pass http://127.0.0.1:8080;\n    include proxy.conf;\n  }")
+      NGX_CONF=$(echo -e "location / {\n    proxy_pass http://127.0.0.1:8080;\n    include proxy.conf;\n  }")
       ;;
   esac
 
   if [ "${Domian_Mode}" == '3' -o "${dnsapi_flag}" == 'y' ] && [ ! -e ~/.acme.sh/acme.sh ]; then
-    pushd ${current_dir}/src > /dev/null
-    [ ! -e acme.sh-master.tar.gz ] && wget -qc ${mirror_link}/src/acme.sh-master.tar.gz
-    tar xzf acme.sh-master.tar.gz
-    pushd acme.sh-master > /dev/null
-    ./acme.sh --install > /dev/null 2>&1
-    popd > /dev/null
-    popd > /dev/null
+    Install_Acme || exit 1
   fi
-  [ -e ~/.acme.sh/account.conf ] && sed -i '/^CERT_HOME=/d' ~/.acme.sh/account.conf
   if [[ "${Domian_Mode}" =~ ^[2-3]$ ]] || [ "${dnsapi_flag}" == 'y' ]; then
     if [ -e "${web_install_dir}/sbin/nginx" ]; then
       nginx_ssl_flag=y
@@ -415,7 +449,7 @@ What Are You Doing?
 
   while :; do echo
     read -e -p "Please input domain(example: www.example.com): " domain
-    if [ -z "$(echo ${domain} | grep '.*\..*')" ]; then
+    if ! Nginx_Domain_Valid "$domain" || [[ $domain == \*.* ]]; then
       echo "${CWARNING}Your ${domain} is invalid! ${CEND}"
     else
       break
@@ -499,11 +533,7 @@ What Are You Doing?
     done
 
     Create_SSL
-    if [ -n "`ifconfig | grep inet6`" ]; then
-      Nginx_conf=$(echo -e "listen 80;\n  listen [::]:80;\n  listen 443 ssl;\n  listen [::]:443 ssl;\n  http2 on;\n  ssl_certificate ${PATH_SSL}/${domain}.crt;\n  ssl_certificate_key ${PATH_SSL}/${domain}.key;\n  ssl_protocols TLSv1.2 TLSv1.3;\n  ssl_ecdh_curve X25519:prime256v1:secp384r1:secp521r1;\n  ssl_ciphers ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256;\n  ssl_conf_command Ciphersuites TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256;\n  ssl_conf_command Options PrioritizeChaCha;\n  ssl_prefer_server_ciphers on;\n  ssl_session_timeout 10m;\n  ssl_session_cache shared:SSL:10m;\n  ssl_buffer_size 2k;\n  add_header Strict-Transport-Security max-age=15768000;\n")
-    else
-      Nginx_conf=$(echo -e "listen 80;\n  listen 443 ssl;\n  http2 on;\n  ssl_certificate ${PATH_SSL}/${domain}.crt;\n  ssl_certificate_key ${PATH_SSL}/${domain}.key;\n  ssl_protocols TLSv1.2 TLSv1.3;\n  ssl_ecdh_curve X25519:prime256v1:secp384r1:secp521r1;\n  ssl_ciphers ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256;\n  ssl_conf_command Ciphersuites TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256;\n  ssl_conf_command Options PrioritizeChaCha;\n  ssl_prefer_server_ciphers on;\n  ssl_session_timeout 10m;\n  ssl_session_cache shared:SSL:10m;\n  ssl_buffer_size 2k;\n  add_header Strict-Transport-Security max-age=15768000;\n")
-    fi
+    Nginx_conf="# ONEINSTACK_LISTEN"
     Apache_SSL=$(echo -e "SSLEngine on\n  SSLCertificateFile \"${PATH_SSL}/${domain}.crt\"\n  SSLCertificateKeyFile \"${PATH_SSL}/${domain}.key\"")
   elif [ "${apache_ssl_flag}" == 'y' ]; then
     Create_SSL
@@ -511,11 +541,7 @@ What Are You Doing?
     [ -z "$(grep 'Listen 443' ${apache_install_dir}/conf/httpd.conf)" ] && sed -i "s@Listen 80@&\nListen 443@" ${apache_install_dir}/conf/httpd.conf
     [ -z "$(grep 'ServerName 0.0.0.0:443' ${apache_install_dir}/conf/httpd.conf)" ] && sed -i "s@ServerName 0.0.0.0:80@&\nServerName 0.0.0.0:443@" ${apache_install_dir}/conf/httpd.conf
   else
-    if [ -n "`ifconfig | grep inet6`" ]; then
-      Nginx_conf=$(echo -e "listen 80;\n  listen [::]:80;")
-    else
-      Nginx_conf=$(echo -e "listen 80;")
-    fi
+    Nginx_conf="# ONEINSTACK_LISTEN"
   fi
 }
 
@@ -600,8 +626,9 @@ Nginx_log() {
 }
 
 Create_nginx_tomcat_conf() {
+  Nginx_Begin_Candidate || exit 1
   [ ! -d ${web_install_dir}/conf/vhost ] && mkdir ${web_install_dir}/conf/vhost
-  cat > ${web_install_dir}/conf/vhost/${domain}.conf << EOF
+  cat > "${nginx_candidate}" << EOF
 server {
   ${Nginx_conf}
   server_name ${domain}${moredomainame};
@@ -611,6 +638,7 @@ server {
   ${Nginx_redirect}
   #error_page 404 /404.html;
   #error_page 502 /502.html;
+  location ~ /(?:\.user\.ini|\.ht|\.git|\.svn|\.project)(?:/|$) { deny all; }
   ${anti_hotlinking}
   location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|mp4|ico)$ {
     expires 30d;
@@ -630,9 +658,8 @@ server {
 }
 EOF
 
-  [ "${https_flag}" == 'y' ] && sed -i "s@^root.*;@&\nif (\$ssl_protocol = \"\") { return 301 https://\$host\$request_uri; }@" ${web_install_dir}/conf/vhost/${domain}.conf
 
-  cat > ${tomcat_install_dir}/conf/vhost/${domain}.xml << EOF
+  cat > "${backend_candidate}" << EOF
 <Host name="${domain}" appBase="${vhostdir}" unpackWARs="true" autoDeploy="true"> ${Tomcat_Domain_alias}
   <Context path="" docBase="${vhostdir}" reloadable="false" crossContext="true"/>
   <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
@@ -641,20 +668,16 @@ EOF
     protocolHeader="X-Forwarded-Proto" protocolHeaderHttpsValue="https"/>
 </Host>
 EOF
-  [ -z "$(grep -o "vhost-${domain} SYSTEM" ${tomcat_install_dir}/conf/server.xml)" ] && sed -i "/vhost-localhost SYSTEM/a<\!ENTITY vhost-${domain} SYSTEM \"file://${tomcat_install_dir}/conf/vhost/${domain}.xml\">" ${tomcat_install_dir}/conf/server.xml
-  [ -z "$(grep -o "vhost-${domain};" ${tomcat_install_dir}/conf/server.xml)" ] && sed -i "s@vhost-localhost;@&\n      \&vhost-${domain};@" ${tomcat_install_dir}/conf/server.xml
+  [ -z "$(grep -o "vhost-${domain} SYSTEM" "${backend_server_candidate}")" ] && sed -i "/vhost-localhost SYSTEM/a<\!ENTITY vhost-${domain} SYSTEM \"file://${tomcat_install_dir}/conf/vhost/${domain}.xml\">" "${backend_server_candidate}"
+  [ -z "$(grep -o "vhost-${domain};" "${backend_server_candidate}")" ] && sed -i "s@vhost-localhost;@&\n      \&vhost-${domain};@" "${backend_server_candidate}"
 
+  xmllint --noout --nonet "$backend_candidate" "$backend_server_candidate" || exit 1
+  Managed_Publish "$backend_candidate" "$tomcat_install_dir/conf/vhost/$domain.xml" || exit 1
+  Managed_Publish "$backend_server_candidate" "$tomcat_install_dir/conf/server.xml" || exit 1
   echo
-  ${web_install_dir}/sbin/nginx -t
-  if [ $? == 0 ]; then
-    echo "Reload Nginx......"
-    ${web_install_dir}/sbin/nginx -s reload
-    service tomcat restart
-  else
-    rm -f ${web_install_dir}/conf/vhost/${domain}.conf
-    echo "Create virtualhost ... [${CFAILURE}FAILED${CEND}]"
-    exit 1
-  fi
+  Nginx_Commit_Candidate || exit 1
+  Tomcat_Control restart || exit 1
+
 
   printf "
 #######################################################################
@@ -679,7 +702,7 @@ EOF
   [ -z "$(grep -o "vhost-${domain};" ${tomcat_install_dir}/conf/server.xml)" ] && sed -i "s@vhost-localhost;@&\n      \&vhost-${domain};@" ${tomcat_install_dir}/conf/server.xml
 
   echo
-  service tomcat restart
+  service tomcat restart || exit 1
 
   printf "
 #######################################################################
@@ -692,8 +715,9 @@ EOF
 }
 
 Create_nginx_phpfpm_conf() {
+  Nginx_Begin_Candidate || exit 1
   [ ! -d ${web_install_dir}/conf/vhost ] && mkdir ${web_install_dir}/conf/vhost
-  cat > ${web_install_dir}/conf/vhost/${domain}.conf << EOF
+  cat > "${nginx_candidate}" << EOF
 server {
   ${Nginx_conf}
   server_name ${domain}${moredomainame};
@@ -704,6 +728,7 @@ server {
   include ${web_install_dir}/conf/rewrite/${rewrite}.conf;
   #error_page 404 /404.html;
   #error_page 502 /502.html;
+  location ~ /(?:\.user\.ini|\.ht|\.git|\.svn|\.project)(?:/|$) { deny all; }
   ${anti_hotlinking}
   ${NGX_CONF}
 
@@ -724,54 +749,15 @@ server {
 }
 EOF
 
-  [ "${rewrite}" == 'pathinfo' ] && sed -i '/pathinfo.conf;$/d' ${web_install_dir}/conf/vhost/${domain}.conf
+  [ "${rewrite}" == 'pathinfo' ] && sed -i '/pathinfo.conf;$/d' "${nginx_candidate}"
   if [ "${rewrite}" == 'magento2' -a -e "config/${rewrite}.conf" ]; then
-    /bin/cp config/${rewrite}.conf ${web_install_dir}/conf/vhost/${domain}.conf
-    sed -i "s@/dev/shm/php-cgi.sock@/dev/shm/php${mphp_ver}-cgi.sock@g" ${web_install_dir}/conf/vhost/${domain}.conf
-    sed -i "s@^  set \$MAGE_ROOT.*;@  set \$MAGE_ROOT ${vhostdir};@" ${web_install_dir}/conf/vhost/${domain}.conf
-    sed -i "s@^  server_name.*;@  server_name ${domain}${moredomainame};@" ${web_install_dir}/conf/vhost/${domain}.conf
-    sed -i "s@^  server_name.*;@&\n  ${Nginx_log}@" ${web_install_dir}/conf/vhost/${domain}.conf
-    if [ "${anti_hotlinking_flag}" == 'y' ]; then
-      sed -i "s@^  root.*;@&\n  }@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  root.*;@&\n    }@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  root.*;@&\n      return 403;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  root.*;@&\n      rewrite ^/ http://www.linuxeye.com/403.html;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  root.*;@&\n    if (\$invalid_referer) {@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  root.*;@&\n    valid_referers none blocked ${domain_allow_all};@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  root.*;@&\n  location ~ .*\.(wma|wmv|asf|mp3|mmf|zip|rar|jpg|gif|png|swf|flv|mp4)\$ {@" ${web_install_dir}/conf/vhost/${domain}.conf
-    fi
-
-    [ "${redirect_flag}" == 'y' ] && sed -i "s@^  root.*;@&\n  if (\$host != ${domain}) {  return 301 \$scheme://${domain}\$request_uri;  }@" ${web_install_dir}/conf/vhost/${domain}.conf
-
-    if [ "${nginx_ssl_flag}" == 'y' ]; then
-      sed -i "s@^  listen 80;@&\n  listen 443 ssl;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  server_name.*;@&\n  add_header Strict-Transport-Security max-age=15768000;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  server_name.*;@&\n  ssl_buffer_size 2k;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  server_name.*;@&\n  ssl_session_cache shared:SSL:10m;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  server_name.*;@&\n  ssl_session_timeout 10m;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  server_name.*;@&\n  ssl_prefer_server_ciphers on;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  server_name.*;@&\n  ssl_conf_command Options PrioritizeChaCha;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  server_name.*;@&\n  ssl_conf_command Ciphersuites TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  server_name.*;@&\n  ssl_ciphers ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  server_name.*;@&\n  ssl_ecdh_curve X25519:prime256v1:secp384r1:secp521r1;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  server_name.*;@&\n  ssl_protocols TLSv1.2 TLSv1.3;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  server_name.*;@&\n  ssl_certificate_key ${PATH_SSL}/${domain}.key;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  server_name.*;@&\n  ssl_certificate ${PATH_SSL}/${domain}.crt;@" ${web_install_dir}/conf/vhost/${domain}.conf
-    fi
+    Nginx_Magento_Candidate || exit 1
   fi
 
-  [ "${https_flag}" == 'y' ] && sed -i "s@^  root.*;@&\n  if (\$ssl_protocol = \"\") { return 301 https://\$host\$request_uri; }@" ${web_install_dir}/conf/vhost/${domain}.conf
 
   echo
-  ${web_install_dir}/sbin/nginx -t
-  if [ $? == 0 ]; then
-    echo "Reload Nginx......"
-    ${web_install_dir}/sbin/nginx -s reload
-  else
-    rm -f ${web_install_dir}/conf/vhost/${domain}.conf
-    echo "Create virtualhost ... [${CFAILURE}FAILED${CEND}]"
-    exit 1
-  fi
+  Nginx_Commit_Candidate || exit 1
+
 
   printf "
 #######################################################################
@@ -785,8 +771,17 @@ EOF
 }
 
 Create_nginx_proxy_conf() {
+  Proxy_TLS=""
+  if [[ $Proxy_Pass == https://* ]]; then
+    Proxy_TLS_Name=${Proxy_Pass#https://}; Proxy_TLS_Name=${Proxy_TLS_Name%%/*}; Proxy_TLS_Name=${Proxy_TLS_Name%%:*}
+    Proxy_CA=${nginx_proxy_ca:-/etc/ssl/certs/ca-certificates.crt}
+    [ -f "$Proxy_CA" ] || Proxy_CA=/etc/pki/tls/certs/ca-bundle.crt
+    [[ $Proxy_CA =~ ^/[A-Za-z0-9/_.-]+$ ]] && [ -f "$Proxy_CA" ] || exit 1
+    Proxy_TLS=$(printf 'proxy_ssl_server_name on;\n    proxy_ssl_name %s;\n    proxy_ssl_verify on;\n    proxy_ssl_trusted_certificate %s;\n    proxy_ssl_verify_depth 5;' "$Proxy_TLS_Name" "$Proxy_CA")
+  fi
+  Nginx_Begin_Candidate || exit 1
   [ ! -d ${web_install_dir}/conf/vhost ] && mkdir ${web_install_dir}/conf/vhost
-  cat > ${web_install_dir}/conf/vhost/${domain}.conf << EOF
+  cat > "${nginx_candidate}" << EOF
 server {
   ${Nginx_conf}
   server_name ${domain}${moredomainame};
@@ -795,6 +790,7 @@ server {
   ${Nginx_redirect}
   location / {
     proxy_pass ${Proxy_Pass};
+    ${Proxy_TLS}
     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     proxy_set_header Host \$http_host;
     proxy_set_header X-NginX-Proxy true;
@@ -806,6 +802,7 @@ server {
 
   #error_page 404 /404.html;
   #error_page 502 /502.html;
+  location ~ /(?:\.user\.ini|\.ht|\.git|\.svn|\.project)(?:/|$) { deny all; }
   ${anti_hotlinking}
 
   location ~ .*\.(gif|jpg|jpeg|png|bmp|swf|flv|mp4|ico)$ {
@@ -825,30 +822,10 @@ server {
 }
 EOF
 
-  [ "${redirect_flag}" == 'y' ] && sed -i "s@^  root.*;@&\n  if (\$host != ${domain}) {  return 301 \$scheme://${domain}\$request_uri;  }@" ${web_install_dir}/conf/vhost/${domain}.conf
-
-  if [ "${anti_hotlinking_flag}" == 'y' ]; then
-      sed -i "s@^  root.*;@&\n  }@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  root.*;@&\n    }@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  root.*;@&\n      return 403;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  root.*;@&\n      rewrite ^/ http://www.linuxeye.com/403.html;@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  root.*;@&\n    if (\$invalid_referer) {@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  root.*;@&\n    valid_referers none blocked ${domain_allow_all};@" ${web_install_dir}/conf/vhost/${domain}.conf
-      sed -i "s@^  root.*;@&\n  location ~ .*\.(wma|wmv|asf|mp3|mmf|zip|rar|jpg|gif|png|swf|flv|mp4)\$ {@" ${web_install_dir}/conf/vhost/${domain}.conf
-    fi
-
-  [ "${https_flag}" == 'y' ] && sed -i "s@^  root.*;@&\n  if (\$ssl_protocol = \"\") { return 301 https://\$host\$request_uri; }@" ${web_install_dir}/conf/vhost/${domain}.conf
 
   echo
-  ${web_install_dir}/sbin/nginx -t
-  if [ $? == 0 ]; then
-    echo "Reload Nginx......"
-    ${web_install_dir}/sbin/nginx -s reload
-  else
-    rm -f ${web_install_dir}/conf/vhost/${domain}.conf
-    echo "Create virtualhost ... [${CFAILURE}FAILED${CEND}]"
-    exit 1
-  fi
+  Nginx_Commit_Candidate || exit 1
+
 
   printf "
 #######################################################################
@@ -950,9 +927,10 @@ EOF
 }
 
 Create_nginx_apache_modphp_conf() {
+  Nginx_Begin_Candidate || exit 1
   # Nginx/Tengine/OpenResty
   [ ! -d ${web_install_dir}/conf/vhost ] && mkdir ${web_install_dir}/conf/vhost
-  cat > ${web_install_dir}/conf/vhost/${domain}.conf << EOF
+  cat > "${nginx_candidate}" << EOF
 server {
   ${Nginx_conf}
   server_name ${domain}${moredomainame};
@@ -960,6 +938,7 @@ server {
   index index.html index.htm index.php;
   root ${vhostdir};
   ${Nginx_redirect}
+  location ~ /(?:\.user\.ini|\.ht|\.git|\.svn|\.project)(?:/|$) { deny all; }
   ${anti_hotlinking}
   location / {
     try_files \$uri @apache;
@@ -968,7 +947,7 @@ server {
     proxy_pass http://127.0.0.1:88;
     include proxy.conf;
   }
-  location ~ .*\.(php|php5|cgi|pl)?$ {
+  location ~ \.(php|php5|phtml|cgi|pl)(/|$) {
     proxy_pass http://127.0.0.1:88;
     include proxy.conf;
   }
@@ -989,17 +968,9 @@ server {
 }
 EOF
 
-  [ "${https_flag}" == 'y' ] && sed -i "s@^  root.*;@&\n  if (\$ssl_protocol = \"\") { return 301 https://\$host\$request_uri; }@" ${web_install_dir}/conf/vhost/${domain}.conf
 
   echo
-  ${web_install_dir}/sbin/nginx -t
-  if [ $? == 0 ]; then
-    echo "Reload Nginx......"
-    ${web_install_dir}/sbin/nginx -s reload
-  else
-    rm -f ${web_install_dir}/conf/vhost/${domain}.conf
-    echo "Create virtualhost ... [${CFAILURE}FAILED${CEND}]"
-  fi
+
 
   # Apache
   if [ "${Apache_main_ver}" == '24' ]; then
@@ -1008,13 +979,12 @@ EOF
     fi
   fi
   [ ! -d ${apache_install_dir}/conf/vhost ] && mkdir ${apache_install_dir}/conf/vhost
-  cat > ${apache_install_dir}/conf/vhost/${domain}.conf << EOF
-<VirtualHost *:88>
+  cat > "${backend_candidate}" << EOF
+<VirtualHost 127.0.0.1:88>
   ServerAdmin admin@example.com
   DocumentRoot "${vhostdir}"
   ServerName ${domain}
   ${Apache_Domain_alias}
-  ${Apache_SSL}
   ErrorLog "${wwwlogs_dir}/${domain}_error_apache.log"
   ${Apache_log}
   ${Apache_fcgi}
@@ -1031,14 +1001,10 @@ EOF
 EOF
 
   echo
-  ${apache_install_dir}/bin/apachectl -t
-  if [ $? == 0 ]; then
-    echo "Restart Apache......"
-    ${apache_install_dir}/bin/apachectl -k graceful
-  else
-    rm -f ${apache_install_dir}/conf/vhost/${domain}.conf
-    exit 1
-  fi
+  Apache_Test_Candidate || exit 1
+  Managed_Publish "$backend_candidate" "$apache_install_dir/conf/vhost/$domain.conf" || exit 1
+  "${apache_install_dir}/bin/apachectl" -k graceful || exit 1
+  Nginx_Commit_Candidate || exit 1
 
   printf "
 #######################################################################
@@ -1052,6 +1018,8 @@ EOF
 }
 
 Add_Vhost() {
+  Source_Start_Run || exit 1
+  [ ! -x "${web_install_dir}/sbin/nginx" ] || Nginx_Requirements || exit 1
   if [ -e "${web_install_dir}/sbin/nginx" -a ! -e "${apache_install_dir}/bin/httpd" ]; then
     Choose_ENV
     Input_Add_domain
@@ -1063,7 +1031,7 @@ Add_Vhost() {
         Nginx_rewrite
         if [ "${NGX_FLAG}" == "java" ]; then
           Nginx_log
-          Create_nginx_tomcat_conf
+          Nginx_Group_Run tomcat Create_nginx_tomcat_conf
         else
           Nginx_log
           Create_nginx_phpfpm_conf
@@ -1085,11 +1053,11 @@ Add_Vhost() {
     if [ "${NGX_FLAG}" == "java" ]; then
       Nginx_rewrite
       Nginx_log
-      Create_nginx_tomcat_conf
+      Nginx_Group_Run tomcat Create_nginx_tomcat_conf
     elif [ "${NGX_FLAG}" == "php" ]; then
       Nginx_log
       Apache_log
-      Create_nginx_apache_modphp_conf
+      Nginx_Group_Run apache Create_nginx_apache_modphp_conf
     fi
   else
     echo "Error! ${CFAILURE}Web server${CEND} not found!"
@@ -1105,7 +1073,7 @@ Del_NGX_Vhost() {
       echo ${CMSG}${Domain_List}${CEND}
         while :; do echo
           read -e -p "Please input a domain you want to delete: " domain
-          if [ -z "$(echo ${domain} | grep '.*\..*')" ]; then
+          if ! Nginx_Domain_Valid "$domain" || [[ $domain == \*.* ]]; then
             echo "${CWARNING}Your ${domain} is invalid! ${CEND}"
           else
             if [ -e "${web_install_dir}/conf/vhost/${domain}.conf" ]; then
@@ -1158,7 +1126,7 @@ Del_Apache_Vhost() {
         echo ${CMSG}${Domain_List}${CEND}
         while :; do echo
           read -e -p "Please input a domain you want to delete: " domain
-          if [ -z "$(echo ${domain} | grep '.*\..*')" ]; then
+          if ! Nginx_Domain_Valid "$domain" || [[ $domain == \*.* ]]; then
             echo "${CWARNING}Your ${domain} is invalid! ${CEND}"
           else
             if [ -e "${apache_install_dir}/conf/vhost/${domain}.conf" ]; then
@@ -1205,7 +1173,7 @@ Del_Tomcat_Vhost() {
       if [ -n "$(echo ${domain} | grep '.*\..*')" ] && [ -n "$(grep vhost-${domain} ${tomcat_install_dir}/conf/server.xml)" ]; then
         sed -i /vhost-${domain}/d ${tomcat_install_dir}/conf/server.xml
         rm -f ${tomcat_install_dir}/conf/vhost/${domain}.xml
-        service tomcat restart
+        service tomcat restart || exit 1
       fi
     else
       Domain_List=$(ls ${tomcat_install_dir}/conf/vhost | grep -v 'localhost.xml' | sed "s@.xml@@g")
@@ -1215,13 +1183,13 @@ Del_Tomcat_Vhost() {
         echo ${CMSG}${Domain_List}${CEND}
         while :; do echo
           read -e -p "Please input a domain you want to delete: " domain
-          if [ -z "$(echo ${domain} | grep '.*\..*')" ]; then
+          if ! Nginx_Domain_Valid "$domain" || [[ $domain == \*.* ]]; then
             echo "${CWARNING}Your ${domain} is invalid! ${CEND}"
           else
             if [ -n "$(grep vhost-${domain} ${tomcat_install_dir}/conf/server.xml)" ]; then
               sed -i /vhost-${domain}/d ${tomcat_install_dir}/conf/server.xml
               rm -f ${tomcat_install_dir}/conf/vhost/${domain}.xml
-              service tomcat restart
+              service tomcat restart || exit 1
               while :; do echo
                 read -e -p "Do you want to delete Virtul Host directory? [y/n]: " Del_Vhost_wwwroot_flag
                 if [[ ! ${Del_Vhost_wwwroot_flag} =~ ^[y,n]$ ]]; then
@@ -1267,9 +1235,10 @@ List_Vhost() {
 }
 
 if [ ${ARG_NUM} == 0 ]; then
-  Add_Vhost
+  Add_Vhost || exit 1
 else
-  [ "${add_flag}" == 'y' -o "${proxy_flag}" == 'y' -o "${sslquiet_flag}" == 'y' ] && Add_Vhost
-  [ "${list_flag}" == 'y' ] && List_Vhost
-  [ "${delete_flag}" == 'y' ] && { Del_NGX_Vhost; Del_Apache_Vhost; Del_Tomcat_Vhost; }
+  if [ "${add_flag}" == 'y' -o "${proxy_flag}" == 'y' -o "${sslquiet_flag}" == 'y' ]; then Add_Vhost || exit 1; fi
+  if [ "${list_flag}" == 'y' ]; then List_Vhost || exit 1; fi
+  if [ "${delete_flag}" == 'y' ]; then Del_NGX_Vhost; Del_Apache_Vhost; Del_Tomcat_Vhost; fi
 fi
+exit 0

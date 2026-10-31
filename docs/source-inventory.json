@@ -1,0 +1,1977 @@
+{
+  "baseline": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+  "entries": [
+    {
+      "consumer": "README.md",
+      "line": 34,
+      "expression": "yum -y install wget screen",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "README.md",
+      "line": 40,
+      "expression": "apt-get -y install wget screen",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "README.md",
+      "line": 46,
+      "expression": "wget http://mirrors.linuxeye.com/lnmp-full.tar.gz",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "backup_setup.sh",
+      "line": 178,
+      "expression": "curl -sSL https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "backup_setup.sh",
+      "line": 260,
+      "expression": "wget -qc https://cosbrowser.cloud.tencent.com/software/coscli/coscli-linux -O /usr/local/bin/coscli",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "backup_setup.sh",
+      "line": 349,
+      "expression": "wget -qc https://collection.b0.upaiyun.com/softwares/upx/upx_0.4.8_linux_arm64.tar.gz -O /tmp/upx_0.4.8_linux_arm64.tar.gz",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "backup_setup.sh",
+      "line": 352,
+      "expression": "wget -qc https://collection.b0.upaiyun.com/softwares/upx/upx_0.4.8_linux_amd64.tar.gz -O /tmp/upx_0.4.8_linux_x86_64.tar.gz",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "backup_setup.sh",
+      "line": 383,
+      "expression": "wget -qc https://github.com/qiniu/qshell/releases/download/v2.15.0/qshell-v2.15.0-linux-arm64.tar.gz -O /tmp/qshell-v2.15.0-linux-arm64.tar.gz",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "backup_setup.sh",
+      "line": 386,
+      "expression": "wget -qc https://github.com/qiniu/qshell/releases/download/v2.15.0/qshell-v2.15.0-linux-amd64.tar.gz -O /tmp/qshell-v2.15.0-linux-amd64.tar.gz",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "backup_setup.sh",
+      "line": 435,
+      "expression": "wget -qc https://awscli.amazonaws.com/awscli-exe-linux-$(arch).zip -O /tmp/awscliv2.zip",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "backup_setup.sh",
+      "line": 540,
+      "expression": "wget -qc ${mirror_link}/src/dbxcli-linux-arm -O /usr/local/bin/dbxcli",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "backup_setup.sh",
+      "line": 542,
+      "expression": "wget -qc ${mirror_link}/src/dbxcli-linux-amd64 -O /usr/local/bin/dbxcli",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ImageMagick.sh",
+      "line": 39,
+      "expression": "src_url=https://pecl.php.net/get/imagick-3.4.4.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ImageMagick.sh",
+      "line": 43,
+      "expression": "src_url=https://pecl.php.net/get/imagick-3.7.0.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ImageMagick.sh",
+      "line": 47,
+      "expression": "src_url=https://pecl.php.net/get/imagick-${imagick_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 9,
+      "expression": "src_url=${mirror_link}/src/icu4c-${icu4c_ver}-src.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 15,
+      "expression": "src_url=https://www.openssl.org/source/old/1.0.2/openssl-1.0.2u.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 17,
+      "expression": "src_url=https://curl.se/ca/cacert.pem && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 23,
+      "expression": "src_url=${mirror_link}/src/openssl-${openssl_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 29,
+      "expression": "src_url=${mirror_link}/src/jemalloc-${jemalloc_ver}.tar.bz2 && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 36,
+      "expression": "src_url=http://nginx.org/download/nginx-${nginx_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 41,
+      "expression": "src_url=${mirror_link}/src/tengine-${tengine_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 45,
+      "expression": "src_url=https://openresty.org/download/openresty-${openresty_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 52,
+      "expression": "src_url=https://downloads.sourceforge.net/project/pcre/pcre/${pcre_ver}/pcre-${pcre_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 58,
+      "expression": "src_url=http://archive.apache.org/dist/httpd/httpd-${apache_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 59,
+      "expression": "src_url=http://archive.apache.org/dist/apr/apr-${apr_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 60,
+      "expression": "src_url=http://archive.apache.org/dist/apr/apr-util-${apr_util_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 61,
+      "expression": "src_url=${mirror_link}/apache/httpd/nghttp2-${nghttp2_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 68,
+      "expression": "src_url=${mirror_link}/apache/tomcat/v${tomcat10_ver}/apache-tomcat-${tomcat10_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 72,
+      "expression": "src_url=${mirror_link}/apache/tomcat/v${tomcat9_ver}/apache-tomcat-${tomcat9_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 76,
+      "expression": "src_url=${mirror_link}/apache/tomcat/v${tomcat8_ver}/apache-tomcat-${tomcat8_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 80,
+      "expression": "src_url=${mirror_link}/apache/tomcat/v${tomcat7_ver}/apache-tomcat-${tomcat7_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 81,
+      "expression": "src_url=${mirror_link}/apache/tomcat/v${tomcat7_ver}/catalina-jmx-remote.jar && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 88,
+      "expression": "src_url=http://archive.apache.org/dist/apr/apr-${apr_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 98,
+      "expression": "src_url=${DOWN_ADDR_BOOST}/boost_${boostVersion2}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 113,
+      "expression": "src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME} && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 114,
+      "expression": "src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5 && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 117,
+      "expression": "[ -z \"${MYSQL_TAR_MD5}\" ] && MYSQL_TAR_MD5=$(curl -s ${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5 | grep ${FILE_NAME} | awk '{print $1}')",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 120,
+      "expression": "wget -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME};sleep 1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 140,
+      "expression": "src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME} && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 141,
+      "expression": "src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5 && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 144,
+      "expression": "[ -z \"${MYSQL_TAR_MD5}\" ] && MYSQL_TAR_MD5=$(curl -s ${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5 | grep ${FILE_NAME} | awk '{print $1}')",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 147,
+      "expression": "wget -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME};sleep 1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 167,
+      "expression": "src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME} && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 168,
+      "expression": "src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5 && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 171,
+      "expression": "[ -z \"${MYSQL_TAR_MD5}\" ] && MYSQL_TAR_MD5=$(curl -s ${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5 | grep ${FILE_NAME} | awk '{print $1}')",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 174,
+      "expression": "wget -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME};sleep 1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 192,
+      "expression": "src_url=${mirror_link}/src/mysql-5.5-fix-arm-client_plugin.patch && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 195,
+      "expression": "src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME} && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 196,
+      "expression": "src_url=${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5 && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 199,
+      "expression": "[ -z \"${MYSQL_TAR_MD5}\" ] && MYSQL_TAR_MD5=$(curl -s ${DOWN_ADDR_MYSQL}/${FILE_NAME}.md5 | grep ${FILE_NAME} | awk '{print $1}')",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 202,
+      "expression": "wget -c --no-check-certificate ${DOWN_ADDR_MYSQL}/${FILE_NAME};sleep 1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 249,
+      "expression": "src_url=${DOWN_ADDR_MARIADB}/${FILE_NAME} && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 250,
+      "expression": "wget --tries=6 -c --no-check-certificate ${DOWN_ADDR_MARIADB}/md5sums.txt -O ${FILE_NAME}.md5",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 252,
+      "expression": "[ -z \"${MARAIDB_TAR_MD5}\" ] && MARAIDB_TAR_MD5=$(curl -s ${DOWN_ADDR_MARIADB_BK}/md5sums.txt | grep ${FILE_NAME} | awk '{print $1}')",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 255,
+      "expression": "wget -c --no-check-certificate ${DOWN_ADDR_MARIADB_BK}/${FILE_NAME};sleep 1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 280,
+      "expression": "src_url=${DOWN_ADDR_PERCONA}/${FILE_NAME} && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 281,
+      "expression": "src_url=${mirror_link}/src/${FILE_NAME}.md5sum && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 284,
+      "expression": "[ -z \"${PERCONA_TAR_MD5}\" ] && PERCONA_TAR_MD5=$(curl -s ${mirror_link}/src/${FILE_NAME}.md5sum | grep ${FILE_NAME} | awk '{print $1}')",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 287,
+      "expression": "wget -c --no-check-certificate ${DOWN_ADDR_PERCONA}/${FILE_NAME}; sleep 1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 312,
+      "expression": "src_url=${DOWN_ADDR_PERCONA}/${FILE_NAME} && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 313,
+      "expression": "src_url=${mirror_link}/src/${FILE_NAME}.md5sum && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 316,
+      "expression": "[ -z \"${PERCONA_TAR_MD5}\" ] && PERCONA_TAR_MD5=$(curl -s ${mirror_link}/src/${FILE_NAME}.md5sum | grep ${FILE_NAME} | awk '{print $1}')",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 319,
+      "expression": "wget -c --no-check-certificate ${DOWN_ADDR_PERCONA}/${FILE_NAME}; sleep 1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 344,
+      "expression": "src_url=${DOWN_ADDR_PERCONA}/${FILE_NAME} && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 345,
+      "expression": "src_url=${mirror_link}/src/${FILE_NAME}.md5sum && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 348,
+      "expression": "[ -z \"${PERCONA_TAR_MD5}\" ] && PERCONA_TAR_MD5=$(curl -s ${mirror_link}/src/${FILE_NAME}.md5sum | grep ${FILE_NAME} | awk '{print $1}')",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 351,
+      "expression": "wget -c --no-check-certificate ${DOWN_ADDR_PERCONA}/${FILE_NAME}; sleep 1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 377,
+      "expression": "src_url=${DOWN_ADDR_PERCONA}/${FILE_NAME} && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 378,
+      "expression": "src_url=${mirror_link}/src/${FILE_NAME}.md5sum && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 381,
+      "expression": "[ -z \"${PERCONA_TAR_MD5}\" ] && PERCONA_TAR_MD5=$(curl -s ${mirror_link}/src/${FILE_NAME}.md5sum | grep ${FILE_NAME} | awk '{print $1}')",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 384,
+      "expression": "wget -c --no-check-certificate ${DOWN_ADDR_PERCONA}/${FILE_NAME}; sleep 1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 402,
+      "expression": "src_url=${DOWN_ADDR_PGSQL}/${FILE_NAME} && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 403,
+      "expression": "src_url=${DOWN_ADDR_PGSQL}/${FILE_NAME}.md5 && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 405,
+      "expression": "[ -z \"${PGSQL_TAR_MD5}\" ] && PGSQL_TAR_MD5=$(curl -s ${DOWN_ADDR_PGSQL_BK}/${FILE_NAME}.md5 | grep ${FILE_NAME} | awk '{print $1}')",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 408,
+      "expression": "wget -c --no-check-certificate ${DOWN_ADDR_PGSQL_BK}/${FILE_NAME};sleep 1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 426,
+      "expression": "src_url=${DOWN_ADDR_MongoDB}/${FILE_NAME} && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 427,
+      "expression": "src_url=${DOWN_ADDR_MongoDB}/${FILE_NAME}.md5 && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 429,
+      "expression": "[ -z \"${MongoDB_TAR_MD5}\" ] && MongoDB_TAR_MD5=$(curl -s ${DOWN_ADDR_MongoDB}/${FILE_NAME}.md5 | grep ${FILE_NAME} | awk '{print $1}')",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 432,
+      "expression": "wget -c --no-check-certificate ${DOWN_ADDR_MongoDB}/${FILE_NAME};sleep 1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 447,
+      "expression": "src_url=${mirror_link}/src/libiconv-${libiconv_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 448,
+      "expression": "src_url=https://curl.haxx.se/download/curl-${curl_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 449,
+      "expression": "src_url=https://downloads.sourceforge.net/project/mhash/mhash/${mhash_ver}/mhash-${mhash_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 450,
+      "expression": "src_url=https://downloads.sourceforge.net/project/mcrypt/Libmcrypt/${libmcrypt_ver}/libmcrypt-${libmcrypt_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 451,
+      "expression": "src_url=https://downloads.sourceforge.net/project/mcrypt/MCrypt/${mcrypt_ver}/mcrypt-${mcrypt_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 452,
+      "expression": "src_url=${mirror_link}/src/freetype-${freetype_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 456,
+      "expression": "src_url=${mirror_link}/src/debian_patches_disable_SSLv2_for_openssl_1_0_0.patch && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 457,
+      "expression": "src_url=${mirror_link}/src/php5.3patch && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 458,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php53_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 459,
+      "expression": "src_url=${mirror_link}/src/fpm-race-condition.patch && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 461,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php54_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 462,
+      "expression": "src_url=${mirror_link}/src/fpm-race-condition.patch && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 464,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php55_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 465,
+      "expression": "src_url=${mirror_link}/src/fpm-race-condition.patch && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 467,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php56_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 469,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php70_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 471,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php71_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 473,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php72_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 474,
+      "expression": "src_url=${mirror_link}/src/argon2-${argon2_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 475,
+      "expression": "src_url=${mirror_link}/src/libsodium-${libsodium_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 477,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php73_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 478,
+      "expression": "src_url=${mirror_link}/src/argon2-${argon2_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 479,
+      "expression": "src_url=${mirror_link}/src/libsodium-${libsodium_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 481,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php74_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 482,
+      "expression": "src_url=${mirror_link}/src/argon2-${argon2_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 483,
+      "expression": "src_url=${mirror_link}/src/libsodium-${libsodium_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 484,
+      "expression": "src_url=${mirror_link}/src/libzip-${libzip_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 486,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php80_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 487,
+      "expression": "src_url=${mirror_link}/src/argon2-${argon2_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 488,
+      "expression": "src_url=${mirror_link}/src/libsodium-${libsodium_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 489,
+      "expression": "src_url=${mirror_link}/src/libzip-${libzip_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 491,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php81_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 492,
+      "expression": "src_url=${mirror_link}/src/argon2-${argon2_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 493,
+      "expression": "src_url=${mirror_link}/src/libsodium-${libsodium_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 494,
+      "expression": "src_url=${mirror_link}/src/libzip-${libzip_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 496,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php82_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 497,
+      "expression": "src_url=${mirror_link}/src/argon2-${argon2_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 498,
+      "expression": "src_url=${mirror_link}/src/libsodium-${libsodium_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 499,
+      "expression": "src_url=${mirror_link}/src/libzip-${libzip_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 501,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php83_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 502,
+      "expression": "src_url=${mirror_link}/src/argon2-${argon2_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 503,
+      "expression": "src_url=${mirror_link}/src/libsodium-${libsodium_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 504,
+      "expression": "src_url=${mirror_link}/src/libzip-${libzip_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 505,
+      "expression": "src_url=${mirror_link}/src/binutils-${binutils_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 507,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php84_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 508,
+      "expression": "src_url=${mirror_link}/src/argon2-${argon2_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 509,
+      "expression": "src_url=${mirror_link}/src/libsodium-${libsodium_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 510,
+      "expression": "src_url=${mirror_link}/src/libzip-${libzip_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 511,
+      "expression": "src_url=${mirror_link}/src/binutils-${binutils_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 513,
+      "expression": "src_url=https://secure.php.net/distributions/php-${php85_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 514,
+      "expression": "src_url=${mirror_link}/src/argon2-${argon2_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 515,
+      "expression": "src_url=${mirror_link}/src/libsodium-${libsodium_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 516,
+      "expression": "src_url=${mirror_link}/src/libzip-${libzip_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 517,
+      "expression": "src_url=${mirror_link}/src/binutils-${binutils_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 526,
+      "expression": "src_url=https://pecl.php.net/get/zendopcache-${zendopcache_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 532,
+      "expression": "src_url=https://pecl.php.net/get/apcu-4.0.11.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 534,
+      "expression": "src_url=https://pecl.php.net/get/apcu-${apcu_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 541,
+      "expression": "src_url=https://github.com/downloads/eaccelerator/eaccelerator/eaccelerator-${eaccelerator_ver}.tar.bz2 && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 544,
+      "expression": "src_url=https://github.com/eaccelerator/eaccelerator/tarball/master && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 554,
+      "expression": "src_url=${mirror_link}/src/zend-loader-php5.6-linux-x86_64.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 558,
+      "expression": "src_url=${mirror_link}/src/zend-loader-php5.5-linux-x86_64.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 562,
+      "expression": "src_url=${mirror_link}/src/ZendGuardLoader-70429-PHP-5.4-linux-glibc23-x86_64.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 566,
+      "expression": "src_url=${mirror_link}/src/ZendGuardLoader-php-5.3-linux-glibc23-x86_64.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 574,
+      "expression": "src_url=https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_${SYS_ARCH_i}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 580,
+      "expression": "src_url=${mirror_link}/src/loaders.linux-${ARCH}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 586,
+      "expression": "src_url=${mirror_link}/src/ImageMagick-${imagemagick_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 589,
+      "expression": "src_url=https://pecl.php.net/get/imagick-3.4.4.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 591,
+      "expression": "src_url=https://pecl.php.net/get/imagick-3.7.0.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 593,
+      "expression": "src_url=https://pecl.php.net/get/imagick-${imagick_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 600,
+      "expression": "src_url=https://downloads.sourceforge.net/project/graphicsmagick/graphicsmagick/${graphicsmagick_ver}/GraphicsMagick-${graphicsmagick_ver}.tar.xz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 603,
+      "expression": "src_url=https://pecl.php.net/get/gmagick-1.1.7RC3.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 606,
+      "expression": "src_url=https://pecl.php.net/get/gmagick-${gmagick_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 613,
+      "expression": "src_url=http://download.redis.io/releases/redis-${redis_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 620,
+      "expression": "src_url=https://pecl.php.net/get/redis-4.3.0.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 623,
+      "expression": "src_url=https://pecl.php.net/get/redis-5.3.7.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 626,
+      "expression": "src_url=https://pecl.php.net/get/redis-6.0.2.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 629,
+      "expression": "src_url=https://pecl.php.net/get/redis-${pecl_redis_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 637,
+      "expression": "src_url=${DOWN_ADDR}/memcached-${memcached_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 643,
+      "expression": "src_url=https://launchpad.net/libmemcached/1.0/${libmemcached_ver}/+download/libmemcached-${libmemcached_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 646,
+      "expression": "src_url=https://pecl.php.net/get/memcached-2.2.0.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 649,
+      "expression": "src_url=https://pecl.php.net/get/memcached-${pecl_memcached_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 657,
+      "expression": "src_url=https://pecl.php.net/get/memcache-3.0.8.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 660,
+      "expression": "src_url=https://pecl.php.net/get/memcache-4.0.5.2.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 663,
+      "expression": "src_url=https://pecl.php.net/get/memcache-${pecl_memcache_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 671,
+      "expression": "src_url=https://pecl.php.net/get/mongo-1.6.16.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 674,
+      "expression": "src_url=https://pecl.php.net/get/mongodb-1.9.2.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 677,
+      "expression": "src_url=https://pecl.php.net/get/mongodb-1.16.2.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 680,
+      "expression": "src_url=https://pecl.php.net/get/mongodb-${pecl_mongodb_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 688,
+      "expression": "src_url=${DOWN_ADDR_NODE}/v${nodejs_ver}/node-v${nodejs_ver}-linux-${SYS_ARCH_n}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 694,
+      "expression": "src_url=https://download.pureftpd.org/pub/pure-ftpd/releases/pure-ftpd-${pureftpd_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 701,
+      "expression": "src_url=${mirror_link}/src/phpMyAdmin-4.4.15.10-all-languages.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_download.sh",
+      "line": 703,
+      "expression": "src_url=${mirror_link}/src/phpMyAdmin-${phpmyadmin_ver}-all-languages.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_sw.sh",
+      "line": 8,
+      "expression": "pkgList=\"apache2 apache2-doc apache2-utils apache2.2-common apache2.2-bin apache2-mpm-prefork apache2-doc apache2-mpm-worker php5 php5-common php5-cgi php5-cli php5-mysql php5-curl php5-gd\"",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_sw.sh",
+      "line": 36,
+      "expression": "pkgList=\"debian-keyring debian-archive-keyring build-essential gcc g++ make cmake autoconf libjpeg62-turbo-dev libjpeg-dev libpng-dev libgd-dev libxml2 libxml2-dev zlib1g zlib1g-dev libc6 libc6-dev libc-client2007e-dev libglib2.0-0 libglib2.0-dev bzip2 libzip-dev libbz2-1.0 libncurses5 libncurses5-dev libaio1 libaio-dev numactl libreadline-dev curl libcurl3-gnutls libcurl4-openssl-dev e2fsprogs libkrb5-3 libkrb5-dev libltdl-dev libidn11 libidn11-dev openssl net-tools libssl-dev libtool libevent-dev bison re2c libsasl2-dev libxslt1-dev libicu-dev libpsl-dev locales patch vim zip unzip tmux htop bc dc expect libexpat1-dev libonig-dev libtirpc-dev rsync git lsof lrzsz rsyslog cron logrotate chrony libsqlite3-dev psmisc wget sysv-rc apt-transport-https ca-certificates software-properties-common gnupg ufw\"",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_sw.sh",
+      "line": 89,
+      "expression": "pkgList=\"perl-FindBin libtime-piece-perl deltarpm drpm gcc gcc-c++ make cmake autoconf libjpeg libjpeg-devel libjpeg-turbo libjpeg-turbo-devel libpng libpng-devel libxml2 libxml2-devel zlib zlib-devel libzip libzip-devel glibc glibc-devel krb5-devel libc-client libc-client-devel glib2 glib2-devel bzip2 bzip2-devel ncurses ncurses-devel ncurses-compat-libs libaio numactl numactl-libs readline-devel curl curl-devel e2fsprogs e2fsprogs-devel krb5-devel libidn libidn-devel openssl openssl-devel net-tools libxslt-devel libicu-devel libpsl-devel libevent-devel libtool libtool-ltdl bison gd-devel vim-enhanced pcre-devel libmcrypt libmcrypt-devel mhash mhash-devel mcrypt zip unzip chrony oniguruma-devel rpcgen sqlite-devel sysstat patch bc expect expat-devel perl-devel perl-IPC-Cmd perl-Time-Piece oniguruma oniguruma-devel libtirpc-devel nss libnsl rsync rsyslog git lsof lrzsz psmisc wget which libatomic tmux chkconfig firewalld\"",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_sw.sh",
+      "line": 103,
+      "expression": "pkgList=\"apache2 apache2-doc apache2-utils apache2.2-common apache2.2-bin apache2-mpm-prefork apache2-doc apache2-mpm-worker php5 php5-common php5-cgi php5-cli php5-mysql php5-curl php5-gd\"",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/check_sw.sh",
+      "line": 130,
+      "expression": "pkgList=\"libperl-dev debian-keyring debian-archive-keyring build-essential gcc g++ make cmake autoconf libjpeg8 libjpeg8-dev libpng-dev libpng12-0 libpng12-dev libpng3 libxml2 libxml2-dev zlib1g zlib1g-dev libc6 libc6-dev libc-client2007e-dev libglib2.0-0 libglib2.0-dev bzip2 libzip-dev libbz2-1.0 libncurses5 libncurses5-dev libaio1 libaio-dev numactl libreadline-dev curl libcurl3-gnutls libcurl4-gnutls-dev libcurl4-openssl-dev e2fsprogs libkrb5-3 libkrb5-dev libltdl-dev libidn11 libidn11-dev openssl net-tools libssl-dev libtool libevent-dev re2c libsasl2-dev libxslt1-dev libicu-dev libpsl-dev libsqlite3-dev libcloog-ppl1 bison patch vim zip unzip tmux htop bc dc expect libexpat1-dev rsyslog libonig-dev libtirpc-dev libnss3 rsync git lsof lrzsz chrony psmisc wget sysv-rc apt-transport-https ca-certificates software-properties-common gnupg ufw\"",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/composer.sh",
+      "line": 12,
+      "expression": "wget --no-check-certificate -c https://mirrors.aliyun.com/composer/composer.phar -O /usr/local/bin/composer > /dev/null 2>&1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/composer.sh",
+      "line": 15,
+      "expression": "wget --no-check-certificate -c https://getcomposer.org/composer.phar -O /usr/local/bin/composer > /dev/null 2>&1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/demo.sh",
+      "line": 12,
+      "expression": "src_url=${mirror_link}/src/xprober.php && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/demo.sh",
+      "line": 18,
+      "expression": "src_url=${mirror_link}/src/ocp.php && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/download.sh",
+      "line": 5,
+      "expression": "Download_src() {",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/download.sh",
+      "line": 6,
+      "expression": "[ -s \"${src_url##*/}\" ] && echo \"[${CMSG}${src_url##*/}${CEND}] found\" || { wget --limit-rate=100M --tries=6 -c --no-check-certificate ${src_url}; sleep 1; }",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/fail2ban.sh",
+      "line": 7,
+      "expression": "src_url=${mirror_link}/src/fail2ban-${fail2ban_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 10,
+      "expression": "src_url=${mirror_link}/src/luajit2-${luajit2_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 19,
+      "expression": "src_url=${mirror_link}/src/lua-resty-core-${lua_resty_core_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 26,
+      "expression": "src_url=${mirror_link}/src/lua-resty-lrucache-${lua_resty_lrucache_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 35,
+      "expression": "src_url=${mirror_link}/src/lua-cjson-${lua_cjson_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 48,
+      "expression": "src_url=http://nginx.org/download/nginx-${nginx_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 49,
+      "expression": "src_url=${mirror_link}/src/openssl-${openssl_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 50,
+      "expression": "src_url=${mirror_link}/src/pcre-${pcre_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 51,
+      "expression": "src_url=${mirror_link}/src/ngx_devel_kit.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 52,
+      "expression": "src_url=${mirror_link}/src/lua-nginx-module-${lua_nginx_module_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 88,
+      "expression": "src_url=${mirror_link}/src/luajit2-${luajit2_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 96,
+      "expression": "src_url=${mirror_link}/src/lua-cjson-${lua_cjson_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 109,
+      "expression": "src_url=http://tengine.taobao.org/download/tengine-${tengine_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 110,
+      "expression": "src_url=${mirror_link}/src/openssl-${openssl_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 111,
+      "expression": "src_url=${mirror_link}/src/pcre-${pcre_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 112,
+      "expression": "src_url=${mirror_link}/src/ngx_devel_kit.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 113,
+      "expression": "src_url=${mirror_link}/src/lua-nginx-module.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ngx_lua_waf.sh",
+      "line": 150,
+      "expression": "src_url=${mirror_link}/src/ngx_lua_waf.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/ois.aarch64",
+      "type": "bundled-binary",
+      "sha256": "2820609d6805e8aa9cd02fccedecf29f70fc81e050c58b07f897cc2ec3258466",
+      "platform": "aarch64",
+      "libc": "unknown",
+      "policy": "project blob identified; independent publisher/build provenance review required"
+    },
+    {
+      "consumer": "include/ois.x86_64",
+      "type": "bundled-binary",
+      "sha256": "ce5cce8315269a7adefef0bffa1248a0c90e854f6ec9880d1c2dc7c98ea657a8",
+      "platform": "x86_64",
+      "libc": "unknown",
+      "policy": "project blob identified; independent publisher/build provenance review required"
+    },
+    {
+      "consumer": "include/pecl_calendar.sh",
+      "line": 10,
+      "expression": "src_url=https://secure.php.net/distributions/php-${PHP_detail_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_fileinfo.sh",
+      "line": 11,
+      "expression": "src_url=https://secure.php.net/distributions/php-${PHP_detail_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_imap.sh",
+      "line": 27,
+      "expression": "src_url=https://secure.php.net/distributions/php-${PHP_detail_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_ldap.sh",
+      "line": 10,
+      "expression": "src_url=https://secure.php.net/distributions/php-${PHP_detail_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_mongodb.sh",
+      "line": 10,
+      "expression": "src_url=https://pecl.php.net/get/mongo-1.6.16.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_mongodb.sh",
+      "line": 26,
+      "expression": "src_url=https://pecl.php.net/get/mongodb-1.9.2.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_mongodb.sh",
+      "line": 30,
+      "expression": "src_url=https://pecl.php.net/get/mongodb-1.16.2.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_mongodb.sh",
+      "line": 34,
+      "expression": "src_url=https://pecl.php.net/get/mongodb-1.20.1.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_mongodb.sh",
+      "line": 38,
+      "expression": "src_url=https://pecl.php.net/get/mongodb-${pecl_mongodb_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_phalcon.sh",
+      "line": 12,
+      "expression": "src_url=${mirror_link}/src/cphalcon-3.4.5.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_phalcon.sh",
+      "line": 19,
+      "expression": "src_url=https://pecl.php.net/get/phalcon-5.4.0.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_phalcon.sh",
+      "line": 28,
+      "expression": "src_url=https://pecl.php.net/get/phalcon-${phalcon_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_swoole.sh",
+      "line": 12,
+      "expression": "src_url=https://pecl.php.net/get/swoole-1.10.5.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_swoole.sh",
+      "line": 18,
+      "expression": "src_url=https://pecl.php.net/get/swoole-4.5.2.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_swoole.sh",
+      "line": 24,
+      "expression": "src_url=https://pecl.php.net/get/swoole-4.8.12.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_swoole.sh",
+      "line": 30,
+      "expression": "src_url=https://pecl.php.net/get/swoole-5.1.7.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_swoole.sh",
+      "line": 36,
+      "expression": "src_url=https://pecl.php.net/get/swoole-6.1.7.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_swoole.sh",
+      "line": 42,
+      "expression": "src_url=https://pecl.php.net/get/swoole-${swoole_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_xdebug.sh",
+      "line": 13,
+      "expression": "src_url=https://pecl.php.net/get/xdebug-2.9.8.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_xdebug.sh",
+      "line": 17,
+      "expression": "src_url=https://pecl.php.net/get/xdebug-${xdebug_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_xdebug.sh",
+      "line": 26,
+      "expression": "src_url=${mirror_link}/src/webgrind-master.zip && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_yaf.sh",
+      "line": 12,
+      "expression": "src_url=https://pecl.php.net/get/yaf-${yaf_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/pecl_yar.sh",
+      "line": 12,
+      "expression": "src_url=https://pecl.php.net/get/yar-${yar_ver}.tgz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_db.sh",
+      "line": 80,
+      "expression": "[ ! -e \"`ls ${DB_filename}.tar.?z 2>/dev/null`\" ] && wget --no-check-certificate -c ${DB_URL} > /dev/null 2>&1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_memcached.sh",
+      "line": 9,
+      "expression": "Latest_memcached_ver=`curl --connect-timeout 2 -m 3 -s https://github.com/memcached/memcached/wiki/ReleaseNotes | grep 'internal present.*ReleaseNotes' |  grep -oE \"[0-9]\\.[0-9]\\.[0-9]+\" | head -1`",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_memcached.sh",
+      "line": 17,
+      "expression": "[ ! -e \"memcached-${NEW_memcached_ver}.tar.gz\" ] && wget --no-check-certificate -c ${DOWN_ADDR}/memcached-${NEW_memcached_ver}.tar.gz > /dev/null 2>&1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_php.sh",
+      "line": 11,
+      "expression": "Latest_php_ver=`curl --connect-timeout 2 -m 3 -s https://www.php.net/releases/active.php | ${pythonCtl} -mjson.tool | awk '/version/{print $2}' | sed 's/\"//g' | grep \"${OLD_php_ver%.*}\"`",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_php.sh",
+      "line": 19,
+      "expression": "[ ! -e \"php-${NEW_php_ver}.tar.gz\" ] && wget --no-check-certificate -c https://secure.php.net/distributions/php-${NEW_php_ver}.tar.gz > /dev/null 2>&1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_php.sh",
+      "line": 39,
+      "expression": "src_url=${mirror_link}/src/fpm-race-condition.patch && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_phpmyadmin.sh",
+      "line": 9,
+      "expression": "Latest_phpmyadmin_ver=`curl --connect-timeout 2 -m 3 -s https://www.phpmyadmin.net/files/ | awk -F'>|<' '/\\/files\\/[0-9]/{print $5}' | head -1`",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_phpmyadmin.sh",
+      "line": 16,
+      "expression": "[ ! -e \"phpMyAdmin-${NEW_phpmyadmin_ver}-all-languages.tar.gz\" ] && wget --no-check-certificate -c https://files.phpmyadmin.net/phpMyAdmin/${NEW_phpmyadmin_ver}/phpMyAdmin-${NEW_phpmyadmin_ver}-all-languages.tar.gz > /dev/null 2>&1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_redis.sh",
+      "line": 9,
+      "expression": "Latest_redis_ver=`curl --connect-timeout 2 -m 3 -s http://download.redis.io/redis-stable/00-RELEASENOTES | awk '/Released/{print $2}' | head -1`",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_redis.sh",
+      "line": 16,
+      "expression": "[ ! -e \"redis-$NEW_redis_ver.tar.gz\" ] && wget --no-check-certificate -c http://download.redis.io/releases/redis-$NEW_redis_ver.tar.gz > /dev/null 2>&1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_script.sh",
+      "line": 7,
+      "expression": "latest_md5=$(curl --connect-timeout 3 -m 5 -s ${mirror_link}/md5sum.txt | grep lnmp.tar.gz | awk '{print $1}')",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_script.sh",
+      "line": 13,
+      "expression": "wget --no-check-certificate -qc ${mirror_link}/lnmp.tar.gz -O /tmp/lnmp.tar.gz",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 10,
+      "expression": "Latest_nginx_ver=`curl --connect-timeout 2 -m 3 -s http://nginx.org/en/CHANGES-1.22 | awk '/Changes with nginx/{print$0}' | awk '{print $4}' | head -1`",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 11,
+      "expression": "[ -z \"${Latest_nginx_ver}\" ] && Latest_nginx_ver=`curl --connect-timeout 2 -m 3 -s http://nginx.org/en/CHANGES | awk '/Changes with nginx/{print$0}' | awk '{print $4}' | head -1`",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 18,
+      "expression": "[ ! -e \"nginx-${NEW_nginx_ver}.tar.gz\" ] && wget --no-check-certificate -c http://nginx.org/download/nginx-${NEW_nginx_ver}.tar.gz > /dev/null 2>&1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 20,
+      "expression": "src_url=${mirror_link}/src/openssl-${openssl_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 21,
+      "expression": "src_url=${mirror_link}/src/pcre-${pcre_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 22,
+      "expression": "src_url=${mirror_link}/src/ngx_devel_kit.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 23,
+      "expression": "src_url=${mirror_link}/src/lua-nginx-module-${lua_nginx_module_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 51,
+      "expression": "src_url=${mirror_link}/src/luajit2-${luajit2_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 58,
+      "expression": "src_url=${mirror_link}/src/lua-resty-core-${lua_resty_core_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 65,
+      "expression": "src_url=${mirror_link}/src/lua-resty-lrucache-${lua_resty_lrucache_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 102,
+      "expression": "Latest_tengine_ver=`curl --connect-timeout 2 -m 3 -s http://tengine.taobao.org/changelog.html | grep -v generator | grep -oE \"[0-9]\\.[0-9]\\.[0-9]+\" | head -1`",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 109,
+      "expression": "[ ! -e \"tengine-${NEW_tengine_ver}.tar.gz\" ] && wget --no-check-certificate -c http://tengine.taobao.org/download/tengine-${NEW_tengine_ver}.tar.gz > /dev/null 2>&1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 111,
+      "expression": "src_url=${mirror_link}/src/openssl-${openssl_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 112,
+      "expression": "src_url=${mirror_link}/src/pcre-${pcre_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 167,
+      "expression": "Latest_openresy_ver=`curl --connect-timeout 2 -m 3 -s https://openresty.org/en/download.html | awk '/download\\/openresty-/{print $0}' |  grep -oE \"[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+\" | head -1`",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 174,
+      "expression": "[ ! -e \"openresty-${NEW_openresy_ver}.tar.gz\" ] && wget --no-check-certificate -c https://openresty.org/download/openresty-${NEW_openresy_ver}.tar.gz > /dev/null 2>&1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 176,
+      "expression": "src_url=${mirror_link}/src/openssl-${openssl_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 177,
+      "expression": "src_url=${mirror_link}/src/pcre-${pcre_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 224,
+      "expression": "Latest_apache_ver=`curl --connect-timeout 2 -m 3 -s http://httpd.apache.org/download.cgi | awk \"/#apache24/{print $2}\" | head -1 | grep -oE \"2\\.[24]\\.[0-9]+\"`",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 233,
+      "expression": "src_url=http://archive.apache.org/dist/apr/apr-${apr_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 234,
+      "expression": "src_url=http://archive.apache.org/dist/apr/apr-util-${apr_util_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 235,
+      "expression": "[ ! -e \"httpd-${NEW_apache_ver}.tar.gz\" ] && wget --no-check-certificate -c http://archive.apache.org/dist/httpd/httpd-${NEW_apache_ver}.tar.gz > /dev/null 2>&1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 302,
+      "expression": "Latest_tomcat_ver=`curl --connect-timeout 2 -m 3 -s https://tomcat.apache.org/download-${Tomcat_flag}0.cgi | grep \"README\" | head -1 | grep -oE \"[6-9]\\.[0-9]\\.[0-9]+\"`",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 312,
+      "expression": "src_url=${mirror_link}/apache/tomcat/v${NEW_tomcat_ver}/apache-tomcat-${NEW_tomcat_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 313,
+      "expression": "[ ! -e \"apache-tomcat-${NEW_tomcat_ver}.tar.gz\" ] && wget --no-check-certificate -c https://archive.apache.org/dist/tomcat-${OLD_tomcat_ver}/v${NEW_tomcat_ver}/bin/apache-tomcat-${NEW_tomcat_ver}.tar.gz > /dev/null 2>&1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 315,
+      "expression": "src_url=${mirror_link}/apache/tomcat/v${NEW_tomcat_ver}/catalina-jmx-remote.jar && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/upgrade_web.sh",
+      "line": 316,
+      "expression": "[ ! -e \"catalina-jmx-remote.jar\" ] && wget --no-check-certificate -c https://archive.apache.org/dist/tomcat-${OLD_tomcat_ver}/v${NEW_tomcat_ver}/bin/extras/catalina-jmx-remote.jar > /dev/null 2>&1",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "include/zendopcache.sh",
+      "line": 15,
+      "expression": "src_url=https://secure.php.net/distributions/php-${PHP_detail_ver}.tar.gz && Download_src",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "install.sh",
+      "line": 226,
+      "expression": "latest_script_md5=$(curl --connect-timeout 3 -m 5 -s ${mirror_link}/md5sum.txt | grep ${script_md5} | awk '{print $1}')",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "install.sh",
+      "line": 733,
+      "expression": "${PM} -y install wget gcc curl > /dev/null",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "src/5.3-CVE-2026-109618-109619.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/5.4-CVE-2026-109618-109619.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/5.5-CVE-2026-109618-109619.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/5.6-CVE-2026-109618-109619.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/7.0-CVE-2026-109618-109619.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/7.1-CVE-2026-109618-109619.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/7.2-CVE-2026-109618-109619.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/7.3-CVE-2026-109618-109619.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/7.4-CVE-2026-109618-109619.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/8.0-CVE-2026-109618-109619.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/8.1-CVE-2026-109618-109619.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/adoptium.key",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/libiconv-glibc-2.16.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/libmemcached-build.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/php5.3-fileinfo.patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "src/php5.3patch",
+      "type": "bundled-file",
+      "policy": "version-controlled patch/key; no implied publisher authentication"
+    },
+    {
+      "consumer": "vhost.sh",
+      "line": 261,
+      "expression": "curl_str=`curl --connect-timeout 30 -4 -s $D/${auth_file} 2>&1`",
+      "type": "request",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    },
+    {
+      "consumer": "vhost.sh",
+      "line": 394,
+      "expression": "[ ! -e acme.sh-master.tar.gz ] && wget -qc ${mirror_link}/src/acme.sh-master.tar.gz",
+      "type": "artifact",
+      "policy": "review catalog or retain only non-artifact protocol request"
+    }
+  ]
+}

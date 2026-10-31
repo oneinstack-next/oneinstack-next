@@ -17,11 +17,17 @@ printf "
 current_dir=$(dirname "`readlink -f $0`")
 pushd ${current_dir} > /dev/null
 . ./options.conf
-. ./versions.txt
+# The checkout path is runtime state, not a migrated user setting.
+current_dir=$PWD
+. ./include/version_data.sh
+Read_Versions "${current_dir}/versions.txt" || exit 1
 . ./include/color.sh
 . ./include/check_os.sh
 . ./include/check_dir.sh
 . ./include/download.sh
+Source_Start_Run || exit 1
+backup_stage=$(mktemp -d "${current_dir}/src/.backup-tools.XXXXXXXX") || exit 1
+trap 'Remove_Private_Tree "$backup_stage" "$current_dir/src"; Source_Cleanup' EXIT
 
 while :; do echo
   echo 'Please select your backup destination:'
@@ -46,10 +52,14 @@ while :; do echo
     echo; echo "${CWARNING}input error! Please only input number 1 3 4 and so on${CEND}"; echo
     continue
   else
-    sed -i 's@^backup_destination=.*@backup_destination=@' ./options.conf
     break
   fi
 done
+
+. ./include/preflight.sh
+Preflight_Backup_Tools || exit 1
+Source_Save_Plan || exit 1
+sed -i 's@^backup_destination=.*@backup_destination=@' ./options.conf
 
 [ -n "`echo ${desc_bk} | grep -w 1`" ] && sed -i 's@^backup_destination=.*@backup_destination=local@' ./options.conf
 [ -n "`echo ${desc_bk} | grep -w 2`" ] && sed -i 's@^backup_destination=.*@&,remote@' ./options.conf
@@ -175,7 +185,8 @@ fi
 
 if [ -n "`echo ${desc_bk} | grep -w 3`" ]; then
   if [ ! -e "/usr/local/bin/ossutil" ]; then
-    curl -sSL https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
+    Download_Artifact "ossutil-linux-${ARCH}" "$backup_stage" || exit 1
+    install -m 755 "$backup_stage/ossutil-linux-${ARCH}" /usr/local/bin/ossutil || exit 1
   fi
   while :; do echo
     echo 'Please select your backup aliyun datacenter:'
@@ -257,7 +268,8 @@ fi
 
 if [ -n "`echo ${desc_bk} | grep -w 4`" ]; then
   if [ ! -e "/usr/local/bin/coscli" ]; then
-    wget -qc https://cosbrowser.cloud.tencent.com/software/coscli/coscli-linux -O /usr/local/bin/coscli
+    Download_Artifact "coscli-linux" "$backup_stage" || exit 1
+    install -m 755 "$backup_stage/coscli-linux" "/usr/local/bin/coscli" || exit 1
     chmod +x /usr/local/bin/coscli
   fi
 
@@ -346,15 +358,16 @@ fi
 if [ -n "`echo ${desc_bk} | grep -w 5`" ]; then
   if [ ! -e "/usr/local/bin/upx" ]; then
     if [ "${armplatform}" == 'y' ]; then
-      wget -qc https://collection.b0.upaiyun.com/softwares/upx/upx_0.4.8_linux_arm64.tar.gz -O /tmp/upx_0.4.8_linux_arm64.tar.gz
-      tar xzf /tmp/upx_0.4.8_linux_arm64.tar.gz -C /tmp/
+      Download_Artifact "upx_0.4.8_linux_arm64.tar.gz" "$backup_stage" || exit 1
+      tar xzf "${backup_stage}/upx_0.4.8_linux_arm64.tar.gz" -C "$backup_stage/" || exit 1
     else
-      wget -qc https://collection.b0.upaiyun.com/softwares/upx/upx_0.4.8_linux_amd64.tar.gz -O /tmp/upx_0.4.8_linux_x86_64.tar.gz
-      tar xzf /tmp/upx_0.4.8_linux_x86_64.tar.gz -C /tmp/
+      Download_Artifact "upx_0.4.8_linux_amd64.tar.gz" "$backup_stage" || exit 1
+      install -m 755 "$backup_stage/upx_0.4.8_linux_amd64.tar.gz" "${backup_stage}/upx_0.4.8_linux_x86_64.tar.gz" || exit 1
+      tar xzf "${backup_stage}/upx_0.4.8_linux_x86_64.tar.gz" -C "$backup_stage/" || exit 1
     fi
-    /bin/mv /tmp/upx /usr/local/bin/upx
+    /bin/mv "${backup_stage}/upx" /usr/local/bin/upx || exit 1
     chmod +x /usr/local/bin/upx
-    rm -f /tmp/{upx_*,LICENSE,README.md}
+    : # private stage is removed by the EXIT trap
   fi
   while :; do echo
     read -e -p "Please enter the upyun ServiceName: " ServiceName
@@ -380,14 +393,16 @@ fi
 if [ -n "`echo ${desc_bk} | grep -w 6`" ]; then
   if [ ! -e "/usr/local/bin/qshell" ]; then
     if [ "${armplatform}" == 'y' ]; then
-      wget -qc https://github.com/qiniu/qshell/releases/download/v2.15.0/qshell-v2.15.0-linux-arm64.tar.gz -O /tmp/qshell-v2.15.0-linux-arm64.tar.gz
-      tar xzf /tmp/qshell-v2.15.0-linux-arm64.tar.gz -C /usr/local/bin/
+      Download_Artifact "qshell-v2.15.0-linux-arm64.tar.gz" "$backup_stage" || exit 1
+      tar xzf "${backup_stage}/qshell-v2.15.0-linux-arm64.tar.gz" -C "${backup_stage}" || exit 1
+      install -m 755 "${backup_stage}/qshell" /usr/local/bin/qshell || exit 1
     else
-      wget -qc https://github.com/qiniu/qshell/releases/download/v2.15.0/qshell-v2.15.0-linux-amd64.tar.gz -O /tmp/qshell-v2.15.0-linux-amd64.tar.gz
-      tar xzf qshell-v2.15.0-linux-amd64.tar.gz -C /usr/local/bin/
+      Download_Artifact "qshell-v2.15.0-linux-amd64.tar.gz" "$backup_stage" || exit 1
+      tar xzf "${backup_stage}/qshell-v2.15.0-linux-amd64.tar.gz" -C "${backup_stage}" || exit 1
+      install -m 755 "${backup_stage}/qshell" /usr/local/bin/qshell || exit 1
     fi
     chmod +x /usr/local/bin/qshell
-    rm -f /tmp/qshell*
+    : # private stage is removed by the EXIT trap
   fi
   while :; do echo
     echo 'Please select your backup qiniu datacenter:'
@@ -432,10 +447,11 @@ fi
 
 if [ -n "`echo ${desc_bk} | grep -w 7`" ]; then
   if [ ! -e "/usr/local/bin/aws" ] && [ ! -e "/usr/bin/aws" ]; then
-    wget -qc https://awscli.amazonaws.com/awscli-exe-linux-$(arch).zip -O /tmp/awscliv2.zip
-    unzip /tmp/awscliv2.zip -d /tmp/
-    /tmp/aws/install
-    rm -rf /tmp/{awscliv2.zip,aws}
+    Download_Artifact "awscli-exe-linux-${ARCH}.zip" "$backup_stage" || exit 1
+    install -m 755 "$backup_stage/awscli-exe-linux-${ARCH}.zip" "${backup_stage}/awscliv2.zip" || exit 1
+    unzip "${backup_stage}/awscliv2.zip" -d "$backup_stage/" || exit 1
+    "${backup_stage}/aws/install" || exit 1
+    : # private stage is removed by the EXIT trap
   fi
   while :; do echo
     echo 'Please select your backup amazon datacenter:'
@@ -537,9 +553,11 @@ fi
 if [ -n "`echo ${desc_bk} | grep -w 8`" ]; then
   if [ ! -e "/usr/local/bin/dbxcli" ]; then
     if [ "${armplatform}" == 'y' ]; then
-      wget -qc ${mirror_link}/src/dbxcli-linux-arm -O /usr/local/bin/dbxcli
+      Download_Artifact "dbxcli-linux-arm" "$backup_stage" || exit 1
+      install -m 755 "$backup_stage/dbxcli-linux-arm" "/usr/local/bin/dbxcli" || exit 1
     else
-      wget -qc ${mirror_link}/src/dbxcli-linux-amd64 -O /usr/local/bin/dbxcli
+      Download_Artifact "dbxcli-linux-amd64" "$backup_stage" || exit 1
+      install -m 755 "$backup_stage/dbxcli-linux-amd64" "/usr/local/bin/dbxcli" || exit 1
     fi
     chmod +x /usr/local/bin/dbxcli
   fi

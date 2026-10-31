@@ -6,14 +6,13 @@ Upgrade_phpMyAdmin() {
   pushd ${current_dir}/src > /dev/null
   [ ! -e "${wwwroot_dir}/default/phpMyAdmin" ] && echo "${CWARNING}phpMyAdmin is not installed on your system! ${CEND}" && exit 1
   OLD_phpmyadmin_ver=`grep Version ${wwwroot_dir}/default/phpMyAdmin/README | awk '{print $2}'`
-  Latest_phpmyadmin_ver=`curl --connect-timeout 2 -m 3 -s https://www.phpmyadmin.net/files/ | awk -F'>|<' '/\/files\/[0-9]/{print $5}' | head -1`
-  Latest_phpmyadmin_ver=${Latest_phpmyadmin_ver:-5.0.4}
+  Latest_phpmyadmin_ver=${phpmyadmin_ver}
   echo "Current phpMyAdmin Version: ${CMSG}${OLD_phpmyadmin_ver}${CEND}"
   while :; do echo
     [ "${phpmyadmin_flag}" != 'y' ] && read -e -p "Please input upgrade phpMyAdmin Version(default: ${Latest_phpmyadmin_ver}): " NEW_phpmyadmin_ver
     NEW_phpmyadmin_ver=${NEW_phpmyadmin_ver:-${Latest_phpmyadmin_ver}}
     if [ "${NEW_phpmyadmin_ver}" != "${OLD_phpmyadmin_ver}" ]; then
-      [ ! -e "phpMyAdmin-${NEW_phpmyadmin_ver}-all-languages.tar.gz" ] && wget --no-check-certificate -c https://files.phpmyadmin.net/phpMyAdmin/${NEW_phpmyadmin_ver}/phpMyAdmin-${NEW_phpmyadmin_ver}-all-languages.tar.gz > /dev/null 2>&1
+      Download_Artifact "phpMyAdmin-${NEW_phpmyadmin_ver}-all-languages.tar.gz" || exit 1
       if [ -e "phpMyAdmin-${NEW_phpmyadmin_ver}-all-languages.tar.gz" ]; then
         echo "Download [${CMSG}phpMyAdmin-${NEW_phpmyadmin_ver}-all-languages.tar.gz${CEND}] successfully! "
         break

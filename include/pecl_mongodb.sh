@@ -7,7 +7,7 @@ Install_pecl_mongodb() {
     pushd ${current_dir}/src > /dev/null
     phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
     if [[ "$(${php_install_dir}/bin/php-config --version | awk -F. '{print $1$2}')" =~ ^5[3-6]$ ]]; then
-      src_url=https://pecl.php.net/get/mongo-1.6.16.tgz && Download_src
+      Download_Artifact "mongo-1.6.16.tgz" || exit 1
       tar xzf mongo-1.6.16.tgz
       pushd mongo-1.6.16 > /dev/null
       ${php_install_dir}/bin/phpize
@@ -23,19 +23,19 @@ Install_pecl_mongodb() {
       fi
     else
       if [[ "$(${php_install_dir}/bin/php-config --version | awk -F. '{print $1$2}')" =~ ^70$ ]]; then
-        src_url=https://pecl.php.net/get/mongodb-1.9.2.tgz && Download_src
+        Download_Artifact "mongodb-1.9.2.tgz" || exit 1
         tar xzf mongodb-1.9.2.tgz
         pushd mongodb-1.9.2 > /dev/null
       elif [[ "$(${php_install_dir}/bin/php-config --version | awk -F. '{print $1$2}')" =~ ^7[1-3]$ ]]; then
-        src_url=https://pecl.php.net/get/mongodb-1.16.2.tgz && Download_src
+        Download_Artifact "mongodb-1.16.2.tgz" || exit 1
         tar xzf mongodb-1.16.2.tgz
         pushd mongodb-1.16.2 > /dev/null
       elif [[ "$(${php_install_dir}/bin/php-config --version | awk -F. '{print $1$2}')" =~ ^74|80$ ]]; then
-        src_url=https://pecl.php.net/get/mongodb-1.20.1.tgz && Download_src
+        Download_Artifact "mongodb-1.20.1.tgz" || exit 1
         tar xzf mongodb-1.20.1.tgz
         pushd mongodb-1.20.1 > /dev/null
       else
-        src_url=https://pecl.php.net/get/mongodb-${pecl_mongodb_ver}.tgz && Download_src
+        Download_Artifact "mongodb-${pecl_mongodb_ver}.tgz" || exit 1
         tar xzf mongodb-${pecl_mongodb_ver}.tgz
         pushd mongodb-${pecl_mongodb_ver} > /dev/null
       fi

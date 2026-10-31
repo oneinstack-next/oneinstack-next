@@ -1,0 +1,63 @@
+{
+  "checked_at": "2026-10-31",
+  "manifest_revision": "2026-10-26T23:41:03Z-unknown-35a2dee3",
+  "generator_version": "2.1.0",
+  "generator_commit": "unknown",
+  "urllib_probe": [
+    {
+      "request": "https://mirror.dal.ao/src/nginx-1.30.6.tar.gz",
+      "status": 403,
+      "location_host": null,
+      "content_range": null,
+      "accept_ranges": null
+    },
+    {
+      "request": "https://mirror.dal.ao/src/nginx-1.30.6.tar.gz?force_redirect=true",
+      "status": 403,
+      "location_host": null,
+      "content_range": null,
+      "accept_ranges": null
+    },
+    {
+      "request": "https://mirror.dal.ao/src/nginx-1.30.6.tar.gz?force_redirect=false",
+      "status": 403,
+      "location_host": null,
+      "content_range": null,
+      "accept_ranges": null
+    }
+  ],
+  "requests": [
+    {
+      "client": "curl",
+      "request": "https://mirror.dal.ao/src/nginx-1.30.6.tar.gz",
+      "status": 301,
+      "location": "https://nginx.org/download/nginx-1.30.6.tar.gz",
+      "cache_status": "HIT",
+      "content_range": null
+    },
+    {
+      "client": "curl",
+      "request": "https://mirror.dal.ao/src/nginx-1.30.6.tar.gz?force_redirect=true",
+      "status": 302,
+      "location": "https://nginx.org/download/nginx-1.30.6.tar.gz",
+      "cache_status": "BYPASS",
+      "content_range": null
+    },
+    {
+      "client": "curl",
+      "request": "https://mirror.dal.ao/src/nginx-1.30.6.tar.gz?force_redirect=false",
+      "status": 301,
+      "location": "https://nginx.org/download/nginx-1.30.6.tar.gz",
+      "cache_status": "MISS",
+      "content_range": null
+    }
+  ],
+  "download_contract_smoke": {
+    "filename": "nginx-1.30.6.tar.gz",
+    "provider": "mirrorone",
+    "force_redirect": true,
+    "sha256": "3cf46f5ed7504d460125866b7bea99fb357f31d887e2e63b35503310e9b8b6c8",
+    "result": "verified download and archive layout via Download_Artifact",
+    "platform": "Windows Git Bash; single-process lock shim; not a Linux installation test"
+  }
+}

@@ -28,24 +28,15 @@ Upgrade_DB() {
 
   OLD_db_ver_tmp=`${db_install_dir}/bin/mysql -uroot -p${dbrootpwd} -e 'select version()\G;' | grep version | awk '{print $2}'`
   if [ -n "`${db_install_dir}/bin/mysql -V | grep -o MariaDB`" ]; then
-    [ "${OUTIP_STATE}"x == "China"x ] && DOWN_ADDR=https://mirrors.tuna.tsinghua.edu.cn/mariadb || DOWN_ADDR=https://archive.mariadb.org
     DB=MariaDB
     OLD_db_ver=`echo ${OLD_db_ver_tmp} | awk -F'-' '{print $1}'`
   elif [ -n "`${db_install_dir}/bin/mysql -V | grep -o Percona`" ]; then
     DB=Percona
     OLD_db_ver=${OLD_db_ver_tmp}
   else
-    #[ "${OUTIP_STATE}"x == "China"x ] && DOWN_ADDR=http://mirrors.ustc.edu.cn/mysql-ftp/Downloads || DOWN_ADDR=http://cdn.mysql.com/Downloads
-    DOWN_ADDR=http://cdn.mysql.com/Downloads
     DB=MySQL
     OLD_db_ver=${OLD_db_ver_tmp%%-log}
   fi
-
-  #backup
-  echo
-  echo "${CSUCCESS}Starting ${DB} backup${CEND}......"
-  ${db_install_dir}/bin/mysqldump -uroot -p${dbrootpwd} --opt --all-databases > DB_all_backup_$(date +"%Y%m%d").sql
-  [ -f "DB_all_backup_$(date +"%Y%m%d").sql" ] && echo "${DB} backup success, Backup file: ${MSG}`pwd`/DB_all_backup_$(date +"%Y%m%d").sql${CEND}"
 
   #upgrade
   echo
@@ -55,7 +46,7 @@ Upgrade_DB() {
     if [ `echo ${NEW_db_ver} | awk -F. '{print $1"."$2}'` == `echo ${OLD_db_ver} | awk -F. '{print $1"."$2}'` ]; then
       if [ "${DB}" == 'MariaDB' ]; then
         DB_filename=mariadb-${NEW_db_ver}-linux-systemd-x86_64
-        DB_URL=${DOWN_ADDR}/mariadb-${NEW_db_ver}/bintar-linux-systemd-x86_64/${DB_filename}.tar.gz
+        DB_artifact=${DB_filename}.tar.gz
       elif [ "${DB}" == 'Percona' ]; then
         if [[ "`echo ${NEW_db_ver} | awk -F. '{print $1"."$2}'`" =~ ^5.[5-6]$ ]]; then
           perconaVerStr1=$(echo ${NEW_db_ver} | sed "s@-@-rel@")
@@ -67,17 +58,17 @@ Upgrade_DB() {
         else
            DB_filename=Percona-Server-${perconaVerStr1}-Linux.x86_64.${sslLibVer}
         fi
-        DB_URL=https://www.percona.com/downloads/Percona-Server-`echo ${NEW_db_ver} | awk -F. '{print $1"."$2}'`/Percona-Server-${NEW_db_ver}/binary/tarball/${DB_filename}.tar.gz
+        DB_artifact=${DB_filename}.tar.gz
       elif [ "${DB}" == 'MySQL' ]; then
-        if [ `echo ${OLD_db_ver} | awk -F. '{print $1"."$2}'` =~ ^8.4$|^8.0$ ]; then
+        if [[ ${OLD_db_ver} == 8.4.* || ${OLD_db_ver} == 8.0.* ]]; then
           DB_filename=mysql-${NEW_db_ver}-linux-glibc2.28-x86_64
-          DB_URL=${DOWN_ADDR}/MySQL-`echo ${NEW_db_ver} | awk -F. '{print $1"."$2}'`/${DB_filename}.tar.xz
+          DB_artifact=${DB_filename}.tar.xz
         else
           DB_filename=mysql-${NEW_db_ver}-linux-glibc2.12-x86_64
-          DB_URL=${DOWN_ADDR}/MySQL-`echo ${NEW_db_ver} | awk -F. '{print $1"."$2}'`/${DB_filename}.tar.gz
+          DB_artifact=${DB_filename}.tar.gz
         fi
       fi
-      [ ! -e "`ls ${DB_filename}.tar.?z 2>/dev/null`" ] && wget --no-check-certificate -c ${DB_URL} > /dev/null 2>&1
+      Download_Artifact "${DB_artifact}" || exit 1
       if [ -e "`ls ${DB_filename}.tar.?z 2>/dev/null`" ]; then
         echo "Download [${CMSG}`ls ${DB_filename}.tar.?z 2>/dev/null`${CEND}] successfully! "
       else
@@ -89,6 +80,14 @@ Upgrade_DB() {
       [ "${db_flag}" == 'y' ] && exit
     fi
   done
+
+  #backup
+  echo
+  echo "${CSUCCESS}Starting ${DB} backup${CEND}......"
+  ${db_install_dir}/bin/mysqldump -uroot -p${dbrootpwd} --opt --all-databases > DB_all_backup_$(date +"%Y%m%d").sql || return 1
+  [ -s "DB_all_backup_$(date +"%Y%m%d").sql" ] || return 1
+  echo "${DB} backup success, Backup file: ${MSG}`pwd`/DB_all_backup_$(date +"%Y%m%d").sql${CEND}"
+
 
   if [ -e "`ls ${DB_filename}.tar.?z 2>/dev/null`" ]; then
     echo "[${CMSG}`ls ${DB_filename}.tar.?z 2>/dev/null`${CEND}] found"

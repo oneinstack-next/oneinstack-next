@@ -9,7 +9,7 @@ Install_pecl_yaf() {
     PHP_main_ver=${PHP_detail_ver%.*}
     if [[ "${PHP_main_ver}" =~ ^7.[0-4]$|^8.[0-4]$ ]]; then
       phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
-      src_url=https://pecl.php.net/get/yaf-${yaf_ver}.tgz && Download_src
+      Download_Artifact "yaf-${yaf_ver}.tgz" || exit 1
       tar xzf yaf-${yaf_ver}.tgz
       pushd yaf-${yaf_ver} > /dev/null
       ${php_install_dir}/bin/phpize
