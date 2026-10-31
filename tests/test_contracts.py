@@ -110,7 +110,7 @@ class Contracts(unittest.TestCase):
             def handle(self):
                 try:
                     super().handle()
-                except (ConnectionResetError, BrokenPipeError):
+                except (ConnectionResetError, BrokenPipeError, ssl.SSLError):
                     pass  # Expected when curl rejects a certificate or redirect.
 
         cls.server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), Handler)
@@ -516,9 +516,11 @@ exit 0
     def test_20_reload_waits_for_previous_workers_to_stop_accepting(self):
         self.bash('''
           source include/nginx_config.sh
+          set -e
           web_install_dir=$1/worker-readiness; domain=example.test; nginx_ssl_flag=n
           mkdir -p "$web_install_dir"
           counter=$web_install_dir/probes; echo 0 > "$counter"
+          curl_counter=$web_install_dir/requests; echo 0 > "$curl_counter"
           nginx_health_master=999; nginx_health_workers=10
           pgrep() {
             local count pattern=${!#}
@@ -532,11 +534,16 @@ exit 0
           sleep() { :; }
           curl() {
             [ "$(cat "$counter")" -ge 2 ] || { echo 'Request was made while old workers still accepted connections' >&2; return 1; }
-            local url=${!#}
+            local url=${!#} count
+            count=$(cat "$curl_counter"); echo "$((count+1))" > "$curl_counter"
+            [ "$count" -ne 0 ] || return 7
             printf '%s' "${url##*/}"
           }
-          Nginx_Health || exit 10
-          [ "$(cat "$counter")" -eq 2 ] || exit 11
+          # A standalone call preserves errexit in the actual helper. Its
+          # bounded polling must tolerate a transient connection failure.
+          Nginx_Health
+          [ "$(cat "$counter")" -eq 3 ] || exit 11
+          [ "$(cat "$curl_counter")" -eq 2 ] || exit 12
         ''', self.work)
 
     def test_21_database_extraction_failure_preserves_service_and_data(self):
@@ -624,6 +631,58 @@ exit 0
               if (Install_pecl_mongodb); then exit 12; fi
               [ "$(cat "$ledger")" = mongodb-1.20.1.tgz ] || exit 13
             ''', self.work, php_option, mphp, version, config)
+
+    def test_24_binary_switch_retries_missing_pid_file_under_errexit(self):
+        self.bash('''
+          source include/nginx_config.sh
+          set -e
+          prefix=$1/binary-handoff
+          mkdir -p "$prefix/sbin" "$prefix/conf" "$prefix/logs"
+          TEST_PIDFILE=$prefix/logs/nginx.pid; export TEST_PIDFILE
+          printf 123 > "$TEST_PIDFILE"
+          cat > "$prefix/sbin/nginx" <<'NGINX'
+#!/bin/bash
+for arg in "$@"; do
+  case $arg in
+    -T) printf 'pid %s;\n' "$TEST_PIDFILE"; exit 0 ;;
+    -V) echo 'nginx version: controlled fixture'; exit 0 ;;
+  esac
+done
+exit 0
+NGINX
+          chmod +x "$prefix/sbin/nginx"
+          cp -p "$prefix/sbin/nginx" "$prefix/candidate"
+          printf '\n# candidate build\n' >> "$prefix/candidate"
+          old_digest=$(sha256sum < "$prefix/sbin/nginx")
+          new_digest=$(sha256sum < "$prefix/candidate")
+          counter=$prefix/pid-reads; printf 0 > "$counter"
+          signals=$prefix/signals
+          Nginx_Requirements() { :; }
+          cat() {
+            if [ "$1" = "$TEST_PIDFILE" ]; then
+              local count
+              count=$(command cat "$counter"); echo "$((count+1))" > "$counter"
+              case $count in 0) echo 123 ;; 1) return 1 ;; *) echo 456 ;; esac
+            else command cat "$@"; fi
+          }
+          kill() {
+            case "$*" in
+              '-0 123'|'-0 456'|'-USR2 123'|'-WINCH 123'|'-QUIT 123') printf '%s\n' "$*" >> "$signals" ;;
+              *) echo "Unexpected signal: $*" >&2; return 1 ;;
+            esac
+          }
+          pgrep() { echo 789; }
+          curl() { echo health > "$prefix/healthy"; }
+          sleep() { :; }
+          # Do not wrap this call in if/||: doing so disables errexit inside
+          # Bash functions and would conceal the missing-PID handoff defect.
+          Nginx_Upgrade_Binary "$prefix/candidate" "$prefix"
+          [ "$(command cat "$counter")" -eq 3 ] || exit 10
+          [ -f "$prefix/healthy" ] || exit 11
+          grep -Fx -- '-QUIT 123' "$signals" >/dev/null || exit 12
+          [ "$(sha256sum < "$prefix/sbin/nginx.previous")" = "$old_digest" ] || exit 13
+          [ "$(sha256sum < "$prefix/sbin/nginx")" = "$new_digest" ] || exit 14
+        ''', self.work)
 
 
 if __name__ == '__main__':

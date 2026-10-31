@@ -165,7 +165,9 @@ modules before replacement. They confirm a new master/workers and an actual
 health request before terminating the old master. Failure restores the old
 binary/master. Configure `nginx_upgrade_health_url` when the default localhost
 site is unsuitable. The old binary is retained as `sbin/nginx.previous`.
-During rollback the previous master's workers must resume before the new
+A temporarily absent PID file during USR2 handoff is a retried polling result,
+including under `set -e`; transient HTTP/TLS probe failures likewise retain
+bounded retry behavior. During rollback the previous master's workers must resume before the new
 master is asked to quit. The PID-file handoff is checked separately; incomplete
 recovery reports that manual inspection is required. This ordering follows
 Nginx's [master lifecycle](https://raw.githubusercontent.com/nginx/nginx/release-1.30.6/src/os/unix/ngx_process_cycle.c).
@@ -198,7 +200,7 @@ tree over an existing one.
 
 ## Validation status and remaining acceptance
 
-The 2026-10-31 local run executed 23 contract tests: 22 passed and the POSIX-only
+The 2026-10-31 local run executed 24 contract tests: 23 passed and the POSIX-only
 metadata symlink/permission test was skipped. Targeted ShellCheck passed; syntax
 results are recorded in `validation.json`.
 

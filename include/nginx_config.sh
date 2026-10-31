@@ -226,13 +226,13 @@ Nginx_Health() {
       # until every old worker has exited or entered graceful shutdown.
       if [ -z "$workers" ] || [ "$old_active" = true ]; then sleep 1; continue; fi
     fi
-    response=$(curl --noproxy '*' --silent --show-error --max-time 3 --resolve "$domain:${nginx_http_port:-80}:127.0.0.1" "http://$domain:${nginx_http_port:-80}/.well-known/acme-challenge/${token##*/}")
+    response=$(curl --noproxy '*' --silent --show-error --max-time 3 --resolve "$domain:${nginx_http_port:-80}:127.0.0.1" "http://$domain:${nginx_http_port:-80}/.well-known/acme-challenge/${token##*/}") || response=
     if [ "$response" = "${token##*/}" ]; then
       if [ "${nginx_temporary_only:-false}" != true ] && [ "${nginx_ssl_flag:-n}" = y ]; then
-        response=$(curl --noproxy '*' --silent --show-error --max-time 3 --cacert "$PATH_SSL/$domain.crt" --resolve "$domain:${nginx_https_port:-443}:127.0.0.1" "https://$domain:${nginx_https_port:-443}/.well-known/acme-challenge/${token##*/}")
+        response=$(curl --noproxy '*' --silent --show-error --max-time 3 --cacert "$PATH_SSL/$domain.crt" --resolve "$domain:${nginx_https_port:-443}:127.0.0.1" "https://$domain:${nginx_https_port:-443}/.well-known/acme-challenge/${token##*/}") || response=
         [ "$response" = "${token##*/}" ] || { sleep 1; continue; }
         if [ "${https_flag:-n}" = y ]; then
-          code=$(curl --noproxy '*' --silent --max-time 3 -o /dev/null -w '%{http_code}' --resolve "$domain:${nginx_http_port:-80}:127.0.0.1" "http://$domain:${nginx_http_port:-80}/oneinstack-redirect-probe?q=1")
+          code=$(curl --noproxy '*' --silent --max-time 3 -o /dev/null -w '%{http_code}' --resolve "$domain:${nginx_http_port:-80}:127.0.0.1" "http://$domain:${nginx_http_port:-80}/oneinstack-redirect-probe?q=1") || code=
           [ "$code" = 301 ] || { sleep 1; continue; }
         fi
       fi
@@ -347,7 +347,9 @@ Nginx_Upgrade_Binary() (
   cp -p "$bin" "$stage/old" && install -m 755 "$candidate" "$stage/new" && mv -f "$stage/new" "$bin" || exit 1
   if kill -USR2 "$old_master"; then
     for attempt in 1 2 3 4 5 6 7 8 9 10; do
-      new_master=$(cat "$pidfile" 2>/dev/null)
+      # USR2 renames the old PID file before the new master writes its own.
+      # Missing/partial state is an expected polling result, even under errexit.
+      new_master=$(cat "$pidfile" 2>/dev/null) || new_master=
       if [[ $new_master =~ ^[1-9][0-9]+$ && $new_master != "$old_master" ]] &&
           kill -0 "$new_master" && pgrep -P "$new_master" -f 'nginx: worker process' >/dev/null; then
         kill -WINCH "$old_master" || break

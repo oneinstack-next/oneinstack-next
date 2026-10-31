@@ -1,12 +1,13 @@
 {
-  "checked_at_utc": "2026-10-31T18:06:20.740308+00:00",
+  "checked_at_utc": "2026-10-31T18:18:00.768213+00:00",
   "baseline": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
   "host": "Windows Git Bash; native jq binary-output adapter; single-process flock shim",
   "contracts": {
-    "run": 23,
-    "passed": 22,
+    "run": 24,
+    "passed": 23,
     "skipped": 1,
-    "skip_reason": "POSIX-only metadata symlink/permission test requires Linux; Windows local run"
+    "skip_reason": "POSIX-only metadata symlink/permission test requires Linux; Windows local run",
+    "duration_seconds": 56.871
   },
   "bash_n": {
     "passed": true,
@@ -96,9 +97,9 @@
   "not_run": [
     "Cross-process locking under concurrent Linux writers",
     "Ubuntu/Rocky full core installation",
-    "Passing real-binary Linux matrix for amended head; inspect latest PR checks",
+    "Cross-version/external-module live upgrades (CI covers only the same-binary switch protocol)",
     "aarch64 runtime",
-    "IPv6 requests",
+    "Public/routed IPv6 deployment (CI covers loopback)",
     "ACME staging issuance and renewal",
     "Apache/Tomcat actual backend lifecycle",
     "real web binary live upgrade and rollback"
@@ -121,5 +122,12 @@
   "review_fix_network_checks": [
     "nghttp2 1.59.0 downloaded from publisher and matched publisher checksums.txt; configure layout verified",
     "MongoDB 1.20.1 downloaded independently from PECL; exact pin and reviewed PECL archive layout passed actual MirrorOne downloader"
-  ]
+  ],
+  "review_followup_ci": {
+    "head": "67fdfe817ac8e74a9fdadf91c1302223a78eef56",
+    "run": "https://github.com/oneinstack-next/oneinstack-next/actions/runs/41227894587",
+    "ubuntu_contracts": "all 23 passed",
+    "rocky_contracts": "22 passed; xz package missing in valid-xz test, now explicitly installed",
+    "product_jobs": "all reached first binary switch after HTTP/TLS/cert/IPv6 checks; transient PID-file read under errexit aborted the switch, now retried"
+  }
 }

@@ -7,7 +7,7 @@
 行内评论。审查提交和汇总评论重复引用这些条目，没有额外独立反馈。
 9 条均有当前代码证据，全部接受并修复；没有机械执行评论中的代理提示。
 严重性分布：Critical 0 / High 7 / Medium 1 / Low 1。
-本地 23 项契约测试为 22 项通过、1 项 Windows POSIX 测试跳过。
+本地 24 项契约测试为 23 项通过、1 项 Windows POSIX 测试跳过。
 合并仍应以修复后提交的 Linux CI 为门槛，不能用本地测试代替。
 
 ## Core Conclusion Card
@@ -16,8 +16,8 @@
 | --- | --- |
 | 已核验反馈 | 9 / 9，全部成立 |
 | 已落实代码修复 | 9 / 9 |
-| 附加 CI 问题 | reload 就绪竞态、Rocky Python 3.9 测试兼容性，一并修复 |
-| 本地回归 | 23 项：22 通过、1 平台跳过；兼容性调整后重跑受影响的 9 项并通过 |
+| 附加 CI 问题 | reload 就绪竞态、PID 交接读取、Python 3.9 与 xz 依赖，一并修复 |
+| 本地回归 | 24 项：23 通过、1 平台跳过；最终完整回归耗时 56.871 秒 |
 | 静态检查 | 52 个改动或新增 Shell 文件语法通过，针对性 ShellCheck 和 diff 空白检查通过 |
 | 合并门槛 | 修复后提交的 Ubuntu、Rocky、Nginx/Tengine/OpenResty 与 ARM 检查通过 |
 
@@ -59,6 +59,18 @@ Rocky 9 的 Python 3.9 不支持 `Path.write_text(newline=...)`。测试夹具�
 `Path.open(..., newline='\n')`，保留 Windows 的 LF 输出并兼容 3.9。
 真实二进制 harness 增加失败位置、HTTP 状态与日志尾部诊断，没有放宽请求断言。
 
+后续 [67fdfe8 的 Linux 运行](https://github.com/oneinstack-next/oneinstack-next/actions/runs/41227894587)
+确认 Rocky 已通过 DNF 替换与 Python 3.9/POSIX 检查，仅有效 xz 归档测试因缺少系统
+`xz` 程序失败；workflow 现显式安装对应平台的 xz 包。四个产品任务均通过前述
+请求与证书检查，随后在首次真实 USR2 切换中失败：正常 PID 文件重命名窗口内，
+未保护的 `cat` 失败被继承的 `set -e` 提前终止。该读取现在显式视作暂时空状态，
+继续有限轮询。健康检查的瞬时 curl 失败也显式进入下一次尝试。
+
+前后对照故障测试直接调用真实 helper，保留 `set -e`：提交版本的健康检查与 PID
+交接测试分别以 7、1 退出，修复后两者都通过；PID 测试同时核对新二进制、旧备份
+和旧 master 的退出顺序。此证据证明有限重试合同，真实 Linux 切换仍须由最新 CI
+完成验证。
+
 ## Artifact Evidence
 
 - nghttp2 1.59.0：发布者 [checksums.txt](https://github.com/nghttp2/nghttp2/releases/download/v1.59.0/checksums.txt) 与下载字节匹配；SHA-256 为 `90fd27685120404544e96a60ed40398a3457102840c38e7215dc6dec8684470f`。
@@ -75,6 +87,7 @@ Rocky 9 的 Python 3.9 不支持 `Path.write_text(newline=...)`。测试夹具�
 | Ubuntu helper 成功与链接失败传播 | 契约 | P1 | 使用私有 scratch 路径，无系统包修改 |
 | HTTP HSTS 泄漏与 reload active-worker 重叠 | 故障注入 | P0 | 必须拒绝错误结果，不能仅验证成功路径 |
 | Apache writer wildcard 与 PECL 根文件允许列表 | 契约 | P1 | 实际 writer/下载器代码执行 |
+| PID 文件暂时缺失与瞬时探测失败 | 故障注入/前后对照 | P0 | 直接 set -e 调用可重试，旧代码确实失败 |
 | 产品、OS、架构和实际热切换 | Linux 集成 | P0 | 修复后 PR workflow 必须通过 |
 
 契约覆盖足以回归本次局部修复；生产兼容结论仍不足。完整数据库升级、Apache/Tomcat
