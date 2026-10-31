@@ -210,15 +210,21 @@ Nginx_Tree_Digest() (
 )
 
 Nginx_Health() {
-  local token attempt response workers code challenge=$web_install_dir/conf/acme/.well-known/acme-challenge
+  local token attempt response workers old_pid old_active code challenge=$web_install_dir/conf/acme/.well-known/acme-challenge
   mkdir -p "$challenge" || return 1
   token=$(mktemp "$challenge/oneinstack.XXXXXXXX") || return 1
   printf '%s' "${token##*/}" > "$token"
   chmod 644 "$token" || { rm -f "$token"; return 1; }
   for attempt in 1 2 3 4 5; do
     if [ -n "${nginx_health_master:-}" ]; then
-      workers=$(pgrep -P "$nginx_health_master" -f 'nginx: worker process' | sort) || workers=
-      if [ -z "$workers" ] || [ "$workers" = "$nginx_health_workers" ]; then sleep 1; continue; fi
+      workers=$(pgrep -P "$nginx_health_master" -f 'nginx: worker process$' | sort) || workers=
+      old_active=false
+      for old_pid in $nginx_health_workers; do
+        case $'\n'$workers$'\n' in *$'\n'"$old_pid"$'\n'*) old_active=true ;; esac
+      done
+      # A reload briefly runs old and new accepting workers together. Wait
+      # until every old worker has exited or entered graceful shutdown.
+      if [ -z "$workers" ] || [ "$old_active" = true ]; then sleep 1; continue; fi
     fi
     response=$(curl --noproxy '*' --silent --show-error --max-time 3 --resolve "$domain:${nginx_http_port:-80}:127.0.0.1" "http://$domain:${nginx_http_port:-80}/.well-known/acme-challenge/${token##*/}")
     if [ "$response" = "${token##*/}" ]; then
@@ -244,7 +250,7 @@ Nginx_Capture_Workers() {
   [[ $pidfile == /* && -f $pidfile ]] || { echo 'An explicit absolute pid directive is required for managed activation' >&2; return 1; }
   nginx_health_master=$(cat "$pidfile")
   [[ $nginx_health_master =~ ^[1-9][0-9]+$ ]] && kill -0 "$nginx_health_master" || return 1
-  nginx_health_workers=$(pgrep -P "$nginx_health_master" -f 'nginx: worker process' | sort)
+  nginx_health_workers=$(pgrep -P "$nginx_health_master" -f 'nginx: worker process$' | sort)
 }
 
 Nginx_Begin_Candidate() {

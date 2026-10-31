@@ -122,7 +122,7 @@ self-update is disabled until this repository has a verified release channel.
 ~/oneinstack-next/backup_setup.sh    // Backup parameters
 ~/oneinstack-next/backup.sh    // Perform the backup immediately
 crontab -l    // Can be added to scheduled tasks, such as automatic backups every day 1:00
-  0 1 * * * cd ~/oneinstack-next/backup.sh  > /dev/null 2>&1 &
+  0 1 * * * cd ~/oneinstack-next && ./backup.sh > /dev/null 2>&1
 ```
 
 ## How to manage service

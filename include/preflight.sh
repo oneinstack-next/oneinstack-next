@@ -1,6 +1,26 @@
 #!/bin/bash
 # Additions downloaded by post-install helpers must be checked before building
 # the selected stack, not discovered only after PHP has been installed.
+MongoDB_Artifact_For_PHP() {
+  local version=$1 main
+  if [[ $version =~ ^([5-8])([0-9])$ ]]; then
+    main=${BASH_REMATCH[1]}.${BASH_REMATCH[2]}
+  elif [[ $version =~ ^([0-9]+)\.([0-9]+)(\.[0-9]+)?$ ]]; then
+    main=${BASH_REMATCH[1]}.${BASH_REMATCH[2]}
+  else
+    Source_Error 'Cannot select MongoDB extension without an exact supported PHP version'
+    return 1
+  fi
+  case $main in
+    5.[3-6]) printf '%s\n' mongo-1.6.16.tgz ;;
+    7.0) printf '%s\n' mongodb-1.9.2.tgz ;;
+    7.[1-3]) printf '%s\n' mongodb-1.16.2.tgz ;;
+    7.4|8.0) printf '%s\n' mongodb-1.20.1.tgz ;;
+    8.[1-5]) printf 'mongodb-%s.tgz\n' "$pecl_mongodb_ver" ;;
+    *) Source_Error 'Selected PHP/MongoDB extension combination is unsupported'; return 1 ;;
+  esac
+}
+
 Prepare_Source_Selection() {
   if [ "${Family:-}" = rhel ] && [ "${RHEL_ver:-}" = 8 ] && [[ ${db_option:-} =~ ^(9|10)$ ]] && [ "$dbinstallmethod" = 1 ]; then
     Source_Error 'Percona on this OS requires an explicitly selected, reviewed source install; choose --dbinstallmethod 2'

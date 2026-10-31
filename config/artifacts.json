@@ -1852,6 +1852,63 @@
         "url": "https://nodejs.org/dist/v20.17.0/SHASUMS256.txt",
         "reviewed_at": "2026-10-31"
       }
+    },
+    {
+      "filename": "mongodb-1.20.1.tgz",
+      "component": "mongodb",
+      "version": "1.20.1",
+      "kind": "extension",
+      "channel": "unknown",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://pecl.php.net/get/mongodb-1.20.1.tgz",
+      "provider": "mirrorone",
+      "reason": null,
+      "sha256": "614e57594918feb621f525e6516d59ce09b78f5172355ba8afb6c2207c1ce900",
+      "size": 2106641,
+      "format": "tgz",
+      "required_paths": [
+        "config.m4"
+      ],
+      "top_dir": "mongodb-1.20.1",
+      "verification": {
+        "type": "project-pin-from-publisher-https",
+        "url": "https://pecl.php.net/get/mongodb-1.20.1.tgz",
+        "reviewed_at": "2026-10-31"
+      },
+      "allowed_root_files": [
+        "package.xml"
+      ]
+    },
+    {
+      "filename": "nghttp2-1.59.0.tar.gz",
+      "component": "nghttp2",
+      "version": "1.59.0",
+      "kind": "source",
+      "channel": "release",
+      "platform": {
+        "arch": "any",
+        "libc": null,
+        "os": "any"
+      },
+      "source_url": "https://github.com/nghttp2/nghttp2/releases/download/v1.59.0/nghttp2-1.59.0.tar.gz",
+      "provider": "official",
+      "reason": "Required Apache HTTP/2 dependency is absent from the selected MirrorOne manifest; reviewed publisher release exception",
+      "sha256": "90fd27685120404544e96a60ed40398a3457102840c38e7215dc6dec8684470f",
+      "size": 2338088,
+      "format": "tar.gz",
+      "top_dir": "nghttp2-1.59.0",
+      "required_paths": [
+        "configure"
+      ],
+      "verification": {
+        "type": "publisher-checksum",
+        "url": "https://github.com/nghttp2/nghttp2/releases/download/v1.59.0/checksums.txt",
+        "reviewed_at": "2026-10-31"
+      }
     }
   ]
 }

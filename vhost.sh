@@ -980,7 +980,7 @@ EOF
   fi
   [ ! -d ${apache_install_dir}/conf/vhost ] && mkdir ${apache_install_dir}/conf/vhost
   cat > "${backend_candidate}" << EOF
-<VirtualHost 127.0.0.1:88>
+<VirtualHost *:88>
   ServerAdmin admin@example.com
   DocumentRoot "${vhostdir}"
   ServerName ${domain}

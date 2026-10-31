@@ -87,7 +87,8 @@ Artifact_Verify() {
     while IFS= read -r member; do
       member=${member#./}
       [[ $member != /* && $member != *\\* && ! $member =~ (^|/)\.\.(/|$) ]] || return 1
-      [ -z "$top" ] || [[ $member == "$top" || $member == "$top/"* ]] || return 1
+      [ -z "$top" ] || [[ $member == "$top" || $member == "$top/"* ]] ||
+        jq -e --arg member "$member" '(.allowed_root_files // []) | index($member) != null' <<< "$record" >/dev/null || return 1
     done <<< "$listing"
   fi
   while IFS= read -r required; do

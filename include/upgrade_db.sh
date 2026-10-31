@@ -2,6 +2,20 @@
 # Author:  yeho <lj2007331 AT gmail.com>
 # BLOG:  https://linuxeye.com
 
+Extract_DB_Upgrade_Artifact() {
+  local artifact=$1 directory=$2
+  case $artifact in
+    *.tar.xz) tar xJf "$artifact" || return 1 ;;
+    *.tar.gz) tar xzf "$artifact" || return 1 ;;
+    *) echo "Unsupported database archive: $artifact" >&2; return 1 ;;
+  esac
+  [ -d "$directory" ] && [ ! -L "$directory" ] &&
+    [ -x "$directory/bin/mysql" ] && [ -x "$directory/bin/mysqld" ] || {
+      echo 'Database archive did not produce the expected executable layout' >&2
+      return 1
+    }
+}
+
 Upgrade_DB() {
   pushd ${current_dir}/src > /dev/null
   [ ! -e "${db_install_dir}/bin/mysql" ] && echo "${CWARNING}MySQL/MariaDB/Percona is not installed on your system! ${CEND}" && exit 1
@@ -69,17 +83,18 @@ Upgrade_DB() {
         fi
       fi
       Download_Artifact "${DB_artifact}" || exit 1
-      if [ -e "`ls ${DB_filename}.tar.?z 2>/dev/null`" ]; then
-        echo "Download [${CMSG}`ls ${DB_filename}.tar.?z 2>/dev/null`${CEND}] successfully! "
-      else
-        echo "${CWARNING}${DB} version does not exist! ${CEND}"
-      fi
+      [ -f "$DB_artifact" ] || return 1
+      echo "Download [${CMSG}${DB_artifact}${CEND}] successfully! "
       break
     else
       echo "${CWARNING}input error! ${CEND}Please only input '${CMSG}${OLD_db_ver%.*}.xx${CEND}'"
       [ "${db_flag}" == 'y' ] && exit
     fi
   done
+
+  # Extraction and layout verification must finish before backup, service stop,
+  # or moving either the installation or its data directory.
+  Extract_DB_Upgrade_Artifact "$DB_artifact" "$DB_filename" || return 1
 
   #backup
   echo
@@ -89,14 +104,13 @@ Upgrade_DB() {
   echo "${DB} backup success, Backup file: ${MSG}`pwd`/DB_all_backup_$(date +"%Y%m%d").sql${CEND}"
 
 
-  if [ -e "`ls ${DB_filename}.tar.?z 2>/dev/null`" ]; then
-    echo "[${CMSG}`ls ${DB_filename}.tar.?z 2>/dev/null`${CEND}] found"
+  if [ -f "$DB_artifact" ]; then
+    echo "[${CMSG}${DB_artifact}${CEND}] found"
     if [ "${db_flag}" != 'y' ]; then
       echo "Press Ctrl+c to cancel or Press any key to continue..."
       char=`get_char`
     fi
     if [ "${DB}" == 'MariaDB' ]; then
-      tar xzf ${DB_filename}.tar.gz
       service mysqld stop
       mv ${mariadb_install_dir}{,_old_`date +"%Y%m%d_%H%M%S"`}
       mv ${mariadb_data_dir}{,_old_`date +"%Y%m%d_%H%M%S"`}
@@ -114,7 +128,6 @@ Upgrade_DB() {
       ${mariadb_install_dir}/bin/mysql_upgrade -uroot -p${dbrootpwd} >/dev/null 2>&1
       [ $? -eq 0 ] &&  echo "You have ${CMSG}successfully${CEND} upgrade from ${CMSG}${OLD_db_ver}${CEND} to ${CMSG}${NEW_db_ver}${CEND}"
     elif [ "${DB}" == 'Percona' ]; then
-      tar xzf ${DB_filename}.tar.gz
       service mysqld stop
       mv ${percona_install_dir}{,_old_`date +"%Y%m%d_%H%M%S"`}
       mv ${percona_data_dir}{,_old_`date +"%Y%m%d_%H%M%S"`}
@@ -137,11 +150,6 @@ Upgrade_DB() {
       ${percona_install_dir}/bin/mysql_upgrade -uroot -p${dbrootpwd} >/dev/null 2>&1
       [ $? -eq 0 ] &&  echo "You have ${CMSG}successfully${CEND} upgrade from ${CMSG}${OLD_db_ver}${CEND} to ${CMSG}${NEW_db_ver}${CEND}"
     elif [ "${DB}" == 'MySQL' ]; then
-      if [ `echo ${OLD_db_ver} | awk -F. '{print $1"."$2}'` == '8.0' ]; then
-        tar xJf ${DB_filename}.tar.xz
-      else
-        tar xzf ${DB_filename}.tar.gz
-      fi
       service mysqld stop
       mv ${mysql_install_dir}{,_old_`date +"%Y%m%d_%H%M%S"`}
       mv ${mysql_data_dir}{,_old_`date +"%Y%m%d_%H%M%S"`}

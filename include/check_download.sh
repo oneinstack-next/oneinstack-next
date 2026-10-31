@@ -1,5 +1,6 @@
 #!/bin/bash
 # Author:  Alpha Eva <kaneawk AT gmail.com>
+. "$current_dir/include/preflight.sh"
 
 checkDownload() {
   pushd ${current_dir}/src > /dev/null
@@ -457,19 +458,17 @@ checkDownload() {
 
   # pecl_mongodb
   if [ "${pecl_mongodb}" == '1' ]; then
-    if [[ "${php_option}" =~ ^[1-4]$ ]]; then
-      echo "Download pecl mongo for php 5.x..."
-      Download_Artifact "mongo-1.6.16.tgz" || exit 1
-    elif [[ "${php_option}" =~ ^5$ ]]; then
-      echo "Download pecl mongo for php 7.0..."
-      Download_Artifact "mongodb-1.9.2.tgz" || exit 1
-    elif [[ "${php_option}" =~ ^[6-8]$ ]]; then
-      echo "Download pecl mongo for php 7.1~7.3..."
-      Download_Artifact "mongodb-1.16.2.tgz" || exit 1
-    else
-      echo "Download pecl mongodb for php..."
-      Download_Artifact "mongodb-${pecl_mongodb_ver}.tgz" || exit 1
+    local mongodb_php_version=${mphp_ver:-} mongodb_artifact
+    local -a php_slots=(53 54 55 56 70 71 72 73 74 80 81 82 83 84 85)
+    if [ -z "$mongodb_php_version" ] && [[ ${php_option:-} =~ ^([1-9]|1[0-5])$ ]]; then
+      mongodb_php_version=${php_slots[$((php_option-1))]}
     fi
+    if [ -z "$mongodb_php_version" ] && [ -x "$php_install_dir/bin/php-config" ]; then
+      mongodb_php_version=$("$php_install_dir/bin/php-config" --version) || return 1
+    fi
+    mongodb_artifact=$(MongoDB_Artifact_For_PHP "$mongodb_php_version") || return 1
+    echo "Download pecl $mongodb_artifact..."
+    Download_Artifact "$mongodb_artifact" || exit 1
   fi
 
   # nodejs

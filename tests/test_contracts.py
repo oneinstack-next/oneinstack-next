@@ -20,6 +20,12 @@ BASH = os.environ.get('TEST_BASH') or shutil.which('bash')
 OPENSSL = os.environ.get('TEST_OPENSSL') or shutil.which('openssl')
 
 
+def write_lf(path, content):
+    # Rocky 9 ships Python 3.9; Path.write_text gained newline only in 3.10.
+    with path.open('w', encoding='utf-8', newline='\n') as stream:
+        stream.write(content)
+
+
 class Contracts(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -233,17 +239,22 @@ class Contracts(unittest.TestCase):
         # Source only definitions, without running entrypoint initialization.
         definitions = body[body.index('Choose_ENV() {'):body.rindex('\nif [ ${ARG_NUM} == 0 ]; then')]
         functions = self.work / 'vhost-functions.sh'
-        functions.write_text(definitions, encoding='utf-8', newline='\n')
+        write_lf(functions, definitions)
         for writer, rewrite in [('Create_nginx_phpfpm_conf', 'none'),
                                 ('Create_nginx_phpfpm_conf', 'magento2'),
                                 ('Create_nginx_proxy_conf', 'none'),
+                                ('Create_nginx_apache_modphp_conf', 'none'),
                                 ('Create_nginx_tomcat_conf', 'none')]:
             result = self.bash('''
               source include/nginx_config.sh; source "$1"
               web_install_dir=$2/render; PATH_SSL=$web_install_dir/conf/ssl
               wwwlogs_dir=$web_install_dir/logs; vhostdir=$web_install_dir/www
               tomcat_install_dir=$web_install_dir/tomcat
+              apache_install_dir=$web_install_dir/apache
               mkdir -p "$PATH_SSL" "$wwwlogs_dir" "$vhostdir" "$tomcat_install_dir/conf/vhost" "$web_install_dir/conf/rewrite"
+              mkdir -p "$apache_install_dir/bin" "$apache_install_dir/conf/vhost"
+              printf '#!/bin/bash\nexit 0\n' > "$apache_install_dir/bin/apachectl"
+              chmod +x "$apache_install_dir/bin/apachectl"
               printf '<Server/>\n' > "$tomcat_install_dir/conf/server.xml"
               backend_candidate=$web_install_dir/backend.candidate
               backend_server_candidate=$web_install_dir/server.candidate.xml
@@ -257,12 +268,16 @@ class Contracts(unittest.TestCase):
               # Override only external backend restart; the renderer is real.
               service() { :; }
               Tomcat_Control() { :; }
+              Apache_Test_Candidate() { :; }
               xmllint() { :; } # This test covers writer output, not Tomcat parsing.
               [[ $(uname -s) != *NT* ]] || chown() { :; }
               Print_SSL() { :; }
               Nginx_Commit_Candidate() { Nginx_Render "$nginx_candidate" && cp "$nginx_candidate" "$web_install_dir/result.conf"; }
               "$3"
               cat "$web_install_dir/result.conf"
+              if [ "$3" = Create_nginx_apache_modphp_conf ]; then
+                grep -Fx '<VirtualHost *:88>' "$apache_install_dir/conf/vhost/$domain.conf" || exit 20
+              fi
             ''', functions, self.work, writer, rewrite)
             output = result.stdout
             self.assertIn('http2 on;', output)
@@ -295,7 +310,7 @@ class Contracts(unittest.TestCase):
 
     def test_10_candidate_rejection_and_reload_rollback(self):
         fake = self.work / 'fake-nginx'
-        fake.write_text('''#!/bin/bash
+        write_lf(fake, '''#!/bin/bash
 prefix= config= action=
 while [ $# -gt 0 ]; do
   case $1 in -p) prefix=$2; shift 2;; -c) config=$2; shift 2;; -t) action=test; shift;; -s) action=$2; shift 2;; *) shift;; esac
@@ -304,7 +319,7 @@ echo "$action" >> "$prefix/actions.log"
 if [ "$action" = test ]; then ! grep -rq INVALID "$(dirname "$config")"
 elif [ "$action" = reload ]; then ! grep -q RELOAD_FAIL "$prefix/conf/vhost/example.test.conf"
 else exit 0; fi
-''', encoding='utf-8', newline='\n')
+''')
         self.bash('''
           source include/nginx_config.sh
           web_install_dir=$2/transaction; domain=example.test
@@ -403,32 +418,37 @@ else exit 0; fi
         self.assertEqual(list(target.iterdir()), [])
 
     def test_15_archive_layout_and_traversal_before_publication(self):
-        for member, top, success in [('actual-1/Makefile', 'wrong-1', False),
-                                      ('../escape', 'actual-1', False),
-                                      ('actual-1/Makefile', 'actual-1', True)]:
+        cases = [(['actual-1/Makefile'], 'wrong-1', [], False),
+                 (['../escape'], 'actual-1', [], False),
+                 (['actual-1/Makefile'], 'actual-1', [], True),
+                 (['actual-1/Makefile', 'package.xml'], 'actual-1', ['package.xml'], True),
+                 (['actual-1/Makefile', 'unreviewed.xml'], 'actual-1', ['package.xml'], False),
+                 (['actual-1/Makefile', '../package.xml'], 'actual-1', ['package.xml'], False)]
+        for members, top, allowed_roots, success in cases:
             archive = io.BytesIO()
             with tarfile.open(fileobj=archive, mode='w:gz') as tar:
-                info = tarfile.TarInfo(member)
-                info.size = 2
-                tar.addfile(info, io.BytesIO(b'ok'))
+                for member in members:
+                    info = tarfile.TarInfo(member)
+                    info.size = 2
+                    tar.addfile(info, io.BytesIO(b'ok'))
             type(self).archive_bytes = archive.getvalue()
             catalog = self.catalog('/archive', digest=hashlib.sha256(self.archive_bytes).hexdigest(),
                                    size=len(self.archive_bytes), format='tar.gz', top_dir=top,
-                                   required_paths=['Makefile'])
+                                   required_paths=['Makefile'], allowed_root_files=allowed_roots)
             with tempfile.TemporaryDirectory(dir=self.work) as dest:
                 self.bash('artifact_catalog=$1; download_provider=official; Download_Artifact fixture.bin "$2"', catalog, dest, ok=success)
                 self.assertEqual((Path(dest) / 'fixture.bin').exists(), success)
 
     def test_16_acme_success_without_deploy_receipt_is_failure(self):
         client = self.work / 'fake-acme'
-        client.write_text('''#!/bin/bash
+        write_lf(client, '''#!/bin/bash
 printf '%s\n' "$@" >> "$HOME/acme.calls"
 while [ $# -gt 0 ]; do
   case $1 in --fullchain-file) cp "$TEST_CERT" "$2"; shift 2;; *) shift;; esac
 done
 # Simulate a client that returns success even though its reload hook failed.
 exit 0
-''', encoding='utf-8', newline='\n')
+''')
         self.bash('''
           source include/nginx_config.sh; source include/acme.sh
           HOME=$2/acme-home; export HOME
@@ -459,6 +479,151 @@ exit 0
           if Nginx_Build_Arguments '--add-module=/unreviewed' /new; then exit 16; fi
           if Nginx_Build_Arguments "--with-ld-opt='unterminated" /new; then exit 17; fi
         ''', self.work)
+
+    def test_18_http_hsts_assertion_rejects_header_leak(self):
+        assertion = next(line.strip() for line in (ROOT / 'tests/nginx_live.sh').read_text().splitlines()
+                         if 'HSTS leaked to HTTP' in line)
+        directory = self.work / 'header-check'
+        directory.mkdir()
+        headers = directory / 'http.headers'
+        script = 'set -e; web_install_dir=$1; ' + assertion + '\necho HEADER_CHECK_PASSED'
+        headers.write_text('HTTP/1.1 200 OK\nStrict-Transport-Security: max-age=15552000\n\n')
+        result = self.bash(script, directory, ok=False)
+        self.assertNotIn('HEADER_CHECK_PASSED', result.stdout)
+        headers.write_text('HTTP/1.1 200 OK\nContent-Length: 0\n\n')
+        self.assertIn('HEADER_CHECK_PASSED', self.bash(script, directory).stdout)
+
+    def test_19_ubuntu_dependencies_return_success_and_preserve_link_failure(self):
+        body = (ROOT / 'include/check_sw.sh').read_text()
+        function = body[body.index('installDepsUbuntu() {'):body.index('\ninstallDepsBySrc() {')]
+        # Keep package/link operations mocked and redirect this legacy scratch
+        # file into the fixture; exercise the actual function's status branches.
+        function = function.replace('/tmp/security.sources.list', '${sandbox}/security.sources.list')
+        path = self.work / 'ubuntu-dependencies.sh'
+        write_lf(path, function)
+        self.bash('''
+          source "$1"; sandbox=$2
+          apt-get() { return 0; }
+          grep() { return 0; }
+          ln() { return "$ln_status"; }
+          apache_flag=n; db_option=0
+          for Ubuntu_ver in 20 22; do installDepsUbuntu || exit 10; done
+          Ubuntu_ver=24; ln_status=0; installDepsUbuntu || exit 11
+          ln_status=1
+          if installDepsUbuntu; then exit 12; fi
+        ''', path, self.work)
+
+    def test_20_reload_waits_for_previous_workers_to_stop_accepting(self):
+        self.bash('''
+          source include/nginx_config.sh
+          web_install_dir=$1/worker-readiness; domain=example.test; nginx_ssl_flag=n
+          mkdir -p "$web_install_dir"
+          counter=$web_install_dir/probes; echo 0 > "$counter"
+          nginx_health_master=999; nginx_health_workers=10
+          pgrep() {
+            local count pattern=${!#}
+            count=$(cat "$counter"); echo "$((count+1))" > "$counter"
+            if [ "$count" -eq 0 ]; then
+              printf '%s\n' '10 nginx: worker process' '20 nginx: worker process'
+            else
+              printf '%s\n' '10 nginx: worker process is shutting down' '20 nginx: worker process'
+            fi | grep -E "$pattern" | cut -d ' ' -f 1
+          }
+          sleep() { :; }
+          curl() {
+            [ "$(cat "$counter")" -ge 2 ] || { echo 'Request was made while old workers still accepted connections' >&2; return 1; }
+            local url=${!#}
+            printf '%s' "${url##*/}"
+          }
+          Nginx_Health || exit 10
+          [ "$(cat "$counter")" -eq 2 ] || exit 11
+        ''', self.work)
+
+    def test_21_database_extraction_failure_preserves_service_and_data(self):
+        mysql = self.work / 'mysql-fixture'
+        write_lf(mysql, '''#!/bin/bash
+if [[ "$*" == *'select version()'* ]]; then echo 'version(): 8.4.10'; fi
+exit 0
+''')
+        self.bash('''
+          source include/upgrade_db.sh
+          current_dir=$1/db-extraction-failure; db_install_dir=$current_dir/database
+          mysql_install_dir=$db_install_dir; mysql_data_dir=$current_dir/data
+          mkdir -p "$current_dir/src" "$db_install_dir/bin" "$mysql_data_dir"
+          cp "$2" "$db_install_dir/bin/mysql"; chmod +x "$db_install_dir/bin/mysql"
+          printf 'existing database' > "$mysql_data_dir/sentinel"
+          export TEST_CALLS=$current_dir/unexpected.calls
+          printf '#!/bin/bash\necho dump >> "$TEST_CALLS"\necho SQL\n' > "$db_install_dir/bin/mysqldump"
+          chmod +x "$db_install_dir/bin/mysqldump"
+          Download_Artifact() { printf 'truncated archive' > "$1"; }
+          service() { echo service >> "$TEST_CALLS"; }
+          mv() { echo move >> "$TEST_CALLS"; return 1; }
+          db_flag=y; armplatform=n; NEW_db_ver=8.4.11; dbrootpwd=fixture
+          if (Upgrade_DB); then exit 10; fi
+          [ ! -e "$TEST_CALLS" ] || exit 11
+          [ "$(cat "$mysql_data_dir/sentinel")" = 'existing database' ] || exit 12
+          [ -f "$db_install_dir/bin/mysql" ] || exit 13
+          [ -f "$current_dir/src/mysql-8.4.11-linux-glibc2.28-x86_64.tar.xz" ] || exit 14
+        ''', self.work, mysql)
+        # Prove successful extraction accepts both supported compressors and
+        # checks the actual executable layout before a database is stopped.
+        for compression in ['gz', 'xz']:
+            directory = self.work / ('db-valid-' + compression)
+            directory.mkdir()
+            archive = directory / ('mysql-fixture.tar.' + compression)
+            with tarfile.open(archive, 'w:' + compression) as tar:
+                for binary in ['mysql', 'mysqld']:
+                    info = tarfile.TarInfo('mysql-fixture/bin/' + binary)
+                    info.mode = 0o755
+                    info.size = 9
+                    tar.addfile(info, io.BytesIO(b'#!/bin/sh'))
+            self.bash('source include/upgrade_db.sh; cd "$1"; Extract_DB_Upgrade_Artifact "$2" mysql-fixture', directory, archive.name)
+
+    def test_22_php_upgrade_legacy_patch_is_scoped_to_53_through_55(self):
+        config = self.work / 'php-config-fixture'
+        write_lf(config, '#!/bin/bash\nprintf "%s\\n" "$TEST_PHP_VERSION"\n')
+        for version, patch_expected in [('8.5.12', False), ('5.6.40', False), ('5.5.38', True)]:
+            result = self.bash('''
+              source include/upgrade_php.sh
+              current_dir=$1/php-upgrade-$2; php_install_dir=$current_dir/php
+              mkdir -p "$current_dir/src" "$php_install_dir/bin"
+              cp "$3" "$php_install_dir/bin/php-config"; chmod +x "$php_install_dir/bin/php-config"
+              TEST_PHP_VERSION=$2; export TEST_PHP_VERSION
+              NEW_php_ver=$2; php_flag=y
+              ledger=$current_dir/downloads
+              Download_Artifact() { echo "$1" >> "$ledger"; printf fixture > "$1"; }
+              # Stop before compilation; this test exercises acquisition order.
+              tar() { return 31; }
+              if (Upgrade_PHP); then exit 10; fi
+              cat "$ledger"
+            ''', self.work, version, config)
+            downloads = [line for line in result.stdout.splitlines() if line.endswith(('.tar.gz', '.patch'))]
+            self.assertIn('php-' + version + '.tar.gz', downloads)
+            self.assertEqual('fpm-race-condition.patch' in downloads, patch_expected)
+
+    def test_23_mongodb_preflight_and_installer_select_the_same_artifact(self):
+        config = self.work / 'mongodb-php-config-fixture'
+        write_lf(config, '#!/bin/bash\nprintf "%s\\n" "$TEST_PHP_VERSION"\n')
+        for php_option, mphp, version in [('9', '', '7.4.33'), ('10', '', '8.0.30'),
+                                         ('0', '74', '7.4.33'), ('0', '80', '8.0.30')]:
+            self.bash('''
+              source include/version_data.sh; Read_Versions versions.txt || exit 1
+              source include/preflight.sh; source include/check_download.sh; source include/pecl_mongodb.sh
+              current_dir=$1/mongodb-$2-$3; php_install_dir=$current_dir/php
+              mkdir -p "$current_dir/src" "$php_install_dir/bin"
+              cp "$5" "$php_install_dir/bin/php-config"; chmod +x "$php_install_dir/bin/php-config"
+              touch "$php_install_dir/bin/phpize"
+              TEST_PHP_VERSION=$4; export TEST_PHP_VERSION
+              php_option=$2; mphp_ver=$3; pecl_mongodb=1
+              ledger=$current_dir/preflight.downloads
+              Download_Artifact() { echo "$1" >> "$ledger"; }
+              checkDownload || exit 10
+              [ "$(grep '^mongo' "$ledger")" = mongodb-1.20.1.tgz ] || exit 11
+              ledger=$current_dir/install.downloads
+              Download_Artifact() { echo "$1" >> "$ledger"; return 1; }
+              if (Install_pecl_mongodb); then exit 12; fi
+              [ "$(cat "$ledger")" = mongodb-1.20.1.tgz ] || exit 13
+            ''', self.work, php_option, mphp, version, config)
 
 
 if __name__ == '__main__':

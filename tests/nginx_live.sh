@@ -1,6 +1,6 @@
 #!/bin/bash
 # Runs only against a privately installed real Nginx-family binary.
-set -eo pipefail
+set -Eeo pipefail
 current_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 web_install_dir=$1
 domain=example.test
@@ -28,9 +28,18 @@ EOF
 "$web_install_dir/sbin/nginx" -p "$web_install_dir/" -c "$web_install_dir/conf/nginx.conf"
 backend_pid=
 cleanup() {
+  local status=$? file
+  if [ "$status" -ne 0 ]; then
+    printf 'Live integration failed at line %s: %s (HTTP status: %s)\n' "${failure_line:-unknown}" "${failure_command:-unknown}" "${code:-unset}" >&2
+    for file in "$web_install_dir/logs/error.log" "$web_install_dir/logs/backend.log"; do
+      if [ -f "$file" ]; then printf '\n--- %s ---\n' "$file" >&2; tail -80 "$file" >&2; fi
+    done
+  fi
   "$web_install_dir/sbin/nginx" -p "$web_install_dir/" -c "$web_install_dir/conf/nginx.conf" -s quit || true
   [ -z "$backend_pid" ] || kill "$backend_pid" || true
+  return "$status"
 }
+trap 'failure_line=$LINENO; failure_command=$BASH_COMMAND' ERR
 trap cleanup EXIT
 # Load the actual writer definitions without invoking vhost.sh's entrypoint.
 python3 - "$current_dir/vhost.sh" "$web_install_dir/.vhost-functions.sh" <<'PY'
@@ -101,7 +110,7 @@ for path in /headers /missing; do
   curl --noproxy '*' -sS -D "$web_install_dir/https.headers" -o /dev/null --cacert "$PATH_SSL/$domain.crt" --resolve "$domain:18443:127.0.0.1" "https://$domain:18443$path"
   grep -qi '^Strict-Transport-Security:' "$web_install_dir/https.headers"
   curl --noproxy '*' -sS -D "$web_install_dir/http.headers" -o /dev/null --resolve "$domain:18080:127.0.0.1" "http://$domain:18080$path"
-  ! grep -qi '^Strict-Transport-Security:' "$web_install_dir/http.headers"
+  if grep -qi '^Strict-Transport-Security:' "$web_install_dir/http.headers"; then echo 'HSTS leaked to HTTP' >&2; exit 1; fi
 done
 # A renewed certificate is delivered to a private inbox; deployment validates
 # both files, tests a complete tree, reloads, and checks the actual listener.

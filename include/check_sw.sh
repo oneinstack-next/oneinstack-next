@@ -132,7 +132,10 @@ installDepsUbuntu() {
   for Package in ${pkgList}; do
     apt-get --no-install-recommends -y install ${Package}
   done
-  [[ "${Ubuntu_ver}" =~ ^24$ ]] && ln -s /usr/lib/x86_64-linux-gnu/libaio.so.1t64.0.2 /usr/lib/x86_64-linux-gnu/libaio.so.1 
+  if [ "${Ubuntu_ver}" = 24 ]; then
+    ln -s /usr/lib/x86_64-linux-gnu/libaio.so.1t64.0.2 /usr/lib/x86_64-linux-gnu/libaio.so.1 || return 1
+  fi
+  return 0
 }
 
 installDepsBySrc() {

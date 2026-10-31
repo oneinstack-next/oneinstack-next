@@ -198,7 +198,7 @@ tree over an existing one.
 
 ## Validation status and remaining acceptance
 
-The 2026-10-31 local run executed 17 contract tests: 16 passed and the POSIX-only
+The 2026-10-31 local run executed 23 contract tests: 22 passed and the POSIX-only
 metadata symlink/permission test was skipped. Targeted ShellCheck passed; syntax
 results are recorded in `validation.json`.
 
@@ -215,18 +215,23 @@ independently established.
 
 CI definitions build real Nginx, Tengine and OpenResty, exercise actual HTTP/TLS
 requests, certificate deployment and HSTS, and include Ubuntu 24.04 x86_64,
-Ubuntu aarch64 and Rocky 9 coverage. These definitions have **not been run** in
-this Windows environment. Neither full stack compilation/database operation nor
-ACME staging issuance has been performed. The current environment has no usable
-WSL or Docker daemon. Thus P7 and the plan's full Definition of Done remain open;
-do not label this change production-qualified or the entire task complete.
+Ubuntu aarch64 and Rocky 9 coverage. The first published PR runs passed Ubuntu
+contract tests (including the POSIX metadata test), while the product matrix
+exposed dependency and reload-readiness failures. The review fixes add the
+Rocky package replacement option, Python 3.9-compatible fixtures and readiness
+checks that wait for all old workers to stop accepting. The amended head must
+pass the latest PR checks. Full stack compilation/database operation and ACME
+staging issuance remain unperformed. The local Windows environment still has no
+usable WSL or Docker daemon. Thus P7 and the plan's full Definition of Done
+remain open; do not label this change production-qualified or the entire task
+complete.
 
 The real-binary harness also exercises invalid-configuration rejection, IPv6
 loopback requests when available, and the USR2/WINCH/QUIT switch plus an injected
 health-check failure and rollback. It reuses the compiled binary's bytes to
 isolate the switch protocol; it does not qualify arbitrary cross-version or
-external-module ABI upgrades. These added integration scenarios are also
-unexecuted until the Linux jobs run.
+external-module ABI upgrades. Their results for the amended head are recorded by the Linux PR jobs;
+the current local fixture run alone cannot prove them.
 Its PHP, proxy and Magento cases load the actual writer definitions and serve
 static route fixtures; PHP-FPM execution and a full Magento application are
 separate full-stack acceptance work.

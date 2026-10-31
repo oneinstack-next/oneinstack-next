@@ -2,15 +2,15 @@
 
 Observed on 2026-10-31. The authoritative mapping is [config/artifacts.json](../config/artifacts.json); the baseline call graph is [source-inventory.json](source-inventory.json).
 
-Registered identities: **76**; strong pins: **73**; bundled patches: **15**. A registered/pinned artifact is not an assertion that its component compiles or runs on every historical menu combination.
+Registered identities: **78**; strong pins: **75**; bundled patches: **15**. A registered/pinned artifact is not an assertion that its component compiles or runs on every historical menu combination.
 
 ## Planned matrix
 
 | Combination | Acquisition evidence | Runtime status |
 | --- | --- | --- |
 | Ubuntu 24.04 / Rocky 9 x86_64; Nginx 1.30.6 + OpenSSL 3.5.6 + PHP 8.5.12 + MySQL 8.4.11 | Exact identities, publisher/project pins; MySQL archive fetched from Oracle and its layout inspected; glibc >= 2.28 enforced | Full Linux install not run |
-| Tengine 3.1.0 / OpenResty 1.31.1.1 frontend | Source archives independently fetched and inspected; capability probes implemented | Real-binary CI defined, not run |
-| aarch64 Nginx/PHP source-only stack | Architecture-neutral source records; no x86_64 DB binary substitution | Build/runtime CI pending |
+| Tengine 3.1.0 / OpenResty 1.31.1.1 frontend | Source archives independently fetched and inspected; capability probes implemented | Initial real-binary CI failed; amended-head checks required |
+| aarch64 Nginx/PHP source-only stack | Architecture-neutral source records; no x86_64 DB binary substitution | Initial ARM frontend run passed once; amended-head checks required |
 | Node.js 20.17.0 x86_64 / aarch64 glibc | Publisher SHASUMS256; fixed archive contract and glibc minimum | Runtime not run |
 
 A default-core metadata selection was also checked with a **simulated** Linux x86_64/glibc 2.39 target in Git Bash. This exercises selection and real manifest matching, not OS or binary execution compatibility.
@@ -25,6 +25,12 @@ A default-core metadata selection was also checked with a **simulated** Linux x8
 - JDK acquisition through signed OS package repositories remains a separate package-manager path, not a fictitious MirrorOne source mapping. Repository/key policy still needs the separate security review.
 - Bundled `include/ois.x86_64` and `include/ois.aarch64` retain unresolved publisher/build provenance. Geolocation no longer participates in acquisition; existing local-IP/connectivity uses remain. Inventory hashes identify the exact blobs, not an independently authenticated publisher.
 - IPv6 listeners are generated only when explicitly configured. Public IPv6 and ACME staging were not exercised here. Existing default TLS servers and custom third-party includes require deployment-specific review.
+
+Apache preflight now includes the reviewed nghttp2 1.59.0 publisher release;
+its SHA-256 was matched to the publisher checksum file and its `configure`
+layout inspected. PHP 7.4/8.0 preflight and installation share the pinned
+MongoDB 1.20.1 selection. These acquisition checks do not qualify those full
+software stacks at runtime.
 
 ## Exact registry
 
@@ -106,5 +112,7 @@ A default-core metadata selection was also checked with a **simulated** Linux x8
 | `php5.3patch` | bundled-patches / 0a663e78bd3ece6d2a4f05812f129b4d46246d63 | patch / any/any/any | bundled | project-bundled-pin |
 | `node-v20.17.0-linux-x64.tar.gz` | nodejs / 20.17.0 | binary / linux/x86_64/glibc2.28 | official | publisher-checksum |
 | `node-v20.17.0-linux-arm64.tar.gz` | nodejs / 20.17.0 | binary / linux/aarch64/glibc2.28 | official | publisher-checksum |
+| `nghttp2-1.59.0.tar.gz` | nghttp2 / 1.59.0 | source / any/any/any | official | publisher-checksum |
+| `mongodb-1.20.1.tgz` | mongodb / 1.20.1 | extension / any/any/any | mirrorone | project-pin-from-publisher-https |
 
 Official exceptions and their reasons, upstream URLs, sizes, archive roots and full digests are recorded per entry in the JSON. Runtime transport failures never turn an unregistered or weakly verified item into a supported component.
