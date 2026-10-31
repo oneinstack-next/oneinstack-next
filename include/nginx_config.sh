@@ -217,7 +217,7 @@ Nginx_Health() {
   chmod 644 "$token" || { rm -f "$token"; return 1; }
   for attempt in 1 2 3 4 5; do
     if [ -n "${nginx_health_master:-}" ]; then
-      workers=$(pgrep -P "$nginx_health_master" -f 'nginx: worker process$' | sort) || workers=
+      workers=$(pgrep -P "$nginx_health_master" -f 'nginx: worker process[[:space:]]*$' | sort) || workers=
       old_active=false
       for old_pid in $nginx_health_workers; do
         case $'\n'$workers$'\n' in *$'\n'"$old_pid"$'\n'*) old_active=true ;; esac
@@ -245,12 +245,20 @@ Nginx_Health() {
 }
 
 Nginx_Capture_Workers() {
-  local pidfile
+  local pidfile workers
+  nginx_health_workers=
   pidfile=$("$web_install_dir/sbin/nginx" -T -p "$web_install_dir/" -c "$web_install_dir/conf/nginx.conf" 2>/dev/null | awk '$1=="pid" && !seen {gsub(/[;"]/,"",$2); print $2; seen=1}')
   [[ $pidfile == /* && -f $pidfile ]] || { echo 'An explicit absolute pid directive is required for managed activation' >&2; return 1; }
   nginx_health_master=$(cat "$pidfile")
   [[ $nginx_health_master =~ ^[1-9][0-9]+$ ]] && kill -0 "$nginx_health_master" || return 1
-  nginx_health_workers=$(pgrep -P "$nginx_health_master" -f 'nginx: worker process$' | sort)
+  # Older procps renders NUL-padded process titles with trailing spaces.
+  # Keep the end anchor so gracefully shutting-down workers stay excluded.
+  workers=$(pgrep -P "$nginx_health_master" -f 'nginx: worker process[[:space:]]*$') || {
+    echo 'Cannot capture active Nginx workers before activation' >&2
+    return 1
+  }
+  [ -n "$workers" ] || { echo 'No active Nginx workers found before activation' >&2; return 1; }
+  nginx_health_workers=$(sort <<< "$workers") || return 1
 }
 
 Nginx_Begin_Candidate() {
@@ -351,7 +359,7 @@ Nginx_Upgrade_Binary() (
       # Missing/partial state is an expected polling result, even under errexit.
       new_master=$(cat "$pidfile" 2>/dev/null) || new_master=
       if [[ $new_master =~ ^[1-9][0-9]+$ && $new_master != "$old_master" ]] &&
-          kill -0 "$new_master" && pgrep -P "$new_master" -f 'nginx: worker process' >/dev/null; then
+          kill -0 "$new_master" && pgrep -P "$new_master" -f 'nginx: worker process[[:space:]]*$' >/dev/null; then
         kill -WINCH "$old_master" || break
         sleep 1
         if curl --noproxy '*' --silent --show-error --fail --max-time 5 "${nginx_upgrade_health_url:-http://127.0.0.1/}" >/dev/null; then healthy=true; break; fi
@@ -369,7 +377,7 @@ Nginx_Upgrade_Binary() (
   fi
   healthy=false
   for attempt in 1 2 3 4 5; do
-    if pgrep -P "$old_master" -f 'nginx: worker process' >/dev/null; then healthy=true; break; fi
+    if pgrep -P "$old_master" -f 'nginx: worker process[[:space:]]*$' >/dev/null; then healthy=true; break; fi
     sleep 1
   done
   if [ "$healthy" != true ]; then

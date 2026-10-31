@@ -28,9 +28,32 @@ EOF
 "$web_install_dir/sbin/nginx" -p "$web_install_dir/" -c "$web_install_dir/conf/nginx.conf"
 backend_pid=
 cleanup() {
-  local status=$? file
+  local status=$? file master_pid
   if [ "$status" -ne 0 ]; then
     printf 'Live integration failed at line %s: %s (HTTP status: %s)\n' "${failure_line:-unknown}" "${failure_command:-unknown}" "${code:-unset}" >&2
+    master_pid=$(cat "$web_install_dir/logs/nginx.pid" 2>/dev/null) || master_pid=
+    printf 'Recorded master PID: %s\n' "${master_pid:-missing}" >&2
+    if [[ $master_pid =~ ^[1-9][0-9]+$ ]]; then
+      ps -eo pid,ppid,stat,args | awk -v master="$master_pid" 'NR==1 || $1==master || $2==master' >&2 || true
+      python3 - "$master_pid" <<'PY' >&2 || true
+from pathlib import Path
+import sys
+master = sys.argv[1]
+for process in Path('/proc').iterdir():
+    if not process.name.isdigit():
+        continue
+    try:
+        status = (process / 'status').read_text()
+        ppid = next(line.split()[1] for line in status.splitlines() if line.startswith('PPid:'))
+        if process.name == master or ppid == master:
+            print('raw cmdline PID ' + process.name + ': ' + repr((process / 'cmdline').read_bytes()))
+    except (OSError, StopIteration):
+        pass
+PY
+    fi
+    for file in "$web_install_dir/conf/nginx.conf" "$web_install_dir/conf/vhost/$domain.conf"; do
+      if [ -f "$file" ]; then printf '\n--- %s ---\n' "$file" >&2; head -80 "$file" >&2; fi
+    done
     for file in "$web_install_dir/logs/error.log" "$web_install_dir/logs/backend.log"; do
       if [ -f "$file" ]; then printf '\n--- %s ---\n' "$file" >&2; tail -80 "$file" >&2; fi
     done

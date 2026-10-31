@@ -5,19 +5,20 @@
 核验对象为 [PR #1](https://github.com/oneinstack-next/oneinstack-next/pull/1)
 在 `97cf0e704ad050e4b634f129004919120efe3303` 上收到的 9 条 CodeRabbit
 行内评论。审查提交和汇总评论重复引用这些条目，没有额外独立反馈。
-9 条均有当前代码证据，全部接受并修复；没有机械执行评论中的代理提示。
-严重性分布：Critical 0 / High 7 / Medium 1 / Low 1。
-本地 24 项契约测试为 23 项通过、1 项 Windows POSIX 测试跳过。
+初始 9 条均有当前代码证据，全部接受并修复；复审新增 3 条也逐项核验处理。
+没有机械执行评论中的代理提示。
+12 条反馈严重性分布：Critical 0 / High 8 / Medium 2 / Low 2。
+本地 26 项契约测试为 25 项通过、1 项 Windows POSIX 测试跳过。
 合并仍应以修复后提交的 Linux CI 为门槛，不能用本地测试代替。
 
 ## Core Conclusion Card
 
 | 项目 | 结论 |
 | --- | --- |
-| 已核验反馈 | 9 / 9，全部成立 |
-| 已落实代码修复 | 9 / 9 |
+| 已核验反馈 | 12 / 12：11 条缺陷成立，1 条证据表述澄清合理 |
+| 已落实处置 | 12 / 12，包含代码与文档 |
 | 附加 CI 问题 | reload 就绪竞态、PID 交接读取、Python 3.9 与 xz 依赖，一并修复 |
-| 本地回归 | 24 项：23 通过、1 平台跳过；最终完整回归耗时 56.871 秒 |
+| 本地回归 | 26 项：25 通过、1 平台跳过，58.731 秒；末次 worker 空白变更的两项前后对照通过 |
 | 静态检查 | 52 个改动或新增 Shell 文件语法通过，针对性 ShellCheck 和 diff 空白检查通过 |
 | 合并门槛 | 修复后提交的 Ubuntu、Rocky、Nginx/Tengine/OpenResty 与 ARM 检查通过 |
 
@@ -34,6 +35,16 @@
 | [4431664615](https://github.com/oneinstack-next/oneinstack-next/pull/1#discussion_r4431664615) | Low | README 的 cron 把脚本当作 `cd` 目录，不能运行备份。改为进入项目目录后执行 `./backup.sh`，保留 01:00 与输出重定向。 | 命令结构与实际脚本入口核对；未执行真实备份。 |
 | [4431664623](https://github.com/oneinstack-next/oneinstack-next/pull/1#discussion_r4431664623) | Medium | `set -e` 对 `! grep` 不终止脚本；HTTP HSTS 禁用断言无效。改为命中头部时显式退出。 | 提取实际断言，注入带/不带 HSTS 的 HTTP 响应头；泄漏必须中止，正常必须通过。 |
 | [4431664627](https://github.com/oneinstack-next/oneinstack-next/pull/1#discussion_r4431664627) | High | Apache 精确 IP vhost 优先于原有 wildcard vhost，可能把旧站点流量导向新站点。后端恢复 `*:88`，监听仍限制在 `127.0.0.1:88`。 | 实际 Apache writer 生成结果回归；原监听限制保持不变。 |
+
+## Follow-up Findings
+
+复审针对 `67fdfe8` 新增以下 3 条线程，继续以当前代码和测试验证：
+
+| 评论 | 判断 | 处置与验证 |
+| --- | --- | --- |
+| [4432769875](https://github.com/oneinstack-next/oneinstack-next/pull/1#discussion_r4432769875) | Low，表述澄清合理 | 原句说明结果由 CI 记录，并未声称通过，但容易把 pending 快照误读为完成验收。改为明确要求精确提交的已完成成功运行，本地夹具不作为通过证据。 |
+| [4432769880](https://github.com/oneinstack-next/oneinstack-next/pull/1#discussion_r4432769880) | High，两处缺陷均成立 | Ubuntu24 链接创建不幂等，且路径硬编码 x86_64。新 helper 接受正确相对/绝对链接，仅创建缺失链接，拒绝覆盖错误/悬空链接和普通文件；调用者按 Debian multiarch 选择本机目录。真实私有 symlink、amd64/arm64 目录选择及失败传播测试通过。 |
+| [4432769884](https://github.com/oneinstack-next/oneinstack-next/pull/1#discussion_r4432769884) | Medium，成立 | 无 pipefail 的入口中，`sort` 会掩盖 `pgrep` 失败。现在单独检查查询状态并拒绝空快照，清除旧状态后再排序。关闭 pipefail 的失败/空值/排序行为回归通过。 |
 
 ## Architecture Impact
 
@@ -71,6 +82,18 @@ Rocky 9 的 Python 3.9 不支持 `Path.write_text(newline=...)`。测试夹具�
 和旧 master 的退出顺序。此证据证明有限重试合同，真实 Linux 切换仍须由最新 CI
 完成验证。
 
+[82f5fdd 的 Linux 运行](https://github.com/oneinstack-next/oneinstack-next/actions/runs/41228733048)
+中 Ubuntu 的 Nginx、Tengine、OpenResty、ARM 四个真实产品任务均通过，包含热切换和
+故障回退。Rocky 24 项契约全部通过，实际产品编译成功，但首次 worker 捕获因旧版
+procps 兼容问题中断。procps 3.3.17 会把命令行向量中的 NUL 填充连接成尾随空格，
+而 Nginx 会填充进程标题存储；精确 `$` 匹配可能因此失败。依据
+[procps 向量读取](https://gitlab.com/procps-ng/procps/-/raw/v3.3.17/proc/readproc.c)、
+[pgrep 拼接](https://gitlab.com/procps-ng/procps/-/raw/v3.3.17/pgrep.c) 和
+[Nginx 进程标题实现](https://raw.githubusercontent.com/nginx/nginx/release-1.30.6/src/os/unix/ngx_setproctitle.c)，
+active worker 匹配改为允许末尾 POSIX 空白，仍锚定结尾并排除 shutdown 标题。
+仅回退旧正则的对照版本会使两个相关测试失败，修复版本通过；最新 Rocky CI
+仍为实际运行门槛，harness 同时保留原始 cmdline 和进程状态诊断。
+
 ## Artifact Evidence
 
 - nghttp2 1.59.0：发布者 [checksums.txt](https://github.com/nghttp2/nghttp2/releases/download/v1.59.0/checksums.txt) 与下载字节匹配；SHA-256 为 `90fd27685120404544e96a60ed40398a3457102840c38e7215dc6dec8684470f`。
@@ -88,6 +111,8 @@ Rocky 9 的 Python 3.9 不支持 `Path.write_text(newline=...)`。测试夹具�
 | HTTP HSTS 泄漏与 reload active-worker 重叠 | 故障注入 | P0 | 必须拒绝错误结果，不能仅验证成功路径 |
 | Apache writer wildcard 与 PECL 根文件允许列表 | 契约 | P1 | 实际 writer/下载器代码执行 |
 | PID 文件暂时缺失与瞬时探测失败 | 故障注入/前后对照 | P0 | 直接 set -e 调用可重试，旧代码确实失败 |
+| libaio 真实链接重试与 multiarch | 私有文件系统/实际 helper | P1 | 正确目标接受、冲突不覆盖、amd64/arm64 路径及失败传播 |
+| 空 worker 快照、查询失败与 procps 空白兼容 | 故障注入/前后对照 | P0 | 无 pipefail 也拒绝坏快照，保留 shutdown 排除 |
 | 产品、OS、架构和实际热切换 | Linux 集成 | P0 | 修复后 PR workflow 必须通过 |
 
 契约覆盖足以回归本次局部修复；生产兼容结论仍不足。完整数据库升级、Apache/Tomcat
@@ -99,7 +124,7 @@ Rocky 9 的 Python 3.9 不支持 `Path.write_text(newline=...)`。测试夹具�
 
 | 顺序 | 行动 | 负责人 | 紧急度 | 目标日期/状态 |
 | --- | --- | --- | --- | --- |
-| 1 | 核验全部评论并修复 9 项有效反馈 | Cody / Archi / 根代理 | 合并前 | 2026-10-31，代码与本地回归完成 |
+| 1 | 核验初始 9 条及复审新增 3 条反馈 | Cody / Archi / 根代理 | 合并前 | 2026-10-31，代码与本地回归完成 |
 | 2 | 补齐制品依据及故障路径测试 | Tessa / 根代理 | 合并前 | 2026-10-31，网络和本地检查完成 |
 | 3 | 推送修复并跟进最新 Linux CI，修复真实失败 | 根代理 | 合并前 | 以 PR 最新提交检查为准 |
 | 4 | 完成原计划的完整栈与 ACME staging 实机验收 | 维护者提供环境后继续 | 发布前 | 仍未以本次局部回归宣称完成 |

@@ -95,6 +95,23 @@ installDepsRHEL() {
   yum -y update bash openssl glibc
 }
 
+# Keep the compatibility SONAME link idempotent without replacing local files.
+Ensure_Libaio_Compat_Link() {
+  local target=$1/libaio.so.1t64 link=$1/libaio.so.1 expected actual
+  [ -f "$target" ] || { echo "Missing installed libaio library: $target" >&2; return 1; }
+  expected=$(readlink -e -- "$target") || return 1
+  if [ -L "$link" ]; then
+    actual=$(readlink -e -- "$link") || { echo "Refusing dangling libaio compatibility link: $link" >&2; return 1; }
+    [ "$actual" = "$expected" ] || { echo "Refusing different libaio compatibility target: $link" >&2; return 1; }
+  elif [ -e "$link" ]; then
+    echo "Refusing to replace existing libaio compatibility path: $link" >&2
+    return 1
+  else
+    ln -s -- libaio.so.1t64 "$link" || return 1
+  fi
+  return 0
+}
+
 installDepsUbuntu() {
   # Uninstall the conflicting software
   echo "${CMSG}Removing the conflicting packages...${CEND}"
@@ -133,7 +150,10 @@ installDepsUbuntu() {
     apt-get --no-install-recommends -y install ${Package}
   done
   if [ "${Ubuntu_ver}" = 24 ]; then
-    ln -s /usr/lib/x86_64-linux-gnu/libaio.so.1t64.0.2 /usr/lib/x86_64-linux-gnu/libaio.so.1 || return 1
+    local libaio_multiarch
+    libaio_multiarch=$(dpkg-architecture -qDEB_HOST_MULTIARCH) || return 1
+    [[ $libaio_multiarch =~ ^[A-Za-z0-9_]+(-[A-Za-z0-9_]+)+$ ]] || return 1
+    Ensure_Libaio_Compat_Link "/usr/lib/$libaio_multiarch" || return 1
   fi
   return 0
 }

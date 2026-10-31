@@ -493,7 +493,7 @@ exit 0
         headers.write_text('HTTP/1.1 200 OK\nContent-Length: 0\n\n')
         self.assertIn('HEADER_CHECK_PASSED', self.bash(script, directory).stdout)
 
-    def test_19_ubuntu_dependencies_return_success_and_preserve_link_failure(self):
+    def test_19_ubuntu_dependencies_use_host_multiarch_and_preserve_link_failure(self):
         body = (ROOT / 'include/check_sw.sh').read_text()
         function = body[body.index('installDepsUbuntu() {'):body.index('\ninstallDepsBySrc() {')]
         # Keep package/link operations mocked and redirect this legacy scratch
@@ -505,12 +505,20 @@ exit 0
           source "$1"; sandbox=$2
           apt-get() { return 0; }
           grep() { return 0; }
-          ln() { return "$ln_status"; }
+          dpkg-architecture() { printf '%s\n' "$triplet"; }
+          Ensure_Libaio_Compat_Link() { printf '%s\n' "$1" >> "$sandbox/link.calls"; return "$helper_status"; }
           apache_flag=n; db_option=0
           for Ubuntu_ver in 20 22; do installDepsUbuntu || exit 10; done
-          Ubuntu_ver=24; ln_status=0; installDepsUbuntu || exit 11
-          ln_status=1
+          [ ! -e "$sandbox/link.calls" ] || exit 13
+          Ubuntu_ver=24; helper_status=0
+          for triplet in x86_64-linux-gnu aarch64-linux-gnu; do installDepsUbuntu || exit 11; done
+          [ "$(cat "$sandbox/link.calls")" = $'/usr/lib/x86_64-linux-gnu\n/usr/lib/aarch64-linux-gnu' ] || exit 14
+          helper_status=1
           if installDepsUbuntu; then exit 12; fi
+          helper_status=0; triplet=../../escape
+          before=$(cat "$sandbox/link.calls")
+          if installDepsUbuntu; then exit 15; fi
+          [ "$(cat "$sandbox/link.calls")" = "$before" ] || exit 16
         ''', path, self.work)
 
     def test_20_reload_waits_for_previous_workers_to_stop_accepting(self):
@@ -526,9 +534,9 @@ exit 0
             local count pattern=${!#}
             count=$(cat "$counter"); echo "$((count+1))" > "$counter"
             if [ "$count" -eq 0 ]; then
-              printf '%s\n' '10 nginx: worker process' '20 nginx: worker process'
+              printf '%s\n' '10 nginx: worker process   ' '20 nginx: worker process  '
             else
-              printf '%s\n' '10 nginx: worker process is shutting down' '20 nginx: worker process'
+              printf '%s\n' '10 nginx: worker process is shutting down  ' '20 nginx: worker process  '
             fi | grep -E "$pattern" | cut -d ' ' -f 1
           }
           sleep() { :; }
@@ -682,6 +690,99 @@ NGINX
           grep -Fx -- '-QUIT 123' "$signals" >/dev/null || exit 12
           [ "$(sha256sum < "$prefix/sbin/nginx.previous")" = "$old_digest" ] || exit 13
           [ "$(sha256sum < "$prefix/sbin/nginx")" = "$new_digest" ] || exit 14
+        ''', self.work)
+
+    def test_25_worker_snapshot_rejects_failed_or_empty_queries_without_pipefail(self):
+        self.bash('''
+          source include/nginx_config.sh
+          set +o pipefail
+          web_install_dir=$1/worker-snapshot
+          mkdir -p "$web_install_dir/sbin" "$web_install_dir/logs"
+          TEST_PIDFILE=$web_install_dir/logs/nginx.pid; export TEST_PIDFILE
+          printf 123 > "$TEST_PIDFILE"
+          printf '#!/bin/bash\nprintf "pid %%s;\\n" "$TEST_PIDFILE"\n' > "$web_install_dir/sbin/nginx"
+          chmod +x "$web_install_dir/sbin/nginx"
+          filter_file=$web_install_dir/worker-filter
+          kill() { return 0; }
+          pgrep() {
+            printf '%s' "${!#}" > "$filter_file"
+            case $query_mode in
+              failed) return "$query_status" ;;
+              empty) return 0 ;;
+              valid)
+                printf '%s\n' '30 nginx: worker process  ' '70 nginx: worker process is shutting down  ' '10 nginx: worker process   ' |
+                  grep -E "${!#}" | cut -d ' ' -f 1 ;;
+            esac
+          }
+          query_mode=failed
+          for query_status in 1 2 127; do
+            nginx_health_workers=STALE
+            if Nginx_Capture_Workers; then echo 'Failed worker query was accepted' >&2; exit 10; fi
+            [ -z "$nginx_health_workers" ] || exit 16
+          done
+          query_mode=empty
+          if Nginx_Capture_Workers; then echo 'Empty worker snapshot was accepted' >&2; exit 11; fi
+          query_mode=valid
+          Nginx_Capture_Workers || exit 12
+          [ "$nginx_health_master" = 123 ] || exit 13
+          [ "$nginx_health_workers" = $'10\n30' ] || exit 14
+          pattern=$(cat "$filter_file")
+          printf 'nginx: worker process   \n' | grep -Eq "$pattern" || exit 15
+          if printf 'nginx: worker process is shutting down  \n' | grep -Eq "$pattern"; then exit 17; fi
+        ''', self.work)
+
+    def test_26_libaio_link_is_idempotent_and_preserves_conflicts(self):
+        if os.name == 'nt':
+            target = self.work / 'symlink-probe-target'
+            target.write_bytes(b'probe')
+            probe = self.work / 'symlink-probe'
+            try:
+                probe.symlink_to(target)
+            except OSError as error:
+                self.skipTest('Native Windows symlinks unavailable: ' + str(error))
+            probe.unlink()
+            previous_msys = self.env.get('MSYS')
+            self.env['MSYS'] = ((previous_msys or '') + ' winsymlinks:nativestrict').strip()
+            def restore_msys():
+                if previous_msys is None:
+                    self.env.pop('MSYS', None)
+                else:
+                    self.env['MSYS'] = previous_msys
+            self.addCleanup(restore_msys)
+        self.bash('''
+          source include/check_sw.sh
+          for kind in fresh relative absolute conflict wrong dangling missing-source failed-create; do
+            libdir=$1/libaio-$kind
+            mkdir -p "$libdir"
+            printf LIBRARY > "$libdir/libaio.so.1t64.0.2"
+            if [ "$kind" = fresh ]; then cp "$libdir/libaio.so.1t64.0.2" "$libdir/libaio.so.1t64"
+            else ln -s libaio.so.1t64.0.2 "$libdir/libaio.so.1t64"; fi
+            link=$libdir/libaio.so.1
+            case $kind in
+              relative) ln -s libaio.so.1t64 "$link" ;;
+              absolute) ln -s "$libdir/libaio.so.1t64" "$link" ;;
+              conflict) printf LOCAL_FILE > "$link" ;;
+              wrong) printf OTHER_LIBRARY > "$libdir/other.so"; ln -s other.so "$link" ;;
+              dangling) ln -s missing.so "$link" ;;
+              missing-source) rm "$libdir/libaio.so.1t64" ;;
+              failed-create) ln() { return 1; } ;;
+            esac
+            case $kind in
+              fresh|relative|absolute)
+                Ensure_Libaio_Compat_Link "$libdir" || exit 10
+                [ "$(readlink -e "$link")" = "$(readlink -e "$libdir/libaio.so.1t64")" ] || exit 11
+                before=$(readlink "$link")
+                Ensure_Libaio_Compat_Link "$libdir" || exit 12
+                [ "$(readlink "$link")" = "$before" ] || exit 13 ;;
+              *)
+                before=$(if [ -L "$link" ]; then readlink "$link"; elif [ -e "$link" ]; then sha256sum "$link"; else printf ABSENT; fi)
+                if Ensure_Libaio_Compat_Link "$libdir"; then echo "Conflicting libaio case accepted: $kind" >&2; exit 20; fi
+                after=$(if [ -L "$link" ]; then readlink "$link"; elif [ -e "$link" ]; then sha256sum "$link"; else printf ABSENT; fi)
+                [ "$after" = "$before" ] || exit 21 ;;
+            esac
+            [ "$(cat "$libdir/libaio.so.1t64.0.2")" = LIBRARY ] || exit 22
+            [ "$kind" != failed-create ] || unset -f ln
+          done
         ''', self.work)
 
 

@@ -52,7 +52,9 @@ Install signed OS packages `jq`, `curl`, `ca-certificates`, `coreutils` and
 `util-linux` before running the installer. It does not bootstrap an arbitrary
 remote JSON-parser binary. Tomcat frontend changes additionally require
 `xmllint` (`libxml2-utils` on Ubuntu, `libxml2` on Rocky). Work from a trusted,
-root-owned checkout for privileged installation. Python is a developer/test
+root-owned checkout for privileged installation. Ubuntu 24 compatibility links
+use the host multiarch directory, accept an existing correct link and refuse
+conflicting files or targets. Python is a developer/test
 dependency, not an installer framework dependency.
 
 ## Artifact and metadata interfaces
@@ -167,7 +169,9 @@ binary/master. Configure `nginx_upgrade_health_url` when the default localhost
 site is unsuitable. The old binary is retained as `sbin/nginx.previous`.
 A temporarily absent PID file during USR2 handoff is a retried polling result,
 including under `set -e`; transient HTTP/TLS probe failures likewise retain
-bounded retry behavior. During rollback the previous master's workers must resume before the new
+bounded retry behavior. Worker capture rejects missing/empty results even
+without global pipefail; active-worker matching tolerates procps command-line
+padding while excluding shutdown titles. During rollback the previous master's workers must resume before the new
 master is asked to quit. The PID-file handoff is checked separately; incomplete
 recovery reports that manual inspection is required. This ordering follows
 Nginx's [master lifecycle](https://raw.githubusercontent.com/nginx/nginx/release-1.30.6/src/os/unix/ngx_process_cycle.c).
@@ -200,7 +204,7 @@ tree over an existing one.
 
 ## Validation status and remaining acceptance
 
-The 2026-10-31 local run executed 24 contract tests: 23 passed and the POSIX-only
+The 2026-10-31 local run executed 26 contract tests: 25 passed and the POSIX-only
 metadata symlink/permission test was skipped. Targeted ShellCheck passed; syntax
 results are recorded in `validation.json`.
 
@@ -232,8 +236,9 @@ The real-binary harness also exercises invalid-configuration rejection, IPv6
 loopback requests when available, and the USR2/WINCH/QUIT switch plus an injected
 health-check failure and rollback. It reuses the compiled binary's bytes to
 isolate the switch protocol; it does not qualify arbitrary cross-version or
-external-module ABI upgrades. Their results for the amended head are recorded by the Linux PR jobs;
-the current local fixture run alone cannot prove them.
+external-module ABI upgrades. These scenarios require a completed successful
+Linux PR run for the exact amended head; the local fixture run alone cannot
+prove them. A pending snapshot is not a passing acceptance record.
 Its PHP, proxy and Magento cases load the actual writer definitions and serve
 static route fixtures; PHP-FPM execution and a full Magento application are
 separate full-stack acceptance work.
