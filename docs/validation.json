@@ -98,11 +98,10 @@
     "Cross-process locking under concurrent Linux writers",
     "Ubuntu/Rocky full core installation",
     "Cross-version/external-module live upgrades (CI covers only the same-binary switch protocol)",
-    "aarch64 runtime",
     "Public/routed IPv6 deployment (CI covers loopback)",
     "ACME staging issuance and renewal",
     "Apache/Tomcat actual backend lifecycle",
-    "real web binary live upgrade and rollback"
+    "aarch64 PHP/database full-stack runtime (ARM Nginx is covered by Linux CI)"
   ],
   "full_plan_definition_of_done": "open; requires non-production Linux acceptance environment and ACME test prerequisites",
   "followup_static_checked_at_utc": "2026-10-31T11:18:21.545645+00:00",
@@ -112,13 +111,6 @@
     "ubuntu_contracts": "passed including POSIX-only metadata check",
     "other_jobs": "failed; review fixes address dependency conflicts, Python 3.9 fixtures and reload worker readiness"
   },
-  "linux_scenarios_pending_repeat_on_amended_head": [
-    "Real invalid-config rejection preserving the active host",
-    "IPv6 loopback when available",
-    "Same-binary USR2/WINCH/QUIT switch",
-    "Injected live-upgrade health failure, old-worker recovery and PID-file handoff",
-    "Actual PHP/proxy/Magento writer configurations with static-route fixtures; no PHP-FPM application runtime claim"
-  ],
   "review_fix_network_checks": [
     "nghttp2 1.59.0 downloaded from publisher and matched publisher checksums.txt; configure layout verified",
     "MongoDB 1.20.1 downloaded independently from PECL; exact pin and reviewed PECL archive layout passed actual MirrorOne downloader"
@@ -140,5 +132,29 @@
     "run": "https://github.com/oneinstack-next/oneinstack-next/actions/runs/41228733048",
     "ubuntu_products": "Nginx, Tengine, OpenResty and ARM Nginx passed real HTTP/TLS, certificate, IPv6 loopback, binary switch and rollback scenarios",
     "rocky": "all 24 contracts passed and Nginx compiled; old procps active-title matching required trailing-whitespace compatibility fix"
+  },
+  "review_ci_verified_at_utc": "2026-10-31T18:44:48.361675+00:00",
+  "latest_completed_linux_ci": {
+    "head": "7b68116d58fb1dd9398b9dfd8715d8580d1a8cde",
+    "run": "https://github.com/oneinstack-next/oneinstack-next/actions/runs/41229606205",
+    "conclusion": "success",
+    "ubuntu_contracts": "26 passed, no skips; ShellCheck passed",
+    "rocky_contracts": "26 passed, no skips",
+    "products": [
+      "Ubuntu x86_64 Nginx",
+      "Ubuntu x86_64 Tengine",
+      "Ubuntu x86_64 OpenResty",
+      "Ubuntu ARM Nginx",
+      "Rocky 9 x86_64 Nginx"
+    ],
+    "scenarios": [
+      "Real HTTP/TLS and HSTS assertions",
+      "Certificate deployment",
+      "Invalid-configuration rejection preserving active host",
+      "IPv6 loopback (not skipped)",
+      "Same-binary USR2/WINCH/QUIT switch",
+      "Injected health failure and old-master rollback"
+    ],
+    "later_head_gate": "Subsequent commits require their own successful Linux CI; checkout credential hardening has not run at document write time"
   }
 }

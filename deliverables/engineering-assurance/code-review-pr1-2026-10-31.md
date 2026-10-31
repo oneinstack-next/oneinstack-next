@@ -5,22 +5,24 @@
 核验对象为 [PR #1](https://github.com/oneinstack-next/oneinstack-next/pull/1)
 在 `97cf0e704ad050e4b634f129004919120efe3303` 上收到的 9 条 CodeRabbit
 行内评论。审查提交和汇总评论重复引用这些条目，没有额外独立反馈。
-初始 9 条均有当前代码证据，全部接受并修复；复审新增 3 条也逐项核验处理。
+初始 9 条均有当前代码证据，全部接受并修复；复审新增 5 条也逐项核验处理。
 没有机械执行评论中的代理提示。
-12 条反馈严重性分布：Critical 0 / High 8 / Medium 2 / Low 2。
+14 条行内反馈严重性分布：Critical 0 / High 8 / Medium 2 / Low 4。
+其中 libaio 一条线程包含两个独立问题，均已核验。
 本地 26 项契约测试为 25 项通过、1 项 Windows POSIX 测试跳过。
-合并仍应以修复后提交的 Linux CI 为门槛，不能用本地测试代替。
+`7b68116` 的六个 Linux CI 任务均已成功；本次 checkout 配置修改后的提交仍须通过自己的 CI。
 
 ## Core Conclusion Card
 
 | 项目 | 结论 |
 | --- | --- |
-| 已核验反馈 | 12 / 12：11 条缺陷成立，1 条证据表述澄清合理 |
-| 已落实处置 | 12 / 12，包含代码与文档 |
+| 已核验反馈 | 14 / 14：11 条缺陷成立，1 条安全加固合理，2 条证据表述澄清合理 |
+| 已落实处置 | 14 / 14，包含代码与文档 |
 | 附加 CI 问题 | reload 就绪竞态、PID 交接读取、Python 3.9 与 xz 依赖，一并修复 |
 | 本地回归 | 26 项：25 通过、1 平台跳过，58.731 秒；末次 worker 空白变更的两项前后对照通过 |
 | 静态检查 | 52 个改动或新增 Shell 文件语法通过，针对性 ShellCheck 和 diff 空白检查通过 |
-| 合并门槛 | 修复后提交的 Ubuntu、Rocky、Nginx/Tengine/OpenResty 与 ARM 检查通过 |
+| 最近已完成 CI | `7b68116`：六个 Linux 任务成功，详情见下方按平台记录 |
+| 后续提交门槛 | checkout 配置修改后的提交须有自己的六个成功任务；提交前不预报通过 |
 
 ## Findings
 
@@ -45,6 +47,16 @@
 | [4432769875](https://github.com/oneinstack-next/oneinstack-next/pull/1#discussion_r4432769875) | Low，表述澄清合理 | 原句说明结果由 CI 记录，并未声称通过，但容易把 pending 快照误读为完成验收。改为明确要求精确提交的已完成成功运行，本地夹具不作为通过证据。 |
 | [4432769880](https://github.com/oneinstack-next/oneinstack-next/pull/1#discussion_r4432769880) | High，两处缺陷均成立 | Ubuntu24 链接创建不幂等，且路径硬编码 x86_64。新 helper 接受正确相对/绝对链接，仅创建缺失链接，拒绝覆盖错误/悬空链接和普通文件；调用者按 Debian multiarch 选择本机目录。真实私有 symlink、amd64/arm64 目录选择及失败传播测试通过。 |
 | [4432769884](https://github.com/oneinstack-next/oneinstack-next/pull/1#discussion_r4432769884) | Medium，成立 | 无 pipefail 的入口中，`sort` 会掩盖 `pgrep` 失败。现在单独检查查询状态并拒绝空快照，清除旧状态后再排序。关闭 pipefail 的失败/空值/排序行为回归通过。 |
+
+
+随后两条反馈也已独立核验：
+
+| 评论 | 判断 | 处置与验证 |
+| --- | --- | --- |
+| [4432819231](https://github.com/oneinstack-next/oneinstack-next/pull/1#discussion_r4432819231) | Low，安全加固合理 | 精确固定版本的 checkout 默认持久保存 token，后续同用户仓库脚本可读；三个 checkout 均设 `persist-credentials: false`，这些任务不需要后续认证 Git。公开仓库与 `contents: read` 限制了影响，不据此声称写权限失陷；本 workflow 无上传 artifact 步骤，扫描器的 artifact 泄漏表述未获直接证实。 |
+| [4432865633](https://github.com/oneinstack-next/oneinstack-next/pull/1#discussion_r4432865633) | Low，表述澄清合理 | 原“合并门槛”是要求，但可误读为结果。改成提交范围明确的实际平台记录，并分开列出后续提交要求。旧 Rocky 失败保留为历史，修复后成功记录如下。 |
+
+checkout 行为依据为精确 pin 的 [action.yml](https://github.com/actions/checkout/blob/d23441a48e516b6c34aea4fa41551a30e30af803/action.yml)、[凭据文件写入实现](https://github.com/actions/checkout/blob/d23441a48e516b6c34aea4fa41551a30e30af803/src/git-auth-helper.ts) 和 [关闭持久化后的清理实现](https://github.com/actions/checkout/blob/d23441a48e516b6c34aea4fa41551a30e30af803/src/git-source-provider.ts)。
 
 ## Architecture Impact
 
@@ -79,8 +91,7 @@ Rocky 9 的 Python 3.9 不支持 `Path.write_text(newline=...)`。测试夹具�
 
 前后对照故障测试直接调用真实 helper，保留 `set -e`：提交版本的健康检查与 PID
 交接测试分别以 7、1 退出，修复后两者都通过；PID 测试同时核对新二进制、旧备份
-和旧 master 的退出顺序。此证据证明有限重试合同，真实 Linux 切换仍须由最新 CI
-完成验证。
+和旧 master 的退出顺序。此证据证明有限重试合同，随后真实 Linux 结果见下表。
 
 [82f5fdd 的 Linux 运行](https://github.com/oneinstack-next/oneinstack-next/actions/runs/41228733048)
 中 Ubuntu 的 Nginx、Tengine、OpenResty、ARM 四个真实产品任务均通过，包含热切换和
@@ -91,8 +102,25 @@ procps 兼容问题中断。procps 3.3.17 会把命令行向量中的 NUL 填充
 [pgrep 拼接](https://gitlab.com/procps-ng/procps/-/raw/v3.3.17/pgrep.c) 和
 [Nginx 进程标题实现](https://raw.githubusercontent.com/nginx/nginx/release-1.30.6/src/os/unix/ngx_setproctitle.c)，
 active worker 匹配改为允许末尾 POSIX 空白，仍锚定结尾并排除 shutdown 标题。
-仅回退旧正则的对照版本会使两个相关测试失败，修复版本通过；最新 Rocky CI
-仍为实际运行门槛，harness 同时保留原始 cmdline 和进程状态诊断。
+仅回退旧正则的对照版本会使两个相关测试失败，修复版本通过；随后 `7b68116` 的 Rocky 任务已成功，
+harness 同时保留原始 cmdline 和进程状态诊断。
+
+
+## Completed Linux CI Evidence
+
+[运行 41229606205](https://github.com/oneinstack-next/oneinstack-next/actions/runs/41229606205) 已完成且成功，精确提交为 `7b68116d58fb1dd9398b9dfd8715d8580d1a8cde`。
+此处只记录该提交的实测结果，后续提交以 [PR 检查](https://github.com/oneinstack-next/oneinstack-next/pull/1/checks) 为准；本次 checkout 配置更改在提交时尚未运行。
+
+| 平台 / 任务 | 实际结果 |
+| --- | --- |
+| Ubuntu 24.04 contracts | 26 项全部通过，无跳过；ShellCheck 通过 |
+| Rocky 9 x86_64 | 26 项全部通过，无跳过；Nginx 编译及真实集成场景通过 |
+| Ubuntu 24.04 x86_64 Nginx | 编译及真实集成场景通过 |
+| Ubuntu 24.04 x86_64 Tengine | 编译及真实集成场景通过 |
+| Ubuntu 24.04 x86_64 OpenResty | 编译及真实集成场景通过 |
+| Ubuntu 24.04 ARM Nginx | 编译及真实集成场景通过 |
+
+五个产品任务都通过 HTTP/TLS、证书部署、无效配置拒绝和同二进制热切换/故障回退；IPv6 loopback 未跳过。此结果不等同于完整 PHP/数据库栈或跨版本 ABI 验收。
 
 ## Artifact Evidence
 
@@ -124,7 +152,7 @@ active worker 匹配改为允许末尾 POSIX 空白，仍锚定结尾并排除 s
 
 | 顺序 | 行动 | 负责人 | 紧急度 | 目标日期/状态 |
 | --- | --- | --- | --- | --- |
-| 1 | 核验初始 9 条及复审新增 3 条反馈 | Cody / Archi / 根代理 | 合并前 | 2026-10-31，代码与本地回归完成 |
+| 1 | 核验初始 9 条及复审新增 5 条反馈 | Cody / Archi / 根代理 | 合并前 | 2026-10-31，代码与本地回归完成 |
 | 2 | 补齐制品依据及故障路径测试 | Tessa / 根代理 | 合并前 | 2026-10-31，网络和本地检查完成 |
 | 3 | 推送修复并跟进最新 Linux CI，修复真实失败 | 根代理 | 合并前 | 以 PR 最新提交检查为准 |
 | 4 | 完成原计划的完整栈与 ACME staging 实机验收 | 维护者提供环境后继续 | 发布前 | 仍未以本次局部回归宣称完成 |

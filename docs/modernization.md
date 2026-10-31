@@ -225,8 +225,11 @@ Ubuntu aarch64 and Rocky 9 coverage. The first published PR runs passed Ubuntu
 contract tests (including the POSIX metadata test), while the product matrix
 exposed dependency and reload-readiness failures. The review fixes add the
 Rocky package replacement option, Python 3.9-compatible fixtures and readiness
-checks that wait for all old workers to stop accepting. The amended head must
-pass the latest PR checks. Full stack compilation/database operation and ACME
+checks that wait for all old workers to stop accepting.
+[Run 41229606205](https://github.com/oneinstack-next/oneinstack-next/actions/runs/41229606205)
+completed successfully for `7b68116`: all six jobs passed, with 26 contracts on
+both Ubuntu and Rocky and all five real-product scenarios, including ARM.
+Any subsequent head must pass its own PR checks. Full stack compilation/database operation and ACME
 staging issuance remain unperformed. The local Windows environment still has no
 usable WSL or Docker daemon. Thus P7 and the plan's full Definition of Done
 remain open; do not label this change production-qualified or the entire task
@@ -243,7 +246,7 @@ Its PHP, proxy and Magento cases load the actual writer definitions and serve
 static route fixtures; PHP-FPM execution and a full Magento application are
 separate full-stack acceptance work.
 
-The remaining external acceptance work is to run/fix those Linux jobs, perform
+The remaining external acceptance work is to perform
 one supported full core installation per agreed matrix, verify IPv6 where
 available, run ACME staging (including failure cleanup), and validate backend
 Apache/Tomcat service behavior. Unsupported artifact families remain explicit in

@@ -9,8 +9,8 @@ Registered identities: **78**; strong pins: **75**; bundled patches: **15**. A r
 | Combination | Acquisition evidence | Runtime status |
 | --- | --- | --- |
 | Ubuntu 24.04 / Rocky 9 x86_64; Nginx 1.30.6 + OpenSSL 3.5.6 + PHP 8.5.12 + MySQL 8.4.11 | Exact identities, publisher/project pins; MySQL archive fetched from Oracle and its layout inspected; glibc >= 2.28 enforced | Full Linux install not run |
-| Tengine 3.1.0 / OpenResty 1.31.1.1 frontend | Source archives independently fetched and inspected; capability probes implemented | Ubuntu real-binary tests passed on 82f5fdd; latest-head checks remain the gate |
-| aarch64 Nginx/PHP source-only stack | Architecture-neutral source records; no x86_64 DB binary substitution | Ubuntu ARM frontend tests passed on 82f5fdd; PHP/full stack not run |
+| Tengine 3.1.0 / OpenResty 1.31.1.1 frontend | Source archives independently fetched and inspected; capability probes implemented | Ubuntu real-binary tests passed on 7b68116; latest-head checks remain the gate |
+| aarch64 Nginx/PHP source-only stack | Architecture-neutral source records; no x86_64 DB binary substitution | Ubuntu ARM frontend tests passed on 7b68116; PHP/full stack not run |
 | Node.js 20.17.0 x86_64 / aarch64 glibc | Publisher SHASUMS256; fixed archive contract and glibc minimum | Runtime not run |
 
 A default-core metadata selection was also checked with a **simulated** Linux x86_64/glibc 2.39 target in Git Bash. This exercises selection and real manifest matching, not OS or binary execution compatibility.
