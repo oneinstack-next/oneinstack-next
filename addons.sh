@@ -4,6 +4,32 @@
 #
 #
 
+Show_Help() {
+  echo
+  echo "Usage: $0  command ...
+  --help, -h                  Show this help message
+  --install, -i               Install
+  --uninstall, -u             Uninstall
+  --composer                  Composer
+  --fail2ban                  Fail2ban
+  --ngx_lua_waf               Ngx_lua_waf
+  --download_provider [mirrorone|official]
+  --mirror_link [https://host] MirrorOne base URL
+  --mirror_force_redirect [true|false]
+  --download_fallback [none|official]
+  --check-versions            Check remote candidates without installing
+  "
+}
+
+for early_arg in "$@"; do
+  case $early_arg in
+    -h|--help) Show_Help; exit 0 ;;
+  esac
+done
+if [ "${1:-}" = --check-versions ]; then
+  exec bash "$(dirname -- "${BASH_SOURCE[0]}")/tools/sourcectl.sh" --check-versions "${@:2}"
+fi
+
 export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 clear
 printf "
@@ -19,12 +45,15 @@ current_dir=$(dirname "`readlink -f $0`")
 # shellcheck disable=SC2164
 pushd ${current_dir} > /dev/null
 
-. ./versions.txt
+. ./include/version_data.sh
+Read_Versions "${current_dir}/versions.txt" || exit 1
 . ./options.conf
+# The checkout path is runtime state, not a migrated user setting.
+current_dir=$PWD
 . ./include/color.sh
-. ./include/check_os.sh
 . ./include/download.sh
 . ./include/get_char.sh
+. ./include/preflight.sh
 
 . ./include/composer.sh
 
@@ -33,28 +62,19 @@ pushd ${current_dir} > /dev/null
 . ./include/ngx_lua_waf.sh
 
 # get the out ip country
-OUTIP_STATE=$(./include/ois.${ARCH} ip_state)
 
 # shellcheck disable=SC2154
-Show_Help() {
-  echo
-  echo "Usage: $0  command ...
-  --help, -h                  Show this help message
-  --install, -i               Install
-  --uninstall, -u             Uninstall
-  --composer                  Composer
-  --fail2ban                  Fail2ban
-  --ngx_lua_waf               Ngx_lua_waf
-  "
-}
 
 ARG_NUM=$#
-TEMP=`getopt -o hiu --long help,install,uninstall,composer,fail2ban,ngx_lua_waf -- "$@" 2>/dev/null`
+TEMP=`getopt -o hiu --long download_provider:,mirror_link:,mirror_force_redirect:,download_fallback:,help,install,uninstall,composer,fail2ban,ngx_lua_waf -- "$@" 2>/dev/null`
 [ $? != 0 ] && echo "${CWARNING}ERROR: unknown argument! ${CEND}" && Show_Help && exit 1
 eval set -- "${TEMP}"
 while :; do
   [ -z "$1" ] && break;
   case "$1" in
+    --download_provider|--mirror_link|--mirror_force_redirect|--download_fallback)
+      printf -v "${1#--}" '%s' "$2"; shift 2
+      ;;
     -h|--help)
       Show_Help; exit 0
       ;;
@@ -81,6 +101,12 @@ while :; do
       ;;
   esac
 done
+
+Source_Validate || exit 2
+. ./include/check_os.sh
+[ "$ARG_NUM" -ne 0 ] || Source_Menu || exit 2
+Source_Summary
+Source_Start_Run || exit 1
 
 ACTION_FUN() {
   while :; do

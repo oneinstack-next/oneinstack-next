@@ -6,17 +6,16 @@ Upgrade_PHP() {
   pushd ${current_dir}/src > /dev/null
   [ ! -e "${php_install_dir}" ] && echo "${CWARNING}PHP is not installed on your system! ${CEND}" && exit 1
   OLD_php_ver=`${php_install_dir}/bin/php-config --version`
-  pythonCtl=python
-  command -v python3 > /dev/null 2>&1 && pythonCtl=python3
-  Latest_php_ver=`curl --connect-timeout 2 -m 3 -s https://www.php.net/releases/active.php | ${pythonCtl} -mjson.tool | awk '/version/{print $2}' | sed 's/"//g' | grep "${OLD_php_ver%.*}"`
-  Latest_php_ver=${Latest_php_ver:-5.5.38}
+  php_version_key=php${OLD_php_ver%.*}_ver
+  php_version_key=${php_version_key//./}
+  Latest_php_ver=${!php_version_key:-$OLD_php_ver}
   echo
   echo "Current PHP Version: ${CMSG}$OLD_php_ver${CEND}"
   while :; do echo
     [ "${php_flag}" != 'y' ] && read -e -p "Please input upgrade PHP Version(Default: $Latest_php_ver): " NEW_php_ver
     NEW_php_ver=${NEW_php_ver:-${Latest_php_ver}}
     if [ "${NEW_php_ver%.*}" == "${OLD_php_ver%.*}" ]; then
-      [ ! -e "php-${NEW_php_ver}.tar.gz" ] && wget --no-check-certificate -c https://secure.php.net/distributions/php-${NEW_php_ver}.tar.gz > /dev/null 2>&1
+      Download_Artifact "php-${NEW_php_ver}.tar.gz" || exit 1
       if [ -e "php-${NEW_php_ver}.tar.gz" ]; then
         echo "Download [${CMSG}php-${NEW_php_ver}.tar.gz${CEND}] successfully! "
       else
@@ -35,10 +34,14 @@ Upgrade_PHP() {
       echo "Press Ctrl+c to cancel or Press any key to continue..."
       char=`get_char`
     fi
-    tar xzf php-${NEW_php_ver}.tar.gz
-    src_url=${mirror_link}/src/fpm-race-condition.patch && Download_src
-    patch -d php-${NEW_php_ver} -p0 < fpm-race-condition.patch
-    pushd php-${NEW_php_ver}
+    if [[ ${NEW_php_ver%.*} =~ ^5\.[3-5]$ ]]; then
+      Download_Artifact "fpm-race-condition.patch" || exit 1
+    fi
+    tar xzf "php-${NEW_php_ver}.tar.gz" || return 1
+    if [[ ${NEW_php_ver%.*} =~ ^5\.[3-5]$ ]]; then
+      patch -d "php-${NEW_php_ver}" -p0 < fpm-race-condition.patch || return 1
+    fi
+    pushd "php-${NEW_php_ver}" || return 1
     if [[ "${OLD_php_ver%.*}" =~ ^7.[1-4]$|^8.[0-1]$ ]] && [ -e ext/openssl/openssl.c ] && ! grep -Eqi '^#ifdef RSA_SSLV23_PADDING' ext/openssl/openssl.c; then
       sed -i '/OPENSSL_SSLV23_PADDING/i#ifdef RSA_SSLV23_PADDING' ext/openssl/openssl.c
       sed -i '/OPENSSL_SSLV23_PADDING/a#endif' ext/openssl/openssl.c

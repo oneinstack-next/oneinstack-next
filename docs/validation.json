@@ -1,0 +1,160 @@
+{
+  "checked_at_utc": "2026-10-31T18:27:45.853486+00:00",
+  "baseline": "0a663e78bd3ece6d2a4f05812f129b4d46246d63",
+  "host": "Windows Git Bash; native jq binary-output adapter; single-process flock shim",
+  "contracts": {
+    "run": 26,
+    "passed": 25,
+    "skipped": 1,
+    "skip_reason": "POSIX-only metadata symlink/permission test requires Linux; Windows local run",
+    "duration_seconds": 58.731
+  },
+  "bash_n": {
+    "passed": true,
+    "files": [
+      "addons.sh",
+      "backup_setup.sh",
+      "include/ImageMagick.sh",
+      "include/acme.sh",
+      "include/check_download.sh",
+      "include/check_sw.sh",
+      "include/composer.sh",
+      "include/demo.sh",
+      "include/download.sh",
+      "include/fail2ban.sh",
+      "include/fs.sh",
+      "include/nginx_build.sh",
+      "include/nginx_config.sh",
+      "include/ngx_lua_waf.sh",
+      "include/pecl_calendar.sh",
+      "include/pecl_fileinfo.sh",
+      "include/pecl_imap.sh",
+      "include/pecl_ldap.sh",
+      "include/pecl_mongodb.sh",
+      "include/pecl_phalcon.sh",
+      "include/pecl_swoole.sh",
+      "include/pecl_xdebug.sh",
+      "include/pecl_yaf.sh",
+      "include/pecl_yar.sh",
+      "include/php-7.2.sh",
+      "include/php-7.3.sh",
+      "include/php-7.4.sh",
+      "include/php-8.0.sh",
+      "include/php-8.1.sh",
+      "include/php-8.2.sh",
+      "include/php-8.3.sh",
+      "include/php-8.4.sh",
+      "include/php-8.5.sh",
+      "include/preflight.sh",
+      "include/source.sh",
+      "include/upgrade_db.sh",
+      "include/upgrade_memcached.sh",
+      "include/upgrade_php.sh",
+      "include/upgrade_phpmyadmin.sh",
+      "include/upgrade_redis.sh",
+      "include/upgrade_script.sh",
+      "include/upgrade_web.sh",
+      "include/version_data.sh",
+      "include/zendopcache.sh",
+      "install.sh",
+      "tests/build_nginx.sh",
+      "tests/nginx_live.sh",
+      "tools/deploy-certificate.sh",
+      "tools/migrate-vhost.sh",
+      "tools/sourcectl.sh",
+      "upgrade.sh",
+      "vhost.sh"
+    ]
+  },
+  "shellcheck": {
+    "passed": true,
+    "excluded_cross_file_globals": [
+      "SC2154",
+      "SC2034"
+    ],
+    "files": [
+      "include/fs.sh",
+      "include/source.sh",
+      "include/version_data.sh",
+      "include/download.sh",
+      "include/nginx_config.sh",
+      "include/nginx_build.sh",
+      "include/preflight.sh",
+      "include/acme.sh",
+      "tools/sourcectl.sh",
+      "tools/migrate-vhost.sh",
+      "tools/deploy-certificate.sh",
+      "tests/nginx_live.sh"
+    ]
+  },
+  "diff_whitespace_check": "passed",
+  "artifacts": {
+    "registered": 78,
+    "strong_pins": 75,
+    "bundled_pins_verified": 15
+  },
+  "real_network_smoke": "docs/network-smoke.json; repeated through current downloader successfully",
+  "not_run": [
+    "Cross-process locking under concurrent Linux writers",
+    "Ubuntu/Rocky full core installation",
+    "Cross-version/external-module live upgrades (CI covers only the same-binary switch protocol)",
+    "Public/routed IPv6 deployment (CI covers loopback)",
+    "ACME staging issuance and renewal",
+    "Apache/Tomcat actual backend lifecycle",
+    "aarch64 PHP/database full-stack runtime (ARM Nginx is covered by Linux CI)"
+  ],
+  "full_plan_definition_of_done": "open; requires non-production Linux acceptance environment and ACME test prerequisites",
+  "followup_static_checked_at_utc": "2026-10-31T11:18:21.545645+00:00",
+  "ci_observations_before_review_fixes": {
+    "head": "97cf0e704ad050e4b634f129004919120efe3303",
+    "run": "https://github.com/oneinstack-next/oneinstack-next/actions/runs/41199419504",
+    "ubuntu_contracts": "passed including POSIX-only metadata check",
+    "other_jobs": "failed; review fixes address dependency conflicts, Python 3.9 fixtures and reload worker readiness"
+  },
+  "review_fix_network_checks": [
+    "nghttp2 1.59.0 downloaded from publisher and matched publisher checksums.txt; configure layout verified",
+    "MongoDB 1.20.1 downloaded independently from PECL; exact pin and reviewed PECL archive layout passed actual MirrorOne downloader"
+  ],
+  "review_followup_ci": {
+    "head": "67fdfe817ac8e74a9fdadf91c1302223a78eef56",
+    "run": "https://github.com/oneinstack-next/oneinstack-next/actions/runs/41227894587",
+    "ubuntu_contracts": "all 23 passed",
+    "rocky_contracts": "22 passed; xz package missing in valid-xz test, now explicitly installed",
+    "product_jobs": "all reached first binary switch after HTTP/TLS/cert/IPv6 checks; transient PID-file read under errexit aborted the switch, now retried"
+  },
+  "followup_targeted_tests": [
+    "Worker capture rejects query failures and empty output without pipefail",
+    "Native symlink libaio idempotence/conflict preservation; Ubuntu host multiarch selection",
+    "Padded active process titles accepted, graceful-shutdown titles rejected; old-regex before/after tests fail as expected"
+  ],
+  "second_review_ci": {
+    "head": "82f5fdd7434c6591436d20f21ba3afa14e001bed",
+    "run": "https://github.com/oneinstack-next/oneinstack-next/actions/runs/41228733048",
+    "ubuntu_products": "Nginx, Tengine, OpenResty and ARM Nginx passed real HTTP/TLS, certificate, IPv6 loopback, binary switch and rollback scenarios",
+    "rocky": "all 24 contracts passed and Nginx compiled; old procps active-title matching required trailing-whitespace compatibility fix"
+  },
+  "review_ci_verified_at_utc": "2026-10-31T18:44:48.361675+00:00",
+  "latest_completed_linux_ci": {
+    "head": "7b68116d58fb1dd9398b9dfd8715d8580d1a8cde",
+    "run": "https://github.com/oneinstack-next/oneinstack-next/actions/runs/41229606205",
+    "conclusion": "success",
+    "ubuntu_contracts": "26 passed, no skips; ShellCheck passed",
+    "rocky_contracts": "26 passed, no skips",
+    "products": [
+      "Ubuntu x86_64 Nginx",
+      "Ubuntu x86_64 Tengine",
+      "Ubuntu x86_64 OpenResty",
+      "Ubuntu ARM Nginx",
+      "Rocky 9 x86_64 Nginx"
+    ],
+    "scenarios": [
+      "Real HTTP/TLS and HSTS assertions",
+      "Certificate deployment",
+      "Invalid-configuration rejection preserving active host",
+      "IPv6 loopback (not skipped)",
+      "Same-binary USR2/WINCH/QUIT switch",
+      "Injected health failure and old-master rollback"
+    ],
+    "later_head_gate": "Subsequent commits require their own successful Linux CI; checkout credential hardening has not run at document write time"
+  }
+}

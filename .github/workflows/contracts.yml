@@ -1,0 +1,44 @@
+name: Modernization contracts
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - run: sudo apt-get update && sudo apt-get install -y jq curl openssl shellcheck util-linux xz-utils
+      - run: python3 -m unittest discover -s tests -v
+      - run: shellcheck -S warning -e SC2154,SC2034 include/fs.sh include/source.sh include/version_data.sh include/download.sh include/nginx_config.sh include/nginx_build.sh include/preflight.sh include/acme.sh tools/sourcectl.sh tools/migrate-vhost.sh tools/deploy-certificate.sh
+  nginx:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            product: nginx
+          - runner: ubuntu-24.04
+            product: tengine
+          - runner: ubuntu-24.04
+            product: openresty
+          - runner: ubuntu-24.04-arm
+            product: nginx
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - run: sudo apt-get update && sudo apt-get install -y jq curl openssl libssl-dev zlib1g-dev build-essential util-linux procps perl xz-utils
+      - run: bash tests/build_nginx.sh '${{ matrix.product }}' "$RUNNER_TEMP/oneinstack-build"
+  rocky:
+    runs-on: ubuntu-24.04
+    container: rockylinux:9
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - run: dnf install -y --allowerasing gcc gcc-c++ make perl jq curl openssl openssl-devel zlib-devel tar gzip bzip2 xz python3 util-linux procps-ng findutils diffutils unzip
+      - run: python3 -m unittest discover -s tests -v
+      - run: bash tests/build_nginx.sh nginx /tmp/oneinstack-build

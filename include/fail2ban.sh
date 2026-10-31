@@ -4,7 +4,7 @@
 
 Install_fail2ban() {
   pushd ${current_dir}/src > /dev/null
-  src_url=${mirror_link}/src/fail2ban-${fail2ban_ver}.tar.gz && Download_src
+  Download_Artifact "fail2ban-${fail2ban_ver}.tar.gz" || exit 1
   tar xzf fail2ban-${fail2ban_ver}.tar.gz
   pushd fail2ban-${fail2ban_ver} > /dev/null
   if command -v python3 > /dev/null 2>&1; then

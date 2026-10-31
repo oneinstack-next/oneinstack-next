@@ -8,7 +8,7 @@ Install_pecl_fileinfo() {
     phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
     PHP_detail_ver=$(${php_install_dir}/bin/php-config --version)
     PHP_main_ver=${PHP_detail_ver%.*}
-    src_url=https://secure.php.net/distributions/php-${PHP_detail_ver}.tar.gz && Download_src
+    Download_Artifact "php-${PHP_detail_ver}.tar.gz" || exit 1
     tar xzf php-${PHP_detail_ver}.tar.gz
     if [[ "${PHP_main_ver}" =~ ^5.3$ ]]; then
       pushd php-${PHP_detail_ver} > /dev/null

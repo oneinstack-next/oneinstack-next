@@ -114,3 +114,6 @@ lua_resty_core_ver=0.1.34rc3
 lua_resty_lrucache_ver=0.15
 lua_cjson_ver=2.1.0.19
 fail2ban_ver=master
+
+# Tool releases are pinned; no moving master archive.
+acme_ver=3.1.3

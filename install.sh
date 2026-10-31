@@ -4,38 +4,8 @@
 #
 #
 
-export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-clear
-printf "
-#######################################################################
-#                              Install                                #
-#######################################################################
-"
-# Check if user is root
-[ $(id -u) != "0" ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
-
-current_dir=$(dirname "`readlink -f $0`")
-pushd ${current_dir} > /dev/null
-. ./versions.txt
-. ./options.conf
-. ./include/color.sh
-. ./include/check_os.sh
-. ./include/check_dir.sh
-. ./include/download.sh
-. ./include/get_char.sh
-
-dbrootpwd=`< /dev/urandom tr -dc A-Za-z0-9 | head -c8`
-dbpostgrespwd=`< /dev/urandom tr -dc A-Za-z0-9 | head -c8`
-dbmongopwd=`< /dev/urandom tr -dc A-Za-z0-9 | head -c8`
-dbinstallmethod=1
-
-version() {
-  echo "version: 2.6"
-  echo "updated date: 2023-02-04"
-}
-
 Show_Help() {
-  version
+  echo "Oneinstack-next installer"
   echo "Usage: $0  command ...[parameters]....
   --version, -v               Show version info
   --nginx_option [1-3]        Install Nginx server version
@@ -61,17 +31,66 @@ Show_Help() {
   --phpmyadmin                Install phpMyAdmin
   --ssh_port [No.]            SSH port
   --firewall                  Enable firewall
-  --md5sum                    Check md5sum
+  --md5sum                    Retired; verify checkout before execution
   --reboot                    Restart the server after installation
+  --download_provider [mirrorone|official]
+  --mirror_link [https://host] MirrorOne base URL
+  --mirror_force_redirect [true|false]
+  --download_fallback [none|official]
+  --check-versions            Check remote candidates without installing
   "
 }
+
+for early_arg in "$@"; do
+  case $early_arg in
+    -h|--help) Show_Help; exit 0 ;;
+  esac
+done
+if [ "${1:-}" = --check-versions ]; then
+  exec bash "$(dirname -- "${BASH_SOURCE[0]}")/tools/sourcectl.sh" --check-versions "${@:2}"
+fi
+
+export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+clear
+printf "
+#######################################################################
+#                              Install                                #
+#######################################################################
+"
+# Check if user is root
+[ $(id -u) != "0" ] && { echo "${CFAILURE}Error: You must be root to run this script${CEND}"; exit 1; }
+
+current_dir=$(dirname "`readlink -f $0`")
+pushd ${current_dir} > /dev/null
+. ./include/version_data.sh
+Read_Versions "${current_dir}/versions.txt" || exit 1
+. ./options.conf
+# The checkout path is runtime state, not a migrated user setting.
+current_dir=$PWD
+. ./include/color.sh
+. ./include/download.sh
+. ./include/get_char.sh
+
+dbrootpwd=`< /dev/urandom tr -dc A-Za-z0-9 | head -c8`
+dbpostgrespwd=`< /dev/urandom tr -dc A-Za-z0-9 | head -c8`
+dbmongopwd=`< /dev/urandom tr -dc A-Za-z0-9 | head -c8`
+dbinstallmethod=1
+
+version() {
+  echo "version: 2.6"
+  echo "updated date: 2023-02-04"
+}
+
 ARG_NUM=$#
-TEMP=`getopt -o hvV --long help,version,nginx_option:,apache,apache_mode_option:,apache_mpm_option:,php_option:,mphp_ver:,mphp_addons,phpcache_option:,php_extensions:,nodejs,tomcat_option:,jdk_option:,db_option:,dbrootpwd:,dbinstallmethod:,pureftpd,redis,memcached,phpmyadmin,ssh_port:,firewall,md5sum,reboot -- "$@" 2>/dev/null`
+TEMP=`getopt -o hvV --long download_provider:,mirror_link:,mirror_force_redirect:,download_fallback:,help,version,nginx_option:,apache,apache_mode_option:,apache_mpm_option:,php_option:,mphp_ver:,mphp_addons,phpcache_option:,php_extensions:,nodejs,tomcat_option:,jdk_option:,db_option:,dbrootpwd:,dbinstallmethod:,pureftpd,redis,memcached,phpmyadmin,ssh_port:,firewall,md5sum,reboot -- "$@" 2>/dev/null`
 [ $? != 0 ] && echo "${CWARNING}ERROR: unknown argument! ${CEND}" && Show_Help && exit 1
 eval set -- "${TEMP}"
 while :; do
   [ -z "$1" ] && break;
   case "$1" in
+    --download_provider|--mirror_link|--mirror_force_redirect|--download_fallback)
+      printf -v "${1#--}" '%s' "$2"; shift 2
+      ;;
     -h|--help)
       Show_Help; exit 0
       ;;
@@ -205,33 +224,15 @@ while :; do
   esac
 done
 
-# Check md5sum
-if [ ${ARG_NUM} == 0 ] && [ ! -e ~/.lnmp ]; then
-  # Check md5sum
-  while :; do echo
-    read -e -p "Do you want to check md5sum? [y/n]: " md5sum_flag
-    if [[ ! ${md5sum_flag} =~ ^[y,n]$ ]]; then
-      echo "${CWARNING}input error! Please only input 'y' or 'n'${CEND}"
-    else
-      break
-    fi
-  done
-fi
-if [ "${md5sum_flag}" == 'y' ]; then
-  [ -e "${current_dir}.tar.gz" ] && tool_file=${current_dir}.tar.gz
-  [ -e "${current_dir}-full.tar.gz" ] && tool_file=${current_dir}-full.tar.gz
-  script_md5=${tool_file##*/}
-  if [ -e "${tool_file}" ]; then
-    now_script_md5=$(md5sum ${tool_file} | awk '{print $1}')
-    latest_script_md5=$(curl --connect-timeout 3 -m 5 -s ${mirror_link}/md5sum.txt | grep ${script_md5} | awk '{print $1}')
-    if [ "${now_script_md5}" != "${latest_script_md5}" ]; then
-      echo "${CFAILURE}Error: The md5 value of the installation package does not match the official website, please download again, url: ${mirror_link}/${script_md5}${CEND}"
-      exit 1
-    fi
-  else
-    echo "${CFAILURE}Error: ${tool_file} does not exist${CEND}"
-    exit 1
-  fi
+Source_Validate || exit 2
+. ./include/check_os.sh
+. ./include/check_dir.sh
+[ "$ARG_NUM" -ne 0 ] || Source_Menu || exit 2
+Source_Summary
+
+if [ "${md5sum_flag}" = y ]; then
+  echo 'The legacy --md5sum check is retired. Verify this checkout before execution; see README.md.' >&2
+  exit 1
 fi
 
 # Use default SSH port 22. If you use another SSH port on your server
@@ -248,11 +249,7 @@ if [ -e "/etc/ssh/sshd_config" ]; then
     fi
   done
 
-  if [ -z "`grep ^Port /etc/ssh/sshd_config`" -a "${ssh_port}" != '22' ]; then
-    sed -i "s@^#Port.*@&\nPort ${ssh_port}@" /etc/ssh/sshd_config
-  elif [ -n "`grep ^Port /etc/ssh/sshd_config`" ]; then
-    sed -i "s@^Port.*@Port ${ssh_port}@" /etc/ssh/sshd_config
-  fi
+
 fi
 
 if [ ${ARG_NUM} == 0 ]; then
@@ -719,6 +716,26 @@ if [ ${ARG_NUM} == 0 ]; then
   done
 fi
 
+# Pin metadata once in the parent so preflight and download share it.
+Source_Start_Run || exit 1
+[ "$download_provider" != mirrorone ] || Manifest_Fetch || exit 1
+. ./include/openssl.sh
+. ./include/check_download.sh
+. ./include/preflight.sh
+Prepare_Source_Selection || exit 1
+Preflight_Extras || exit 1
+(download_preflight=true; checkDownload) || exit 1
+Source_Save_Plan || exit 1
+Source_Summary
+
+if [ -e /etc/ssh/sshd_config ]; then
+  if [ -z "`grep ^Port /etc/ssh/sshd_config`" -a "${ssh_port}" != '22' ]; then
+    sed -i "s@^#Port.*@&\nPort ${ssh_port}@" /etc/ssh/sshd_config
+  elif [ -n "`grep ^Port /etc/ssh/sshd_config`" ]; then
+    sed -i "s@^Port.*@Port ${ssh_port}@" /etc/ssh/sshd_config
+  fi
+fi
+
 if [[ ${nginx_option} =~ ^[1-3]$ ]] || [ "${apache_flag}" == 'y' ] || [[ ${tomcat_option} =~ ^[1-4]$ ]]; then
   [ ! -d ${wwwroot_dir}/default ] && mkdir -p ${wwwroot_dir}/default
   [ ! -d ${wwwlogs_dir} ] && mkdir -p ${wwwlogs_dir}
@@ -735,7 +752,6 @@ fi
 
 # get the IP information
 IPADDR=$(./include/ois.${ARCH} ip_local)
-OUTIP_STATE=$(./include/ois.${ARCH} ip_state)
 
 # openSSL
 . ./include/openssl.sh
@@ -743,8 +759,8 @@ OUTIP_STATE=$(./include/ois.${ARCH} ip_state)
 # Check download source packages
 . ./include/check_download.sh
 
-[ "${armplatform}" == "y" ] && dbinstallmethod=2
-checkDownload 2>&1 | tee -a ${current_dir}/install.log
+checkDownload 2>&1 | tee -a "${current_dir}/install.log"
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
 
 # get OS Memory
 . ./include/memory.sh
@@ -755,19 +771,26 @@ if [ ! -e ~/.lnmp ]; then
   case "${Family}" in
     "rhel")
       installDepsRHEL 2>&1 | tee ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
       . include/init_RHEL.sh 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
       ;;
     "debian")
       installDepsDebian 2>&1 | tee ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
       . include/init_Debian.sh 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
       ;;
     "ubuntu")
       installDepsUbuntu 2>&1 | tee ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
       . include/init_Ubuntu.sh 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
       ;;
   esac
   # Install dependencies from source package
   installDepsBySrc 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
 fi
 
 # start Time
@@ -775,11 +798,13 @@ startTime=`date +%s`
 
 # openSSL
 Install_openSSL | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
 
 # Jemalloc
 if [[ ${nginx_option} =~ ^[1-3]$ ]] || [[ "${db_option}" =~ ^[1-9]$|^1[0-2]$ ]]; then
   . include/jemalloc.sh
   Install_Jemalloc | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
 fi
 
 # Database
@@ -787,60 +812,72 @@ case "${db_option}" in
   1)
     . include/mysql-8.4.sh
     Install_MySQL84 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   2)
     . include/mysql-8.0.sh
     Install_MySQL80 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   3)
     . include/mysql-5.7.sh
     Install_MySQL57 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   4)
     . include/mysql-5.5.sh
     Install_MySQL55 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   5)
     . include/mariadb-11.8.sh
     Install_MariaDB118 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   6)
     . include/mariadb-11.4.sh
     Install_MariaDB114 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   7)
     . include/mariadb-10.11.sh
     Install_MariaDB1011 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   8)
     . include/mariadb-5.5.sh
     Install_MariaDB55 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   9)
-    [ "${Family}" == 'rhel' ] && [ "${RHEL_ver}" == '8' ] && dbinstallmethod=2 && checkDownload
     . include/percona-8.4.sh
     Install_Percona84 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   10)
-    [ "${Family}" == 'rhel' ] && [ "${RHEL_ver}" == '8' ] && dbinstallmethod=2 && checkDownload
     . include/percona-8.0.sh
     Install_Percona80 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   11)
     . include/percona-5.7.sh
     Install_Percona57 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   12)
     . include/percona-5.5.sh
     Install_Percona55 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   13)
     . include/postgresql.sh
     Install_PostgreSQL 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   14)
     . include/mongodb.sh
     Install_MongoDB 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
 esac
 
@@ -849,62 +886,77 @@ case "${php_option}" in
   1)
     . include/php-5.3.sh
     Install_PHP53 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   2)
     . include/php-5.4.sh
     Install_PHP54 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   3)
     . include/php-5.5.sh
     Install_PHP55 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   4)
     . include/php-5.6.sh
     Install_PHP56 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   5)
     . include/php-7.0.sh
     Install_PHP70 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   6)
     . include/php-7.1.sh
     Install_PHP71 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   7)
     . include/php-7.2.sh
     Install_PHP72 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   8)
     . include/php-7.3.sh
     Install_PHP73 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   9)
     . include/php-7.4.sh
     Install_PHP74 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   10)
     . include/php-8.0.sh
     Install_PHP80 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   11)
     . include/php-8.1.sh
     Install_PHP81 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   12)
     . include/php-8.2.sh
     Install_PHP82 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   13)
     . include/php-8.3.sh
     Install_PHP83 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   14)
     . include/php-8.4.sh
     Install_PHP84 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   15)
     . include/php-8.5.sh
     Install_PHP85 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
 esac
 
@@ -914,14 +966,17 @@ PHP_addons() {
     1)
       . include/zendopcache.sh
       Install_ZendOPcache 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
       ;;
     2)
       . include/apcu.sh
       Install_APCU 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
       ;;
     3)
       . include/eaccelerator.sh
       Install_eAccelerator 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
       ;;
   esac
 
@@ -929,116 +984,137 @@ PHP_addons() {
   if [ "${pecl_zendguardloader}" == '1' ]; then
     . include/ZendGuardLoader.sh
     Install_ZendGuardLoader 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # ioncube
   if [ "${pecl_ioncube}" == '1' ]; then
     . include/ioncube.sh
     Install_ionCube 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # SourceGuardian
   if [ "${pecl_sourceguardian}" == '1' ]; then
     . include/sourceguardian.sh
     Install_SourceGuardian 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # imagick
   if [ "${pecl_imagick}" == '1' ]; then
     . include/ImageMagick.sh
     Install_ImageMagick 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     Install_pecl_imagick 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # gmagick
   if [ "${pecl_gmagick}" == '1' ]; then
     . include/GraphicsMagick.sh
     Install_GraphicsMagick 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     Install_pecl_gmagick 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # fileinfo
   if [ "${pecl_fileinfo}" == '1' ]; then
     . include/pecl_fileinfo.sh
     Install_pecl_fileinfo 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # imap
   if [ "${pecl_imap}" == '1' ]; then
     . include/pecl_imap.sh
     Install_pecl_imap 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # ldap
   if [ "${pecl_ldap}" == '1' ]; then
     . include/pecl_ldap.sh
     Install_pecl_ldap 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # calendar
   if [ "${pecl_calendar}" == '1' ]; then
     . include/pecl_calendar.sh
     Install_pecl_calendar 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # phalcon
   if [ "${pecl_phalcon}" == '1' ]; then
     . include/pecl_phalcon.sh
     Install_pecl_phalcon 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # yaf
   if [ "${pecl_yaf}" == '1' ]; then
     . include/pecl_yaf.sh
     Install_pecl_yaf 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # yar
   if [ "${pecl_yar}" == '1' ]; then
     . include/pecl_yar.sh
     Install_pecl_yar 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # pecl_memcached
   if [ "${pecl_memcached}" == '1' ]; then
     . include/memcached.sh
     Install_pecl_memcached 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # pecl_memcache
   if [ "${pecl_memcache}" == '1' ]; then
     . include/memcached.sh
     Install_pecl_memcache 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # pecl_redis
   if [ "${pecl_redis}" == '1' ]; then
     . include/redis.sh
     Install_pecl_redis 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # pecl_mongodb
   if [ "${pecl_mongodb}" == '1' ]; then
     . include/pecl_mongodb.sh
     Install_pecl_mongodb 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # swoole
   if [ "${pecl_swoole}" == '1' ]; then
     . include/pecl_swoole.sh
     Install_pecl_swoole 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # xdebug
   if [ "${pecl_xdebug}" == '1' ]; then
     . include/pecl_xdebug.sh
     Install_pecl_xdebug 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 
   # pecl_pgsql
   if [ -e "${pgsql_install_dir}/bin/psql" ]; then
     . include/pecl_pgsql.sh
     Install_pecl_pgsql 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   fi
 }
 
@@ -1047,6 +1123,7 @@ PHP_addons() {
 if [ "${mphp_flag}" == 'y' ]; then
   . include/mphp.sh
   Install_MPHP 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
   php_install_dir=${php_install_dir}${mphp_ver}
   PHP_addons
 fi
@@ -1056,14 +1133,17 @@ case "${jdk_option}" in
   1)
     . include/openjdk-8.sh
     Install_OpenJDK8 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   2)
     . include/openjdk-11.sh
     Install_OpenJDK11 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   3)
     . include/openjdk-17.sh
     Install_OpenJDK17 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
 esac
 
@@ -1072,14 +1152,17 @@ case "${nginx_option}" in
   1)
     . include/nginx.sh
     Install_Nginx 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   2)
     . include/tengine.sh
     Install_Tengine 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   3)
     . include/openresty.sh
     Install_OpenResty 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
 esac
 
@@ -1089,6 +1172,7 @@ if [ "${apache_flag}" == 'y' ]; then
   apache_mpm_option=${apache_mpm_option:-1}
   . include/apache.sh
   Install_Apache 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
 fi
 
 # Tomcat
@@ -1096,18 +1180,22 @@ case "${tomcat_option}" in
   1)
     . include/tomcat-10.sh
     Install_Tomcat10 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   2)
     . include/tomcat-9.sh
     Install_Tomcat9 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   3)
     . include/tomcat-8.sh
     Install_Tomcat8 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
   4)
     . include/tomcat-7.sh
     Install_Tomcat7 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
     ;;
 esac
 
@@ -1115,36 +1203,42 @@ esac
 if [ "${nodejs_flag}" == 'y' ]; then
   . include/nodejs.sh
   Install_Nodejs 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
 fi
 
 # Pure-FTPd
 if [ "${pureftpd_flag}" == 'y' ]; then
   . include/pureftpd.sh
   Install_PureFTPd 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
 fi
 
 # phpMyAdmin
 if [ "${phpmyadmin_flag}" == 'y' ]; then
   . include/phpmyadmin.sh
   Install_phpMyAdmin 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
 fi
 
 # redis
 if [ "${redis_flag}" == 'y' ]; then
   . include/redis.sh
   Install_redis_server 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
 fi
 
 # memcached
 if [ "${memcached_flag}" == 'y' ]; then
   . include/memcached.sh
   Install_memcached_server 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
 fi
 
 # index example
 if [ -d "${wwwroot_dir}/default" ]; then
   . include/demo.sh
   DEMO 2>&1 | tee -a ${current_dir}/install.log
+[ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
 fi
 
 # get web_install_dir and db_install_dir

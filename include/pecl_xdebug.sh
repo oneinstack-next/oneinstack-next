@@ -10,11 +10,11 @@ Install_pecl_xdebug() {
     PHP_main_ver=${PHP_detail_ver%.*}
     if [[ "${PHP_main_ver}" =~ ^7.[0-4]$|^80$ ]]; then
       if [[ "${PHP_main_ver}" =~ ^7.[0-1]$ ]]; then
-        src_url=https://pecl.php.net/get/xdebug-2.9.8.tgz && Download_src
+        Download_Artifact "xdebug-2.9.8.tgz" || exit 1
         tar xzf xdebug-2.9.8.tgz
         pushd xdebug-2.9.8 > /dev/null
       else
-        src_url=https://pecl.php.net/get/xdebug-${xdebug_ver}.tgz && Download_src
+        Download_Artifact "xdebug-${xdebug_ver}.tgz" || exit 1
         tar xzf xdebug-${xdebug_ver}.tgz
         pushd xdebug-${xdebug_ver} > /dev/null
       fi
@@ -23,7 +23,7 @@ Install_pecl_xdebug() {
       make -j ${THREAD} && make install
       popd > /dev/null
       if [ -f "${phpExtensionDir}/xdebug.so" ]; then
-        src_url=${mirror_link}/src/webgrind-master.zip && Download_src
+        Download_Artifact "webgrind-master.zip" || exit 1
         unzip -q webgrind-master.zip
         /bin/mv webgrind-master ${wwwroot_dir}/default/webgrind
         [ ! -e /tmp/xdebug ] && { mkdir /tmp/xdebug; chown ${run_user}:${run_group} /tmp/xdebug; }

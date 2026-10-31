@@ -7,13 +7,14 @@ Install_composer() {
     if [ -e "/usr/local/bin/composer" ]; then
       echo "${CWARNING}PHP Composer already installed! ${CEND}"
     else
+      composer_php_ver=$("${php_install_dir}/bin/php-config" --version) || return 1
+      [ "$(printf '%s\n7.2.5\n' "$composer_php_ver" | sort -V | head -1)" = 7.2.5 ] || {
+        echo 'Pinned Composer requires PHP >= 7.2.5; legacy Composer needs a separately reviewed artifact' >&2
+        return 1
+      }
       pushd ${current_dir}/src > /dev/null
-      if [ "${OUTIP_STATE}"x == "China"x ]; then
-        wget --no-check-certificate -c https://mirrors.aliyun.com/composer/composer.phar -O /usr/local/bin/composer > /dev/null 2>&1
-        ${php_install_dir}/bin/php /usr/local/bin/composer config -g repo.packagist composer https://packagist.phpcomposer.com
-      else
-        wget --no-check-certificate -c https://getcomposer.org/composer.phar -O /usr/local/bin/composer > /dev/null 2>&1
-      fi
+      Download_Artifact composer.phar "${current_dir}/src" || return 1
+      install -m 755 "${current_dir}/src/composer.phar" /usr/local/bin/composer || return 1
       chmod +x /usr/local/bin/composer
       if [ -e "/usr/local/bin/composer" ]; then
         echo; echo "${CSUCCESS}PHP Composer installed successfully! ${CEND}"

@@ -9,7 +9,7 @@ Install_pecl_yar() {
     PHP_main_ver=${PHP_detail_ver%.*}
     if [[ "${PHP_main_ver}" =~ ^7.[0-4]$|^8.[0-4]$ ]]; then
       phpExtensionDir=$(${php_install_dir}/bin/php-config --extension-dir)
-      src_url=https://pecl.php.net/get/yar-${yar_ver}.tgz && Download_src
+      Download_Artifact "yar-${yar_ver}.tgz" || exit 1
       tar xzf yar-${yar_ver}.tgz
       pushd yar-${yar_ver} > /dev/null
       ${php_install_dir}/bin/phpize

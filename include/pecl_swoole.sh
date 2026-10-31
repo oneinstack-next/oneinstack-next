@@ -9,37 +9,37 @@ Install_pecl_swoole() {
     PHP_detail_ver=$(${php_install_dir}/bin/php-config --version)
     PHP_main_ver=${PHP_detail_ver%.*}
     if [[ "${PHP_main_ver}" =~ ^5.[3-6]$ ]]; then
-      src_url=https://pecl.php.net/get/swoole-1.10.5.tgz && Download_src
+      Download_Artifact "swoole-1.10.5.tgz" || exit 1
       tar xzf swoole-1.10.5.tgz
       pushd swoole-1.10.5 > /dev/null
       ${php_install_dir}/bin/phpize
       ./configure --with-php-config=${php_install_dir}/bin/php-config --enable-openssl --with-openssl-dir=${openssl_install_dir}
     elif [[ "${PHP_main_ver}" =~ ^7.[0-1]$ ]]; then
-      src_url=https://pecl.php.net/get/swoole-4.5.2.tgz && Download_src
+      Download_Artifact "swoole-4.5.2.tgz" || exit 1
       tar xzf swoole-4.5.2.tgz
       pushd swoole-4.5.2 > /dev/null
       ${php_install_dir}/bin/phpize
       ./configure --with-php-config=${php_install_dir}/bin/php-config --enable-openssl --with-openssl-dir=${openssl_install_dir}
     elif [[ "${PHP_main_ver}" =~ ^7.[2-4]$ ]]; then
-      src_url=https://pecl.php.net/get/swoole-4.8.12.tgz && Download_src
+      Download_Artifact "swoole-4.8.12.tgz" || exit 1
       tar xzf swoole-4.8.12.tgz
       pushd swoole-4.8.12 > /dev/null
       ${php_install_dir}/bin/phpize
       ./configure --with-php-config=${php_install_dir}/bin/php-config --enable-openssl --with-openssl-dir=${openssl_install_dir} --enable-http2 --enable-swoole-json --enable-swoole-curl
     elif [[ "${PHP_main_ver}" =~ ^80]$ ]]; then
-      src_url=https://pecl.php.net/get/swoole-5.1.7.tgz && Download_src
+      Download_Artifact "swoole-5.1.7.tgz" || exit 1
       tar xzf swoole-5.1.7.tgz
       pushd swoole-5.1.7 > /dev/null
       ${php_install_dir}/bin/phpize
       ./configure --with-php-config=${php_install_dir}/bin/php-config --enable-openssl --with-openssl-dir=${openssl_install_dir} --enable-http2 --enable-swoole-json --enable-swoole-curl
     elif [[ "${PHP_main_ver}" =~ ^81]$ ]]; then
-      src_url=https://pecl.php.net/get/swoole-6.1.7.tgz && Download_src
+      Download_Artifact "swoole-6.1.7.tgz" || exit 1
       tar xzf swoole-6.1.7.tgz
       pushd swoole-6.1.7 > /dev/null
       ${php_install_dir}/bin/phpize
       ./configure --with-php-config=${php_install_dir}/bin/php-config --enable-openssl --with-openssl-dir=${openssl_install_dir} --enable-http2 --enable-swoole-json --enable-swoole-curl
     else
-      src_url=https://pecl.php.net/get/swoole-${swoole_ver}.tgz && Download_src
+      Download_Artifact "swoole-${swoole_ver}.tgz" || exit 1
       tar xzf swoole-${swoole_ver}.tgz
       pushd swoole-${swoole_ver} > /dev/null
       ${php_install_dir}/bin/phpize
